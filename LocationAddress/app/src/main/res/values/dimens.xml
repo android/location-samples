@@ -6,5 +6,5 @@
     <dimen name="layout_padding">12dp</dimen>
 
     <dimen name="default_text_size">16dp</dimen>
-    <dimen name="text_margin">24dp</dimen>
+    <dimen name="text_margin_top">72dp</dimen>
 </resources>

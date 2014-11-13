@@ -16,15 +16,17 @@
 
 package com.google.android.gms.location.sample.locationaddress;
 
-import android.content.Context;
-import android.location.Address;
+import android.content.Intent;
 import android.location.Geocoder;
 import android.location.Location;
-import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.ResultReceiver;
 import android.support.v7.app.ActionBarActivity;
-import android.text.TextUtils;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -32,21 +34,21 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.GoogleApiClient.ConnectionCallbacks;
 import com.google.android.gms.common.api.GoogleApiClient.OnConnectionFailedListener;
-import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
 
 /**
  * Getting the Location Address.
  *
  * Demonstrates how to use the {@link android.location.Geocoder} API and reverse geocoding to
- * display a device's location as an address.
+ * display a device's location as an address. Uses an IntentService to fetch the location address,
+ * and a ResultReceiver to process results sent by the IntentService.
  *
- * For an example that displays the last known location of a device using a longitude and latitude,
+ * Android has two location request settings:
+ * {@code ACCESS_COARSE_LOCATION} and {@code ACCESS_FINE_LOCATION}. These settings control
+ * the accuracy of the current location. This sample uses ACCESS_FINE_LOCATION, as defined in
+ * the AndroidManifest.xml.
+ *
+ * For a starter example that displays the last known location of a device using a longitude and latitude,
  * see https://github.com/googlesamples/android-play-location/tree/master/BasicLocation.
  *
  * For an example that shows location updates using the Fused Location Provider API, see
@@ -59,7 +61,10 @@ import java.util.Locale;
 public class MainActivity extends ActionBarActivity implements
         ConnectionCallbacks, OnConnectionFailedListener {
 
-    protected static final String TAG = "location-address-sample";
+    protected static final String TAG = "main-activity";
+
+    protected static final String ADDRESS_REQUESTED_KEY = "address-request-pending";
+    protected static final String LOCATION_ADDRESS_KEY = "location-address";
 
     /**
      * Provides the entry point to Google Play services.
@@ -67,31 +72,85 @@ public class MainActivity extends ActionBarActivity implements
     protected GoogleApiClient mGoogleApiClient;
 
     /**
-     * Stores parameters for requests to the FusedLocationProviderApi.
-     */
-    protected LocationRequest mLocationRequest;
-
-    /**
      * Represents a geographical location.
      */
     protected Location mLastLocation;
 
-    /*
-     * UI widget that displays the location address.
+    /**
+     * Tracks whether the user has requested an address. Becomes true when the user requests an
+     * address and false when the address (or an error message) is delivered.
+     * The user requests an address by pressing the Fetch Address button. This may happen
+     * before GoogleApiClient connects. This activity uses this boolean to keep track of the
+     * user's intent. If the value is true, the activity tries to fetch the address as soon as
+     * GoogleApiClient connects.
      */
-    protected TextView mLocationAddress;
+    protected boolean mAddressRequested;
 
+    /**
+     * The formatted location address.
+     */
+    protected String mAddressOutput;
+
+    /**
+     * Receiver registered with this activity to get the response from FetchAddressIntentService.
+     */
+    private AddressResultReceiver mResultReceiver;
+
+    /**
+     * Displays the location address.
+     */
+    protected TextView mLocationAddressTextView;
+
+    /**
+     * Visible while the address is being fetched.
+     */
+    ProgressBar mProgressBar;
+
+    /**
+     * Kicks off the request to fetch an address when pressed.
+     */
+    Button mFetchAddressButton;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_activity);
-        mLocationAddress = (TextView) findViewById(R.id.location_address);
+
+        mResultReceiver = new AddressResultReceiver(new Handler());
+
+        mLocationAddressTextView = (TextView) findViewById(R.id.location_address_view);
+        mProgressBar = (ProgressBar) findViewById(R.id.progress_bar);
+        mFetchAddressButton = (Button) findViewById(R.id.fetch_address_button);
+
+        // Set defaults, then update using values stored in the Bundle.
+        mAddressRequested = false;
+        mAddressOutput = "";
+        updateValuesFromBundle(savedInstanceState);
+
+        updateUIWidgets();
         buildGoogleApiClient();
     }
 
     /**
-     * Builds a GoogleApiClient. Uses the addApi() method to request the LocationServices API.
+     * Updates fields based on data stored in the bundle.
+     */
+    private void updateValuesFromBundle(Bundle savedInstanceState) {
+        if (savedInstanceState != null) {
+            // Check savedInstanceState to see if the address was previously requested.
+            if (savedInstanceState.keySet().contains(ADDRESS_REQUESTED_KEY)) {
+                mAddressRequested = savedInstanceState.getBoolean(ADDRESS_REQUESTED_KEY);
+            }
+            // Check savedInstanceState to see if the location address string was previously found
+            // and stored in the Bundle. If it was found, display the address string in the UI.
+            if (savedInstanceState.keySet().contains(LOCATION_ADDRESS_KEY)) {
+                mAddressOutput = savedInstanceState.getString(LOCATION_ADDRESS_KEY);
+                displayAddressOutput();
+            }
+        }
+    }
+
+    /**
+     * Builds a GoogleApiClient. Uses {@code #addApi} to request the LocationServices API.
      */
     protected synchronized void buildGoogleApiClient() {
         mGoogleApiClient = new GoogleApiClient.Builder(this)
@@ -99,18 +158,23 @@ public class MainActivity extends ActionBarActivity implements
                 .addOnConnectionFailedListener(this)
                 .addApi(LocationServices.API)
                 .build();
-        makeLocationRequest();
     }
 
     /**
-     * Sets up the location request. Android has two location request settings:
-     * {@code ACCESS_COARSE_LOCATION} and {@code ACCESS_FINE_LOCATION}. These settings control
-     * the accuracy of the current location. This sample uses ACCESS_FINE_LOCATION, as defined in
-     * the AndroidManifest.xml.
+     * Runs when user clicks the Fetch Address button. Starts the service to fetch the address if
+     * GoogleApiClient is connected.
      */
-    protected void makeLocationRequest() {
-        mLocationRequest = new LocationRequest();
-        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+    public void fetchAddressButtonHandler(View view) {
+        // We only start the service to fetch the address if GoogleApiClient is connected.
+        if (mGoogleApiClient.isConnected() && mLastLocation != null) {
+            startIntentService();
+        }
+        // If GoogleApiClient isn't connected, we process the user's request by setting
+        // mAddressRequested to true. Later, when GoogleApiClient connects, we launch the service to
+        // fetch the address. As far as the user is concerned, pressing the Fetch Address button
+        // immediately kicks off the process of getting the address.
+        mAddressRequested = true;
+        updateUIWidgets();
     }
 
     @Override
@@ -136,18 +200,40 @@ public class MainActivity extends ActionBarActivity implements
         // in rare cases when a location is not available.
         mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
         if (mLastLocation != null) {
-
             // Determine whether a Geocoder is available.
             if (!Geocoder.isPresent()) {
                 Toast.makeText(this, R.string.no_geocoder_available, Toast.LENGTH_LONG).show();
                 return;
             }
-
-            // Start the background task for fetching the address.
-            Toast.makeText(this, R.string.getting_address, Toast.LENGTH_SHORT).show();
-
-            (new MainActivity.GetAddressTask(this)).execute(mLastLocation);
+            // It is possible that the user presses the button to get the address before the
+            // GoogleApiClient object successfully connects. In such a case, mAddressRequested
+            // is set to true, but no attempt is made to fetch the address (see
+            // fetchAddressButtonHandler()) . Instead, we start the intent service here if the
+            // user has requested an address, since we now have a connection to GoogleApiClient.
+            if (mAddressRequested) {
+                startIntentService();
+            }
         }
+    }
+
+    /**
+     * Creates an intent, adds location data to it as an extra, and starts the intent service for
+     * fetching an address.
+     */
+    protected void startIntentService() {
+        // Create an intent for passing to the intent service responsible for fetching the address.
+        Intent intent = new Intent(this, FetchAddressIntentService.class);
+
+        // Pass the result receiver as an extra to the service.
+        intent.putExtra(Constants.RECEIVER, mResultReceiver);
+
+        // Pass the location data as an extra to the service.
+        intent.putExtra(Constants.LOCATION_DATA_EXTRA, mLastLocation);
+
+        // Start the service. If the service isn't already running, it is instantiated and started
+        // (creating a process for it if needed); if it is running then it remains running. The
+        // service kills itself automatically once all intents are processed.
+        startService(intent);
     }
 
     @Override
@@ -174,84 +260,68 @@ public class MainActivity extends ActionBarActivity implements
     }
 
     /**
-     * An AsyncTask that calls {@code Geocoder.getFromLocation()} in the background.
-     *
-     * The class uses the following generic types:
-     * Location - A {@link android.location.Location} object containing the last known location,
-     *            passed as the input parameter to {@code doInBackground()}.
-     * Void     - Indicates that progress units are not used by this subclass.
-     * String   - An address passed to {@code onPostExecute()}.
+     * Updates the address in the UI.
      */
-    protected class GetAddressTask extends AsyncTask<Location, Void, String> {
-        Context context;
+    protected void displayAddressOutput() {
+        mLocationAddressTextView.setText(mAddressOutput);
+    }
 
-        public GetAddressTask(Context context) {
-            super();
-            this.context = context;
+    /**
+     * Toggles the visibility of the progress bar. Enables or disables the Fetch Address button.
+     */
+    private void updateUIWidgets() {
+        if (mAddressRequested) {
+            mProgressBar.setVisibility(ProgressBar.VISIBLE);
+            mFetchAddressButton.setEnabled(false);
+        } else {
+            mProgressBar.setVisibility(ProgressBar.GONE);
+            mFetchAddressButton.setEnabled(true);
+        }
+    }
+
+    /**
+     * Shows a toast with the given text.
+     */
+    protected void showToast(String text) {
+        Toast.makeText(this, text, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+        // Save whether the address has been requested.
+        savedInstanceState.putBoolean(ADDRESS_REQUESTED_KEY, mAddressRequested);
+
+        // Save the address string.
+        savedInstanceState.putString(LOCATION_ADDRESS_KEY, mAddressOutput);
+        super.onSaveInstanceState(savedInstanceState);
+    }
+
+    /**
+     * Receiver for data sent from FetchAddressIntentService.
+     */
+    class AddressResultReceiver extends ResultReceiver {
+        public AddressResultReceiver(Handler handler) {
+            super(handler);
         }
 
         /**
-         * Gets the location address using reverse geocoding. Returns the formatted address to
-         * the UI thread.
+         *  Receives data sent from FetchAddressIntentService and updates the UI in MainActivity.
          */
         @Override
-        protected String doInBackground(Location... params) {
-            Geocoder geocoder = new Geocoder(context, Locale.getDefault());
+        protected void onReceiveResult(int resultCode, Bundle resultData) {
 
-            // Gets the current location from the input parameter list.
-            Location location = params[0];
+            // Display the address string or an error message sent from the intent service.
+            mAddressOutput = resultData.getString(Constants.RESULT_DATA_KEY);
+            displayAddressOutput();
 
-            List<Address> addresses = null;
-
-            try {
-                 // Using getFromLocation() returns the current location's latitude and longitude
-                 // values. In this case, gets a single address.
-                addresses = geocoder.getFromLocation(location.getLatitude(),
-                        location.getLongitude(), 1);
-            } catch (IOException ioException) {
-                // Catch network or other I/O problems.
-                Log.i(TAG, "Cannot fetch address. It appears that the network is unavailable.",
-                        ioException);
-            } catch (IllegalArgumentException illegalArgumentException) {
-                // Catch incorrect latitude or longitude values.
-                Log.i(TAG, "Error: Invalid latitude or longitude used. " +
-                "Latitude = " + location.getLatitude() +
-                ", Longitude = " + location.getLongitude(), illegalArgumentException);
+            // Show a toast message if an address was found.
+            if (resultCode == Constants.SUCCESS_RESULT) {
+                showToast(getString(R.string.address_found));
             }
 
-            // Check if reverse geocode returned an address.
-            if (addresses != null && addresses.size() > 0) {
-                Address address = addresses.get(0);
-                ArrayList<String> addressFragments = new ArrayList<String>();
-
-                // We fetch the address lines using {@code getAddressLine},
-                // join them, and send them to the thread. The {@link android.location.address}
-                // class provides other options for fetching address details that you may prefer
-                // to use. Here are some examples:
-                // getLocality() ("Mountain View", for example)
-                // getAdminArea() ("CA", for example)
-                // getPostalCode() ("94043", for example)
-                // getCountryCode() ("US", for example)
-                // getCountryName() ("United States", for example)
-                for(int i = 0; i < address.getMaxAddressLineIndex(); i++) {
-                    addressFragments.add(address.getAddressLine(i));
-                }
-                return TextUtils.join(System.getProperty("line.separator"), addressFragments);
-            } else {
-                return "No address found";
-            }
-        }
-
-        /**
-         * Runs once doInBackground() completes. Sets the text of the UI element that displays the
-         * address. Runs on the UI thread.
-         *
-         * @param address The String returned by doInBackground().
-         */
-        @Override
-        protected void onPostExecute(String address) {
-            // Show address in the UI.
-            mLocationAddress.setText(address);
+            // Reset. Enable the Fetch Address button and stop showing the progress bar.
+            mAddressRequested = false;
+            updateUIWidgets();
         }
     }
 }
