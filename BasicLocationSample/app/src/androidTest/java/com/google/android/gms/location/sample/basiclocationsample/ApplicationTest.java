@@ -1,4 +1,4 @@
-package com.example.android.myapplication;
+package com.google.android.gms.location.sample.basiclocationsample;
 
 import android.app.Application;
 import android.test.ApplicationTestCase;
