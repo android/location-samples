@@ -16,19 +16,12 @@ android {
             runProguard true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
-        // TODO: remove before submitting.
-        repositories {
-            mavenCentral()
-            flatDir {
-                dirs 'libs'
-            }
-        }
     }
 }
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile 'com.android.support:appcompat-v7:21.+'
-    // TODO: remove before submitting.
     compile 'com.google.android.gms:google-play-services-6583000@aar'
+    compile 'com.google.android.gms:play-services:6.5.+'
 }
