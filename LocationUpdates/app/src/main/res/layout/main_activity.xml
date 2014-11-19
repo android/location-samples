@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
      Copyright (C) 2014 Google, Inc.
 
      Licensed under the Apache License, Version 2.0 (the "License");
@@ -20,43 +19,77 @@
     android:layout_height="match_parent"
     android:padding="@dimen/layout_padding">
 
+    <Button
+        android:id="@+id/start_updates_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_marginTop="@dimen/ui_group_top_margin"
+        android:onClick="startUpdatesButtonHandler"
+        android:text="@string/start_updates" />
+
+    <Button
+        android:id="@+id/stop_updates_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_marginTop="@dimen/ui_group_top_margin"
+        android:enabled="false"
+        android:onClick="stopUpdatesButtonHandler"
+        android:text="@string/stop_updates" />
+
     <TextView
         android:id="@+id/latitude_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
+        android:layout_below="@+id/start_updates_button"
+        android:layout_marginTop="@dimen/ui_group_top_margin"
         android:text="@string/latitude_label"
-        android:textSize="@dimen/lat_long_text_size" />
+        android:textSize="@dimen/default_text_size" />
 
     <TextView
         android:id="@+id/latitude_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignBaseline="@+id/latitude_label"
-        android:layout_marginLeft="10dp"
+        android:layout_marginLeft="@dimen/small_margin_left"
         android:layout_toRightOf="@+id/latitude_label"
-        android:textIsSelectable="true"
-        android:textSize="@dimen/lat_long_text_size" />
+        android:textSize="@dimen/default_text_size" />
 
     <TextView
         android:id="@+id/longitude_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
+        android:layout_below="@+id/latitude_label"
         android:text="@string/longitude_label"
-        android:layout_marginTop="@dimen/text_margin"
-        android:textSize="@dimen/lat_long_text_size" />
+        android:textSize="@dimen/default_text_size" />
 
     <TextView
         android:id="@+id/longitude_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignBaseline="@+id/longitude_label"
-        android:layout_marginLeft="10dp"
+        android:layout_marginLeft="@dimen/small_margin_left"
         android:layout_toRightOf="@+id/longitude_label"
-        android:textIsSelectable="true"
-        android:layout_marginTop="@dimen/text_margin"
-        android:textSize="@dimen/lat_long_text_size"/>
+        android:textSize="@dimen/default_text_size" />
+
+    <TextView
+        android:id="@+id/last_update_time_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/longitude_label"
+        android:text="@string/last_update_time_label"
+        android:textSize="@dimen/default_text_size" />
+
+    <TextView
+        android:id="@+id/last_update_time_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/last_update_time_label"
+        android:layout_marginLeft="@dimen/small_margin_left"
+        android:layout_toRightOf="@+id/last_update_time_label"
+        android:textSize="@dimen/default_text_size" />
 </RelativeLayout>
