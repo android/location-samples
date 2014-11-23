@@ -1,25 +1,26 @@
-Location Updates
-================
+Creating and Monitoring Geofences
+=================================
 
-Demonstrates how to use the
-[Geocode API](http://developer.android.com/reference/android/location/Geocoder.html)
-and reverse geocoding to display a device's location as an address.
+Demonstrates how to create and remove geofences using the
+[GeofencingApi](https://developer.android.com/reference/com/google/android/gms/location/GeofencingApi.html).
+Monitor geofence transitions and creates notifications whenever a device enters or exits a geofence.
 
 Introduction
 ============
 
-This sample builds on the BasicLocationSample and the LocationUdpates samples
-included in this repo. Those samples work with latitude and longitude values
-only. While latitude and longitude are useful for calculating distance or
-displaying a map position, in many cases the address of the location is more
-useful. The Android framework location APIs provide a
-[Geocode API](http://developer.android.com/reference/android/location/Geocoder.html)
-which contains a
-[getFromLocation()](http://developer.android.com/reference/android/location/Geocoder.html#getFromLocation(double, double, int))
-method that returns an estimated street address corresponding to a given
-latitude and longitude. This sample uses the `getFromLocation()` method to do
-location address lookup, an IntentService to fetch the location address, and a
-ResultReceiver to process results sent by the IntentService.
+Geofencing combines awareness of the user's current location with awareness of
+nearby features, defined as the user's proximity to locations that may be of
+interest. To mark a location of interest, you specify its latitude and
+longitude. To adjust the proximity for the location, you add a radius. The
+latitude, longitude, and radius define a geofence. You can have multiple active
+geofences at one time.
+
+Location Services treats a geofences as an area rather than as a points and
+proximity. This allows it to detect when the user enters or exits a geofence.
+For each geofence, you can ask Location Services to send you entrance events,
+exit events, or both. You can also limit the duration of a geofence by
+specifying an expiration duration in milliseconds. After the geofence expires,
+Location Services automatically removes it.
 
 To run this sample, **location must be enabled**.
 
@@ -38,6 +39,7 @@ Use the
 to display a device's location as an address.
 4. [Creating and Monitoring Geofences](https://github.com/googlesamples/android-play-location/tree/master/Geofences):
 Create geofences and process enter and exit transitions.
+
 
 Prerequisites
 --------------

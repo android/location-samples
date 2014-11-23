@@ -9,12 +9,16 @@ to help you make your applications location aware.
 
 This repo contains the following samples:
 
-1. [Basic Location Sample](BasicLocationSample): Retreive the last known
-location for a device
-1. [Location Updates](LocationUpdates): Get updates about a device's location.
-1. [Location Address](LocaitonAddress): Use the
+1. [Basic Location Sample](https://github.com/googlesamples/android-play-location/tree/master/BasicLocationSample):
+Retreive the last known location for a device.
+2. [Location Updates](https://github.com/googlesamples/android-play-location/tree/master/LocationUpdates):
+Get updates about a device's location.
+3. [Location Address](https://github.com/googlesamples/android-play-location/tree/master/LocationAddress):
+Use the
 [Geocode API](http://developer.android.com/reference/android/location/Geocoder.html)
 to display a device's location as an address.
+4. [Creating and Monitoring Geofences](https://github.com/googlesamples/android-play-location/tree/master/Geofences):
+Create geofences and process enter and exit transitions.
 
 Prerequisites
 --------------

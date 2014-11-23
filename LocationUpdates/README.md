@@ -17,12 +17,28 @@ Positioning System). The accuracy of the location is also determined by the
 location permissions you've requested (we use the ACCESS_FINE_LOCATION here)
 and the options you set in the location request.
 
-To run this sample, **location must be enabled**.
 
 This sample uses
 [Google Play services (GoogleApiClient)](https://developer.android.com/reference/com/google/android/gms/common/api/GoogleApiClient.html)
 and the
 [FusedLocationApi] (https://developer.android.com/reference/com/google/android/gms/location/LocationServices.html).
+
+To run this sample, **location must be enabled**.
+
+This sample is part of a [series of samples](https://github.com/googlesamples/android-play-location)
+demonstrating the use of
+[Google Play services Location APIs](https://developer.android.com/reference/com/google/android/gms/location/package-summary.html).
+Here is a list of samples in the series:
+
+1. [Basic Location Sample](BasicLocationSample): Retreive the last known
+location for a device
+1. [Location Updates](LocationUpdates): Get updates about a device's location.
+1. [Location Address](LocaitonAddress): Use the
+[Geocode
+API](http://developer.android.com/reference/android/location/Geocoder.html)
+to display a device's location as an address.
+1. [Creating and Monitoring Geofences](Geofences): Create geofences and process
+enter and exit transitions.
 
 Prerequisites
 --------------
