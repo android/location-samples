@@ -26,7 +26,6 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.GoogleApiClient.ConnectionCallbacks;
 import com.google.android.gms.common.api.GoogleApiClient.OnConnectionFailedListener;
-import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 
 /**
@@ -46,11 +45,6 @@ public class MainActivity extends ActionBarActivity implements
      * Provides the entry point to Google Play services.
      */
     protected GoogleApiClient mGoogleApiClient;
-
-    /**
-     * Stores parameters for requests to the FusedLocationProviderApi.
-     */
-    protected LocationRequest mLocationRequest;
 
     /**
      * Represents a geographical location.
@@ -80,20 +74,6 @@ public class MainActivity extends ActionBarActivity implements
                 .addOnConnectionFailedListener(this)
                 .addApi(LocationServices.API)
                 .build();
-        makeLocationRequest();
-    }
-
-    /**
-     * Sets up the location request. Android has two location request settings:
-     * {@code ACCESS_COARSE_LOCATION} and {@code ACCESS_FINE_LOCATION}. These settings control
-     * the accuracy of the current location. This sample uses ACCESS_COARSE_LOCATION. As a result,
-     * Location Services obfuscates the returned location to an accuracy that's roughly equivalent
-     * to a city block.
-     */
-    protected void makeLocationRequest() {
-        mLocationRequest = new LocationRequest();
-        // The PRIORITY_LOW_POWER value is commonly used when requesting city level accuracy.
-        mLocationRequest.setPriority(LocationRequest.PRIORITY_LOW_POWER);
     }
 
     @Override

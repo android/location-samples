@@ -36,6 +36,11 @@ limitations under the License.
             </intent-filter>
         </activity>
     </application>
-
+    <!--
+    Android has two location request settings: {@code ACCESS_COARSE_LOCATION} and
+    {@code ACCESS_FINE_LOCATION}. These settings control the accuracy of the current location. This
+    sample uses ACCESS_COARSE_LOCATION. As a result, the location services return a location with
+    an accuracy approximately equivalent to a city block.
+    -->
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
 </manifest>
