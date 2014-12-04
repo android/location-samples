@@ -19,6 +19,11 @@ Use the
 to display a device's location as an address.
 4. [Creating and Monitoring Geofences](https://github.com/googlesamples/android-play-location/tree/master/Geofences):
 Create geofences and process enter and exit transitions.
+5. [Recognizing the User's Current
+Activity](https://github.com/googlesamples/android-play-location/tree/master/ActivityRecognition):
+Use the
+[ActivityRecognitionApi](https://developer.android.com/reference/com/google/android/gms/location/ActivityRecognitionApi.html) to determine the user's current activity.
+
 
 Prerequisites
 --------------

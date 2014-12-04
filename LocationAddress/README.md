@@ -23,22 +23,6 @@ ResultReceiver to process results sent by the IntentService.
 
 To run this sample, **location must be enabled**.
 
-This sample is part of a [series of samples](https://github.com/googlesamples/android-play-location)
-demonstrating the use of
-[Google Play services Location APIs](https://developer.android.com/reference/com/google/android/gms/location/package-summary.html).
-Here is a list of samples in the series:
-
-1. [Basic Location Sample](https://github.com/googlesamples/android-play-location/tree/master/BasicLocationSample):
-Retreive the last known location for a device.
-2. [Location Updates](https://github.com/googlesamples/android-play-location/tree/master/LocationUpdates):
-Get updates about a device's location.
-3. [Location Address](https://github.com/googlesamples/android-play-location/tree/master/LocationAddress):
-Use the
-[Geocode API](http://developer.android.com/reference/android/location/Geocoder.html)
-to display a device's location as an address.
-4. [Creating and Monitoring Geofences](https://github.com/googlesamples/android-play-location/tree/master/Geofences):
-Create geofences and process enter and exit transitions.
-
 Prerequisites
 --------------
 

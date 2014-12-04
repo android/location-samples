@@ -1,37 +1,39 @@
-Location Updates
-================
+Recognizing the User's Current Activity
+=======================================
 
-Demonstrates how to use the Fused Location Provider API to get updates about a
-device's location. The Fused Location Provider is part of the Google Play
-services Location APIs.
-
+Demonstrates use of the [ActivityRecognitionApi][1] to recognize a user's current
+activity, such as walking, driving, or standing still.
 
 Introduction
 ============
 
-This sample builds on the BasicLocationSample sample included in this repo,
-and allows the user to request periodic location updates. In response, the API
-updates the app periodically with the best available location, based on the
-currently-available location providers such as WiFi and GPS (Global
-Positioning System). The accuracy of the location is also determined by the
-location permissions you've requested (we use the ACCESS_FINE_LOCATION here)
-and the options you set in the location request.
+Demonstrates use of the [ActivityRecognitionApi][1] to recognize a user's current
+activity, such as walking, driving, or standing still.
 
+Users can request activity updates by pressing the "Request Updates" button,
+and stop receiving updates using the "Remove Updates" button.
 
-This sample uses
-[Google Play services (GoogleApiClient)](https://developer.android.com/reference/com/google/android/gms/common/api/GoogleApiClient.html)
-and the
-[FusedLocationApi] (https://developer.android.com/reference/com/google/android/gms/location/LocationServices.html).
+The sample uses an `IntentService` to process detected activity changes, which
+are sent using [ActivityRecognitionResult][2] objects. The IntentService gets a
+list of probable detected activities and broadcasts them through a BroadcastReceiver. See the
+[DetectedActivity[3] class for a list of DetectedActivity types. Each
+`DetectedActivity` is associdated with a confidence level, which is an int
+between 0 and 100.
 
 To run this sample, **location must be enabled**.
 
+[1]: https://developer.android.com/reference/com/google/android/gms/location/ActivityRecognitionApi.html
+
+[2]: https://developer.android.com/reference/com/google/android/gms/location/ActivityRecognitionResult.html
+
+[3]: https://developer.android.com/reference/com/google/android/gms/location/DetectedActivity.html
 
 Prerequisites
 --------------
 
 - Android API Level >v9
 - Android Build Tools >v21
-- Google Support Repository
+- Google (Support) Repository
 
 Getting Started
 ---------------
