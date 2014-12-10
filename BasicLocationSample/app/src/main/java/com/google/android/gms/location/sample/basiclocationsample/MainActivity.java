@@ -31,7 +31,7 @@ import com.google.android.gms.location.LocationServices;
 /**
  * Location sample.
  *
- * Demonstrates use of the Location API and how to retrieve the last known location for the device.
+ * Demonstrates use of the Location API to retrieve the last known location for a device.
  * This sample uses Google Play services (GoogleApiClient) but does not need to authenticate a user.
  * See https://github.com/googlesamples/android-google-accounts/tree/master/QuickStart if you are
  * also using APIs that need authentication.
