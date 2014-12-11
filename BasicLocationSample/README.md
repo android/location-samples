@@ -13,6 +13,8 @@ The accuracy of the location returned is based on the location
 permissions you've requested and the location sensors that are currently active
 for the device.
 
+This sample **requires location to enabled on a device**.
+
 This sample uses
 [Google Play services (GoogleApiClient)](https://developer.android.com/google/play-services/index.html)
 and the
