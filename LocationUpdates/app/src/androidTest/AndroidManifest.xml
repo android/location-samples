@@ -1,0 +1,7 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.google.android.gms.location.sample.locationupdates"
+    android:sharedUserId="com.google.android.gms.location.sample.locationupdates">
+    <!-- We use sharedUserId to apply the ACCESS_MOCK_LOCATION permission to the application APK. -->
+
+    <uses-permission android:name="android.permission.ACCESS_MOCK_LOCATION"/>
+</manifest>
