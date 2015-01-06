@@ -116,13 +116,6 @@ public class MainActivity extends ActionBarActivity implements
         Log.i(TAG, "Connection failed: ConnectionResult.getErrorCode() = " + result.getErrorCode());
     }
 
-    /*
-    * Called by Google Play services if the connection to GoogleApiClient drops because of an
-    * error.
-    */
-    public void onDisconnected() {
-        Log.i(TAG, "Disconnected");
-    }
 
     @Override
     public void onConnectionSuspended(int cause) {
