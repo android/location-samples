@@ -20,4 +20,8 @@
 
     <string name="latitude_label">Latitude: </string>
     <string name="longitude_label">Longitude: </string>
+
+    <string name="no_location_detected">
+        No location detected. Make sure location is enabled on the device.
+    </string>
 </resources>
