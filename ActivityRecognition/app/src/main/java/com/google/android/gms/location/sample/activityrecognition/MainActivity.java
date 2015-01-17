@@ -75,11 +75,6 @@ public class MainActivity extends ActionBarActivity implements
      */
     protected GoogleApiClient mGoogleApiClient;
 
-    /**
-     * Used when requesting or removing activity detection updates.
-     */
-    private PendingIntent mActivityDetectionPendingIntent;
-
     // UI elements.
     private Button mRequestActivityUpdatesButton;
     private Button mRemoveActivityUpdatesButton;
@@ -280,10 +275,6 @@ public class MainActivity extends ActionBarActivity implements
      * Gets a PendingIntent to be sent for each activity detection.
      */
     private PendingIntent getActivityDetectionPendingIntent() {
-        // Reuse the PendingIntent if we already have it.
-        if (mActivityDetectionPendingIntent != null) {
-            return mActivityDetectionPendingIntent;
-        }
         Intent intent = new Intent(this, DetectedActivitiesIntentService.class);
 
         // We use FLAG_UPDATE_CURRENT so that we get the same pending intent back when calling
