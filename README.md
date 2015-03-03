@@ -17,7 +17,7 @@ Get updates about a device's location.
 Use the
 [Geocode API](http://developer.android.com/reference/android/location/Geocoder.html)
 to display a device's location as an address.
-4. [Creating and Monitoring Geofences](https://github.com/googlesamples/android-play-location/tree/master/Geofences):
+4. [Creating and Monitoring Geofences](https://github.com/googlesamples/android-play-location/tree/master/Geofencing):
 Create geofences and process enter and exit transitions.
 5. [Recognizing the User's Current
 Activity](https://github.com/googlesamples/android-play-location/tree/master/ActivityRecognition):
