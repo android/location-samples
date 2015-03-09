@@ -159,10 +159,10 @@ public class MainActivity extends ActionBarActivity implements
 
     @Override
     public void onConnectionSuspended(int cause) {
-        // The connection to Google Play services was lost for some reason. We call connect() to
-        // attempt to re-establish the connection.
+        // The connection to Google Play services was lost for some reason. 
         Log.i(TAG, "Connection suspended");
-        mGoogleApiClient.connect();
+        
+        // onConnected() will be called again automatically when the service reconnects
     }
 
     /**
