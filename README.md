@@ -10,7 +10,7 @@ to help you make your applications location aware.
 This repo contains the following samples:
 
 1. [Basic Location Sample](https://github.com/googlesamples/android-play-location/tree/master/BasicLocationSample):
-Retreive the last known location for a device.
+Retrieve the last known location for a device.
 2. [Location Updates](https://github.com/googlesamples/android-play-location/tree/master/LocationUpdates):
 Get updates about a device's location.
 3. [Location Address](https://github.com/googlesamples/android-play-location/tree/master/LocationAddress):
@@ -19,11 +19,14 @@ Use the
 to display a device's location as an address.
 4. [Creating and Monitoring Geofences](https://github.com/googlesamples/android-play-location/tree/master/Geofencing):
 Create geofences and process enter and exit transitions.
-5. [Recognizing the User's Current
-Activity](https://github.com/googlesamples/android-play-location/tree/master/ActivityRecognition):
+5. [Recognizing the User's Current Activity](https://github.com/googlesamples/android-play-location/tree/master/ActivityRecognition):
 Use the
 [ActivityRecognitionApi](https://developer.android.com/reference/com/google/android/gms/location/ActivityRecognitionApi.html) to determine the user's current activity.
-
+6. [Location Settings](https://github.com/googlesamples/android-play-location/tree/master/LocationSettings):
+Use the
+[SettingsApi](https://developer.android.com/reference/com/google/android/gms/location/SettingsApi.html)
+to determine if a device has the location settings needed by an app, and
+optionally provide a dialog to update the device's settings.
 
 Prerequisites
 --------------
