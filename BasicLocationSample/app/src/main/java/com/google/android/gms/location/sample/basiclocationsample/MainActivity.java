@@ -102,9 +102,13 @@ public class MainActivity extends ActionBarActivity implements
         // in rare cases when a location is not available.
         mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
         if (mLastLocation != null) {
+            Log.i(TAG, "Accessing location data.");
             mLatitudeText.setText(String.valueOf(mLastLocation.getLatitude()));
             mLongitudeText.setText(String.valueOf(mLastLocation.getLongitude()));
         } else {
+            Log.i(TAG, "No available location data.");
+            mLatitudeText.setText("");
+            mLongitudeText.setText("");
             Toast.makeText(this, R.string.no_location_detected, Toast.LENGTH_LONG).show();
         }
     }
