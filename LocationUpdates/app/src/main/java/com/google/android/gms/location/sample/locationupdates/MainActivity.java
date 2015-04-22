@@ -305,8 +305,9 @@ public class MainActivity extends ActionBarActivity implements
 
     @Override
     protected void onStop() {
-        super.onStop();
         mGoogleApiClient.disconnect();
+        
+        super.onStop();
     }
 
     /**
