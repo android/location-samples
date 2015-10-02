@@ -89,14 +89,14 @@ public class MainActivityTest extends ActivityInstrumentationTestCase2<MainActiv
 
         final Location testLocation = createNorthPoleLocation();
 
-        assertEquals(mMainActivity.mCurrentLocation.getLatitude(),
-                testLocation.getLatitude(), 0.000001f);
-        assertEquals(mMainActivity.mCurrentLocation.getLongitude(),
-                testLocation.getLongitude(), 0.000001f);
-        assertEquals(mMainActivity.mLatitudeTextView.getText().toString(),
-                String.valueOf(testLocation.getLatitude()));
-        assertEquals(mMainActivity.mLongitudeTextView.getText().toString(),
-                String.valueOf(testLocation.getLongitude()));
+        assertEquals(testLocation.getLatitude(), mMainActivity.mCurrentLocation.getLatitude(),
+                0.000001f);
+        assertEquals(testLocation.getLongitude(), mMainActivity.mCurrentLocation.getLongitude(),
+                 0.000001f);
+        assertEquals(String.valueOf(testLocation.getLatitude()),
+                mMainActivity.mLatitudeTextView.getText().toString());
+        assertEquals(String.valueOf(testLocation.getLongitude()),
+                mMainActivity.mLongitudeTextView.getText().toString());
     }
 
     /**

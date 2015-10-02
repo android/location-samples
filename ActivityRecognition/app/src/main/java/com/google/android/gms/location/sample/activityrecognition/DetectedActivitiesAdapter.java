@@ -90,8 +90,10 @@ public class DetectedActivitiesAdapter extends ArrayAdapter<DetectedActivity> {
         // Remove all items.
         this.clear();
 
-        // Adding the new list items using {@link Adapter#addAll} notifies attached observers that
-        // the underlying data has changed and views reflecting the data should refresh.
-        this.addAll(tempList);
+        // Adding the new list items notifies attached observers that the underlying data has
+        // changed and views reflecting the data should refresh.
+        for (DetectedActivity detectedActivity: tempList) {
+            this.add(detectedActivity);
+        }
     }
 }

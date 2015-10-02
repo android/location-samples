@@ -58,7 +58,7 @@ import java.util.Map;
 public class MainActivity extends ActionBarActivity implements
         ConnectionCallbacks, OnConnectionFailedListener, ResultCallback<Status> {
 
-    protected static final String TAG = "creating-and-monitoring-geofences";
+    protected static final String TAG = "MainActivity";
 
     /**
      * Provides the entry point to Google Play services.

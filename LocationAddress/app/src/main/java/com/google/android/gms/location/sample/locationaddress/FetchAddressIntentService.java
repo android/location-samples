@@ -21,7 +21,7 @@ import java.util.Locale;
  * sends the result to the ResultReceiver.
  */
 public class FetchAddressIntentService extends IntentService {
-    private static final String TAG = "fetch-address-intent-service";
+    private static final String TAG = "FetchAddressIS";
 
     /**
      * The receiver where results are forwarded from this service.

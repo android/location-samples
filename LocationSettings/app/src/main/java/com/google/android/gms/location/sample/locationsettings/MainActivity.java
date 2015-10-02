@@ -53,7 +53,7 @@ public class MainActivity extends ActionBarActivity implements
         LocationListener,
         ResultCallback<LocationSettingsResult> {
 
-    protected static final String TAG = "location-settings";
+    protected static final String TAG = "MainActivity";
 
     /**
      * Constant used in the location settings dialog.

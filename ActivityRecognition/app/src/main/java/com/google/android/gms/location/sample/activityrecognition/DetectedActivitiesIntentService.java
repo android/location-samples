@@ -33,7 +33,7 @@ import java.util.ArrayList;
  */
 public class DetectedActivitiesIntentService extends IntentService {
 
-    protected static final String TAG = "activity-detection-intent-service";
+    protected static final String TAG = "DetectedActivitiesIS";
 
     /**
      * This constructor is required, and calls the super IntentService(String)

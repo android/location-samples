@@ -62,7 +62,7 @@ import java.util.ArrayList;
 public class MainActivity extends ActionBarActivity implements
         ConnectionCallbacks, OnConnectionFailedListener, ResultCallback<Status> {
 
-    protected static final String TAG = "activity-recognition";
+    protected static final String TAG = "MainActivity";
 
     /**
      * A receiver for DetectedActivity objects broadcast by the

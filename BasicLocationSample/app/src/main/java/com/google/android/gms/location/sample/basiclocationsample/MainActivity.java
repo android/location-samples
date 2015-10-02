@@ -40,7 +40,7 @@ import com.google.android.gms.location.LocationServices;
 public class MainActivity extends ActionBarActivity implements
         ConnectionCallbacks, OnConnectionFailedListener {
 
-    protected static final String TAG = "basic-location-sample";
+    protected static final String TAG = "MainActivity";
 
     /**
      * Provides the entry point to Google Play services.

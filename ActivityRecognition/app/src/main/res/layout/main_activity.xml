@@ -48,7 +48,7 @@
         android:text="@string/detected_activities_title"
         android:textSize="@dimen/headline_text_size" />
 
-    <ListView xmlns:android="http://schemas.android.com/apk/res/android"
+    <ListView
         android:id="@+id/detected_activities_listview"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
