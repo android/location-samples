@@ -16,7 +16,6 @@
 -->
 <resources>
     <string name="app_name">Getting the location address</string>
-    <string name="action_settings">Settings</string>
     <string name="no_geocoder_available">No geocoder available</string>
 
     <string name="fetch_address">Fetch address</string>

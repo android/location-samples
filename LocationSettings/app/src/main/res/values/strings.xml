@@ -16,7 +16,6 @@
 -->
 <resources>
     <string name="app_name">Location Settings</string>
-    <string name="action_settings">Settings</string>
 
     <string name="latitude_label">Latitude: </string>
     <string name="longitude_label">Longitude: </string>

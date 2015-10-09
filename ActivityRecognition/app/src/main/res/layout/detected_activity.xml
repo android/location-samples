@@ -22,7 +22,6 @@
         android:id="@+id/detected_activity_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/request_activity_updates_button"
         android:layout_marginTop="@dimen/narrow_space"
         android:text="@string/still" />
 
@@ -31,7 +30,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
-        android:layout_below="@+id/request_activity_updates_button"
         android:layout_marginTop="@dimen/narrow_space" />
 
     <ProgressBar

@@ -17,7 +17,6 @@
 <resources>
 
     <string name="app_name">Activity Recognition</string>
-    <string name="action_settings">Settings</string>
 
     <!-- Activity detection strings -->
     <string name="in_vehicle">In a vehicle</string>
@@ -30,7 +29,6 @@
     <string name="walking">Walking</string>
     <string name="unidentifiable_activity">Unidentifiable activity: %1$d</string>
 
-    <string name="title_activity_main">MainActivity</string>
     <string name="detected_activities_title">Detected Activities</string>
 
     <string name="request_activity_updates">Request updates</string>

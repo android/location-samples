@@ -17,10 +17,6 @@
 <resources>
 
     <string name="app_name">Creating and Monitoring Geofences</string>
-    <string name="action_settings">Settings</string>
-
-    <string name="title_activity_show_geofence_transitions">ShowGeofenceTransitionsActivity</string>
-    <string name="title_activity_main">MainActivity</string>
 
     <!-- Buttons strings -->
     <string name="add_geofences">Add geofences</string>
