@@ -14,32 +14,38 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/detected_activity_name"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/narrow_space"
-        android:text="@string/still" />
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <TextView
+            android:id="@+id/detected_activity_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/narrow_space"
+            android:text="@string/still" />
 
-    <TextView
-        android:id="@+id/detected_activity_confidence_level"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_marginTop="@dimen/narrow_space" />
+        <TextView
+            android:id="@+id/detected_activity_confidence_level"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:layout_toRightOf="@id/detected_activity_name"
+            android:layout_toEndOf="@id/detected_activity_name"
+            android:layout_marginTop="@dimen/narrow_space" />
+    </RelativeLayout>
 
     <ProgressBar
         android:id="@+id/detected_activity_progress_bar"
         style="@android:style/Widget.ProgressBar.Horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_below="@+id/detected_activity_name"
         android:layout_marginTop="@dimen/progress_bar_top_margin"
         android:minHeight="@dimen/progress_bar_min_height"
         android:progress="1" />
-</RelativeLayout>
+</LinearLayout>

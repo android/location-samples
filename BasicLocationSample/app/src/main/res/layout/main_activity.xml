@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
      Copyright (C) 2014 Google, Inc.
 
      Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,51 +14,31 @@
      limitations under the License.
 -->
 
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:paddingBottom="@dimen/activity_vertical_margin"
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    android:paddingBottom="@dimen/activity_vertical_margin">
-
-    <TextView
-        android:id="@+id/latitude_label"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
-        android:text="@string/latitude_label"
-        android:textSize="@dimen/lat_long_text_size" />
+    android:paddingTop="@dimen/activity_vertical_margin">
 
     <TextView
         android:id="@+id/latitude_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBaseline="@+id/latitude_label"
         android:layout_marginLeft="10dp"
-        android:layout_toRightOf="@+id/latitude_label"
+        android:layout_marginStart="10dp"
         android:textIsSelectable="true"
-        android:textSize="@dimen/lat_long_text_size" />
-
-    <TextView
-        android:id="@+id/longitude_label"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
-        android:text="@string/longitude_label"
-        android:layout_marginTop="@dimen/text_margin"
         android:textSize="@dimen/lat_long_text_size" />
 
     <TextView
         android:id="@+id/longitude_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBaseline="@+id/longitude_label"
         android:layout_marginLeft="10dp"
-        android:layout_toRightOf="@+id/longitude_label"
-        android:textIsSelectable="true"
+        android:layout_marginStart="10dp"
         android:layout_marginTop="@dimen/text_margin"
-        android:textSize="@dimen/lat_long_text_size"/>
-</RelativeLayout>
+        android:textIsSelectable="true"
+        android:textSize="@dimen/lat_long_text_size" />
+</LinearLayout>

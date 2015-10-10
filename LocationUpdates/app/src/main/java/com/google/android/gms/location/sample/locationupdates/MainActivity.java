@@ -94,6 +94,11 @@ public class MainActivity extends ActionBarActivity implements
     protected TextView mLatitudeTextView;
     protected TextView mLongitudeTextView;
 
+    // Labels.
+    protected String mLatitudeLabel;
+    protected String mLongitudeLabel;
+    protected String mLastUpdateTimeLabel;
+
     /**
      * Tracks the status of the location updates request. Value changes when the user presses the
      * Start Updates and Stop Updates buttons.
@@ -116,6 +121,11 @@ public class MainActivity extends ActionBarActivity implements
         mLatitudeTextView = (TextView) findViewById(R.id.latitude_text);
         mLongitudeTextView = (TextView) findViewById(R.id.longitude_text);
         mLastUpdateTimeTextView = (TextView) findViewById(R.id.last_update_time_text);
+
+        // Set labels.
+        mLatitudeLabel = getResources().getString(R.string.latitude_label);
+        mLongitudeLabel = getResources().getString(R.string.longitude_label);
+        mLastUpdateTimeLabel = getResources().getString(R.string.last_update_time_label);
 
         mRequestingLocationUpdates = false;
         mLastUpdateTime = "";
@@ -256,11 +266,12 @@ public class MainActivity extends ActionBarActivity implements
      * Updates the latitude, the longitude, and the last location time in the UI.
      */
     private void updateUI() {
-        if (mCurrentLocation != null) {
-            mLatitudeTextView.setText(String.valueOf(mCurrentLocation.getLatitude()));
-            mLongitudeTextView.setText(String.valueOf(mCurrentLocation.getLongitude()));
-            mLastUpdateTimeTextView.setText(mLastUpdateTime);
-        }
+        mLatitudeTextView.setText(String.format("%s: %f", mLatitudeLabel,
+                mCurrentLocation.getLatitude()));
+        mLongitudeTextView.setText(String.format("%s: %f", mLongitudeLabel,
+                mCurrentLocation.getLongitude()));
+        mLastUpdateTimeTextView.setText(String.format("%s: %s", mLastUpdateTimeLabel,
+                mLastUpdateTime));
     }
 
     /**

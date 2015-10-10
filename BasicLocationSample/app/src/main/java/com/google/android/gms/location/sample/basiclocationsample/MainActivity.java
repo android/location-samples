@@ -19,6 +19,7 @@ package com.google.android.gms.location.sample.basiclocationsample;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -37,7 +38,7 @@ import com.google.android.gms.location.LocationServices;
  * See https://github.com/googlesamples/android-google-accounts/tree/master/QuickStart if you are
  * also using APIs that need authentication.
  */
-public class MainActivity extends ActionBarActivity implements
+public class MainActivity extends AppCompatActivity implements
         ConnectionCallbacks, OnConnectionFailedListener {
 
     protected static final String TAG = "MainActivity";
@@ -52,14 +53,20 @@ public class MainActivity extends ActionBarActivity implements
      */
     protected Location mLastLocation;
 
+    protected String mLatitudeLabel;
+    protected String mLongitudeLabel;
     protected TextView mLatitudeText;
     protected TextView mLongitudeText;
+
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_activity);
 
+        mLatitudeLabel = getResources().getString(R.string.latitude_label);
+        mLongitudeLabel = getResources().getString(R.string.longitude_label);
         mLatitudeText = (TextView) findViewById((R.id.latitude_text));
         mLongitudeText = (TextView) findViewById((R.id.longitude_text));
 
@@ -102,8 +109,10 @@ public class MainActivity extends ActionBarActivity implements
         // in rare cases when a location is not available.
         mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
         if (mLastLocation != null) {
-            mLatitudeText.setText(String.valueOf(mLastLocation.getLatitude()));
-            mLongitudeText.setText(String.valueOf(mLastLocation.getLongitude()));
+            mLatitudeText.setText(String.format("%s: %f", mLatitudeLabel,
+                    mLastLocation.getLatitude()));
+            mLongitudeText.setText(String.format("%s: %f", mLongitudeLabel,
+                    mLastLocation.getLongitude()));
         } else {
             Toast.makeText(this, R.string.no_location_detected, Toast.LENGTH_LONG).show();
         }

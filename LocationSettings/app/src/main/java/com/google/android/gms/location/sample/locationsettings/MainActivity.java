@@ -5,7 +5,7 @@ import android.content.Intent;
 import android.content.IntentSender;
 import android.location.Location;
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -47,7 +47,7 @@ import java.util.Date;
  * to invoke a dialog without requiring the developer to understand which settings are needed for
  * different Location requirements.
  */
-public class MainActivity extends ActionBarActivity implements
+public class MainActivity extends AppCompatActivity implements
         ConnectionCallbacks,
         OnConnectionFailedListener,
         LocationListener,
@@ -105,6 +105,11 @@ public class MainActivity extends ActionBarActivity implements
     protected TextView mLatitudeTextView;
     protected TextView mLongitudeTextView;
 
+    // Labels.
+    protected String mLatitudeLabel;
+    protected String mLongitudeLabel;
+    protected String mLastUpdateTimeLabel;
+
     /**
      * Tracks the status of the location updates request. Value changes when the user presses the
      * Start Updates and Stop Updates buttons.
@@ -127,6 +132,11 @@ public class MainActivity extends ActionBarActivity implements
         mLatitudeTextView = (TextView) findViewById(R.id.latitude_text);
         mLongitudeTextView = (TextView) findViewById(R.id.longitude_text);
         mLastUpdateTimeTextView = (TextView) findViewById(R.id.last_update_time_text);
+
+        // Set labels.
+        mLatitudeLabel = getResources().getString(R.string.latitude_label);
+        mLongitudeLabel = getResources().getString(R.string.longitude_label);
+        mLastUpdateTimeLabel = getResources().getString(R.string.last_update_time_label);
 
         mRequestingLocationUpdates = false;
         mLastUpdateTime = "";
@@ -356,9 +366,12 @@ public class MainActivity extends ActionBarActivity implements
      */
     private void updateLocationUI() {
         if (mCurrentLocation != null) {
-            mLatitudeTextView.setText(String.valueOf(mCurrentLocation.getLatitude()));
-            mLongitudeTextView.setText(String.valueOf(mCurrentLocation.getLongitude()));
-            mLastUpdateTimeTextView.setText(mLastUpdateTime);
+            mLatitudeTextView.setText(String.format("%s: %f", mLatitudeLabel,
+                    mCurrentLocation.getLatitude()));
+            mLongitudeTextView.setText(String.format("%s: %f", mLongitudeLabel,
+                    mCurrentLocation.getLongitude()));
+            mLastUpdateTimeTextView.setText(String.format("%s: %s", mLastUpdateTimeLabel,
+                    mLastUpdateTime));
         }
     }
 
