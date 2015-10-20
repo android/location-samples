@@ -16,6 +16,7 @@
 -->
 <resources>
     <string name="app_name">Getting Location Updates</string>
+    <string name="action_settings">Settings</string>
 
     <string name="latitude_label">Latitude</string>
     <string name="longitude_label">Longitude</string>
@@ -24,4 +25,9 @@
     <string name="start_updates">Start updates</string>
     <string name="stop_updates">Stop updates</string>
     <string name="location_updated_message">Location updated</string>
+
+    <string name="redirect_to_settings">Visit Settings to upgrade location</string>
+
+    <string name="location_settings_inadequate_warning">The location settings on the device are not
+        adequate to run this sample. Fix in Settings.</string>
 </resources>
