@@ -263,7 +263,7 @@ public class MainActivity extends AppCompatActivity implements
                         // Nothing to do. startLocationupdates() gets called in onResume again.
                         break;
                     case Activity.RESULT_CANCELED:
-                        Log.i("****", "User chose not to make required location settings changes.");
+                        Log.i(TAG, "User chose not to make required location settings changes.");
                         mRequestingLocationUpdates = false;
                         updateUI();
                         break;
@@ -298,13 +298,6 @@ public class MainActivity extends AppCompatActivity implements
      * Requests location updates from the FusedLocationApi.
      */
     protected void startLocationUpdates() {
-        Log.i("**** ", "inside startLocationUpdates()");
-        Map<String, ?> keys = PreferenceManager.getDefaultSharedPreferences(this).getAll();
-
-        for (Map.Entry<String, ?> entry : keys.entrySet()) {
-            Log.d("map values", entry.getKey() + ": " +
-                    entry.getValue().toString());
-        }
         LocationServices.SettingsApi.checkLocationSettings(
                 mGoogleApiClient,
                 mLocationSettingsRequest
@@ -312,7 +305,6 @@ public class MainActivity extends AppCompatActivity implements
             @Override
             public void onResult(LocationSettingsResult locationSettingsResult) {
                 final Status status = locationSettingsResult.getStatus();
-                Log.i("****", "in onResult(), status = " + status);
                 switch (status.getStatusCode()) {
                     case LocationSettingsStatusCodes.SUCCESS:
                         Log.i(TAG, "All location settings are satisfied.");
@@ -420,7 +412,6 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     protected void onPause() {
-        Log.i("**** ", "inside onPause()");
         super.onPause();
         // Stop location updates to save battery, but don't disconnect the GoogleApiClient object.
         if (mGoogleApiClient.isConnected()) {
@@ -455,7 +446,7 @@ public class MainActivity extends AppCompatActivity implements
             updateLocationUI();
         }
         if (mRequestingLocationUpdates) {
-            Log.i("****", "in onConnected(), starting location updates");
+            Log.i(TAG, "in onConnected(), starting location updates");
             startLocationUpdates();
         }
 
@@ -507,7 +498,6 @@ public class MainActivity extends AppCompatActivity implements
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             return true;
         }
