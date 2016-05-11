@@ -223,6 +223,8 @@ public class MainActivity extends ActionBarActivity implements
     protected void startIntentService() {
         // Create an intent for passing to the intent service responsible for fetching the address.
         Intent intent = new Intent(this, FetchAddressIntentService.class);
+        //mResultReceiver needs to be instantiated so we do not get a NullPointerException
+        mResultReceiver = new AddressResultReceiver(new Handler());
 
         // Pass the result receiver as an extra to the service.
         intent.putExtra(Constants.RECEIVER, mResultReceiver);
