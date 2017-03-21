@@ -13,8 +13,13 @@ This repo contains the following samples:
 Retrieve the last known location for a device.
 1. [Location Updates](https://github.com/googlesamples/android-play-location/tree/master/LocationUpdates):
 Get updates about a device's location.
-1. [Background Location Updates](https://github.com/googlesamples/android-play-location/tree/master/BackgroundLocationUpdates):
-Get updates in batched and non-batched modes.
+
+1. [Location Updates using a PendingIntent](https://github.com/googlesamples/android-play-location/tree/master/LocationUpdatesPendingIntent):
+Get updates about a device's location using a `PendingIntent`. Sample shows
+implementation using an `IntentService` as well as a `BroadcastReceiver`.
+1. [Location Updates using a Foreground Service](https://github.com/googlesamples/android-play-location/tree/master/LocationUpdatesForegroundService):
+Get updates about a device's location using a bound and started foreground
+service.
 1. [Location Address](https://github.com/googlesamples/android-play-location/tree/master/LocationAddress):
 Use the
 [Geocode API](http://developer.android.com/reference/android/location/Geocoder.html)
