@@ -384,6 +384,7 @@ public class MainActivity extends AppCompatActivity implements
         // recommended in applications that request frequent location updates.
         LocationServices.FusedLocationApi.removeLocationUpdates(
                 mGoogleApiClient,
+                mLocationRequest,
                 this
         ).setResultCallback(new ResultCallback<Status>() {
             @Override
