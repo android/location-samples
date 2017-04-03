@@ -1,5 +1,5 @@
-/**
- * Copyright 2014 Google Inc. All Rights Reserved.
+/*
+ * Copyright 2017 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -43,7 +43,7 @@ import java.util.List;
  */
 public class GeofenceTransitionsIntentService extends IntentService {
 
-    protected static final String TAG = "GeofenceTransitionsIS";
+    private static final String TAG = "GeofenceTransitionsIS";
 
     /**
      * This constructor is required, and calls the super IntentService(String)
@@ -52,11 +52,6 @@ public class GeofenceTransitionsIntentService extends IntentService {
     public GeofenceTransitionsIntentService() {
         // Use the TAG to name the worker thread.
         super(TAG);
-    }
-
-    @Override
-    public void onCreate() {
-        super.onCreate();
     }
 
     /**
@@ -85,11 +80,8 @@ public class GeofenceTransitionsIntentService extends IntentService {
             List<Geofence> triggeringGeofences = geofencingEvent.getTriggeringGeofences();
 
             // Get the transition details as a String.
-            String geofenceTransitionDetails = getGeofenceTransitionDetails(
-                    this,
-                    geofenceTransition,
-                    triggeringGeofences
-            );
+            String geofenceTransitionDetails = getGeofenceTransitionDetails(geofenceTransition,
+                    triggeringGeofences);
 
             // Send notification and log the transition details.
             sendNotification(geofenceTransitionDetails);
@@ -103,20 +95,18 @@ public class GeofenceTransitionsIntentService extends IntentService {
     /**
      * Gets transition details and returns them as a formatted string.
      *
-     * @param context               The app context.
      * @param geofenceTransition    The ID of the geofence transition.
      * @param triggeringGeofences   The geofence(s) triggered.
      * @return                      The transition details formatted as String.
      */
     private String getGeofenceTransitionDetails(
-            Context context,
             int geofenceTransition,
             List<Geofence> triggeringGeofences) {
 
         String geofenceTransitionString = getTransitionString(geofenceTransition);
 
         // Get the Ids of each geofence that was triggered.
-        ArrayList triggeringGeofencesIdsList = new ArrayList();
+        ArrayList<String> triggeringGeofencesIdsList = new ArrayList<>();
         for (Geofence geofence : triggeringGeofences) {
             triggeringGeofencesIdsList.add(geofence.getRequestId());
         }
