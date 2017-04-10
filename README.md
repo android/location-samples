@@ -31,9 +31,6 @@ Use the
 [ActivityRecognitionApi](https://developer.android.com/reference/com/google/android/gms/location/ActivityRecognitionApi.html) to determine the user's current activity.
 1. [Location Settings](https://github.com/googlesamples/android-play-location/tree/master/LocationSettings):
 Use the
-[SettingsApi](https://developer.android.com/reference/com/google/android/gms/location/SettingsApi.html)
-to determine if a device has the location settings needed by an app, and
-optionally provide a dialog to update the device's settings.
 
 Prerequisites
 --------------
