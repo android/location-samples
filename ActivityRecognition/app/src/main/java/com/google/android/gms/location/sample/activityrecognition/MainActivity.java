@@ -1,12 +1,12 @@
-/**
- * Copyright 2014 Google Inc. All Rights Reserved.
- *
+/*
+ * Copyright 2017 Google Inc. All Rights Reserved.
+ * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
+ * <p>
  * http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -23,8 +23,9 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.content.LocalBroadcastManager;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -42,6 +43,7 @@ import com.google.android.gms.location.DetectedActivity;
 
 import java.util.ArrayList;
 
+
 /**
  * This sample demonstrates use of the
  * {@link com.google.android.gms.location.ActivityRecognitionApi} to recognize a user's current
@@ -50,16 +52,15 @@ import java.util.ArrayList;
  * {@link BroadcastReceiver}. See the {@link DetectedActivity} class for a list of DetectedActivity
  * types.
  * <p/>
- * Note that this activity implements
- * {@link ResultCallback<R extends com.google.android.gms.common.api.Result>}.
- * Requesting activity detection updates using
+ * Note that this activity implements {@link ResultCallback}. Requesting activity detection
+ * updates using
  * {@link com.google.android.gms.location.ActivityRecognitionApi#requestActivityUpdates}
  * and stopping updates using
  * {@link com.google.android.gms.location.ActivityRecognitionApi#removeActivityUpdates}
  * returns a {@link com.google.android.gms.common.api.PendingResult}, whose result
  * object is processed by the {@code onResult} callback.
  */
-public class MainActivity extends ActionBarActivity implements
+public class MainActivity extends AppCompatActivity implements
         ConnectionCallbacks, OnConnectionFailedListener, ResultCallback<Status> {
 
     protected static final String TAG = "MainActivity";
@@ -78,7 +79,6 @@ public class MainActivity extends ActionBarActivity implements
     // UI elements.
     private Button mRequestActivityUpdatesButton;
     private Button mRemoveActivityUpdatesButton;
-    private ListView mDetectedActivitiesListView;
 
     /**
      * Adapter backed by a list of DetectedActivity objects.
@@ -91,8 +91,10 @@ public class MainActivity extends ActionBarActivity implements
      * {@code onSaveInstanceState()} and restoring it in {@code onCreate()}. This ensures that each
      * activity is displayed with the correct confidence level upon orientation changes.
      */
+    @SuppressWarnings("unchecked")
     private ArrayList<DetectedActivity> mDetectedActivities;
 
+    @SuppressWarnings("unchecked")
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -101,7 +103,8 @@ public class MainActivity extends ActionBarActivity implements
         // Get the UI widgets.
         mRequestActivityUpdatesButton = (Button) findViewById(R.id.request_activity_updates_button);
         mRemoveActivityUpdatesButton = (Button) findViewById(R.id.remove_activity_updates_button);
-        mDetectedActivitiesListView = (ListView) findViewById(R.id.detected_activities_listview);
+        ListView detectedActivitiesListView = (ListView) findViewById(
+                R.id.detected_activities_listview);
 
         // Get a receiver for broadcasts from ActivityDetectionIntentService.
         mBroadcastReceiver = new ActivityDetectionBroadcastReceiver();
@@ -117,10 +120,11 @@ public class MainActivity extends ActionBarActivity implements
         // filled in.
         if (savedInstanceState != null && savedInstanceState.containsKey(
                 Constants.DETECTED_ACTIVITIES)) {
-            mDetectedActivities = (ArrayList<DetectedActivity>) savedInstanceState.getSerializable(
+
+            mDetectedActivities = (ArrayList) savedInstanceState.getSerializable(
                     Constants.DETECTED_ACTIVITIES);
         } else {
-            mDetectedActivities = new ArrayList<DetectedActivity>();
+            mDetectedActivities = new ArrayList<>();
 
             // Set the confidence level of each monitored activity to zero.
             for (int i = 0; i < Constants.MONITORED_ACTIVITIES.length; i++) {
@@ -130,7 +134,7 @@ public class MainActivity extends ActionBarActivity implements
 
         // Bind the adapter to the ListView responsible for display data for detected activities.
         mAdapter = new DetectedActivitiesAdapter(this, mDetectedActivities);
-        mDetectedActivitiesListView.setAdapter(mAdapter);
+        detectedActivitiesListView.setAdapter(mAdapter);
 
         // Kick off the request to build GoogleApiClient.
         buildGoogleApiClient();
@@ -142,22 +146,11 @@ public class MainActivity extends ActionBarActivity implements
      */
     protected synchronized void buildGoogleApiClient() {
         mGoogleApiClient = new GoogleApiClient.Builder(this)
+                .enableAutoManage(this, this)
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this)
                 .addApi(ActivityRecognition.API)
                 .build();
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        mGoogleApiClient.connect();
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        mGoogleApiClient.disconnect();
     }
 
     @Override
@@ -185,7 +178,7 @@ public class MainActivity extends ActionBarActivity implements
     }
 
     @Override
-    public void onConnectionFailed(ConnectionResult result) {
+    public void onConnectionFailed(@NonNull ConnectionResult result) {
         // Refer to the javadoc for ConnectionResult to see what error codes might be returned in
         // onConnectionFailed.
         Log.i(TAG, "Connection failed: ConnectionResult.getErrorCode() = " + result.getErrorCode());
@@ -232,7 +225,8 @@ public class MainActivity extends ActionBarActivity implements
      */
     public void removeActivityUpdatesButtonHandler(View view) {
         if (!mGoogleApiClient.isConnected()) {
-            Toast.makeText(this, getString(R.string.not_connected), Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getString(R.string.not_connected),
+                    Toast.LENGTH_SHORT).show();
             return;
         }
         // Remove all activity updates for the PendingIntent that was used to request activity
@@ -250,7 +244,7 @@ public class MainActivity extends ActionBarActivity implements
      * @param status The Status returned through a PendingIntent when requestActivityUpdates()
      *               or removeActivityUpdates() are called.
      */
-    public void onResult(Status status) {
+    public void onResult(@NonNull Status status) {
         if (status.isSuccess()) {
             // Toggle the status of activity updates requested, and save in shared preferences.
             boolean requestingUpdates = !getUpdatesRequestedState();
@@ -324,7 +318,7 @@ public class MainActivity extends ActionBarActivity implements
         getSharedPreferencesInstance()
                 .edit()
                 .putBoolean(Constants.ACTIVITY_UPDATES_REQUESTED_KEY, requestingUpdates)
-                .commit();
+                .apply();
     }
 
     /**
@@ -350,8 +344,6 @@ public class MainActivity extends ActionBarActivity implements
      * the device.
      */
     public class ActivityDetectionBroadcastReceiver extends BroadcastReceiver {
-        protected static final String TAG = "activity-detection-response-receiver";
-
         @Override
         public void onReceive(Context context, Intent intent) {
             ArrayList<DetectedActivity> updatedActivities =

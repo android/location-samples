@@ -1,5 +1,5 @@
-/**
- * Copyright 2014 Google Inc. All Rights Reserved.
+/*
+ * Copyright 2017 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,6 +17,8 @@
 package com.google.android.gms.location.sample.activityrecognition;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -34,15 +36,16 @@ import java.util.HashMap;
  * detected_activity layout and populates each element with data from a DetectedActivity
  * object.
  */
-public class DetectedActivitiesAdapter extends ArrayAdapter<DetectedActivity> {
+class DetectedActivitiesAdapter extends ArrayAdapter<DetectedActivity> {
 
-    public DetectedActivitiesAdapter(Context context,
+    DetectedActivitiesAdapter(Context context,
                                      ArrayList<DetectedActivity> detectedActivities) {
         super(context, 0, detectedActivities);
     }
 
+    @NonNull
     @Override
-    public View getView(int position, View view, ViewGroup parent) {
+    public View getView(int position, @Nullable View view, @NonNull ViewGroup parent) {
         DetectedActivity detectedActivity = getItem(position);
         if (view == null) {
             view = LayoutInflater.from(getContext()).inflate(
@@ -51,14 +54,20 @@ public class DetectedActivitiesAdapter extends ArrayAdapter<DetectedActivity> {
 
         // Find the UI widgets.
         TextView activityName = (TextView) view.findViewById(R.id.detected_activity_name);
-        TextView activityConfidenceLevel = (TextView) view.findViewById(R.id.detected_activity_confidence_level);
-        ProgressBar progressBar = (ProgressBar) view.findViewById(R.id.detected_activity_progress_bar);
+        TextView activityConfidenceLevel = (TextView) view.findViewById(
+                R.id.detected_activity_confidence_level);
+        ProgressBar progressBar = (ProgressBar) view.findViewById(
+                R.id.detected_activity_progress_bar);
 
         // Populate widgets with values.
-        activityName.setText(Constants.getActivityString(getContext(),
-                        detectedActivity.getType()));
-        activityConfidenceLevel.setText(detectedActivity.getConfidence() + "%");
-        progressBar.setProgress(detectedActivity.getConfidence());
+        if (detectedActivity != null) {
+            activityName.setText(Constants.getActivityString(getContext(),
+                    detectedActivity.getType()));
+
+            activityConfidenceLevel.setText(getContext().getString(R.string.percent,
+                    detectedActivity.getConfidence()));
+            progressBar.setProgress(detectedActivity.getConfidence());
+        }
         return view;
     }
 
@@ -68,7 +77,7 @@ public class DetectedActivitiesAdapter extends ArrayAdapter<DetectedActivity> {
      *
      * @param detectedActivities the freshly detected activities
      */
-    protected void updateActivities(ArrayList<DetectedActivity> detectedActivities) {
+    void updateActivities(ArrayList<DetectedActivity> detectedActivities) {
         HashMap<Integer, Integer> detectedActivitiesMap = new HashMap<>();
         for (DetectedActivity activity : detectedActivities) {
             detectedActivitiesMap.put(activity.getType(), activity.getConfidence());
@@ -78,7 +87,7 @@ public class DetectedActivitiesAdapter extends ArrayAdapter<DetectedActivity> {
         // of a DetectedActivity, we use a temporary list of DetectedActivity objects. If an
         // activity was freshly detected, we use its confidence level. Otherwise, we set the
         // confidence level to zero.
-        ArrayList<DetectedActivity> tempList = new ArrayList<DetectedActivity>();
+        ArrayList<DetectedActivity> tempList = new ArrayList<>();
         for (int i = 0; i < Constants.MONITORED_ACTIVITIES.length; i++) {
             int confidence = detectedActivitiesMap.containsKey(Constants.MONITORED_ACTIVITIES[i]) ?
                     detectedActivitiesMap.get(Constants.MONITORED_ACTIVITIES[i]) : 0;

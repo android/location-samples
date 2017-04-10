@@ -35,8 +35,6 @@
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:layout_alignParentEnd="true"
-            android:layout_toRightOf="@id/detected_activity_name"
-            android:layout_toEndOf="@id/detected_activity_name"
             android:layout_marginTop="@dimen/narrow_space" />
     </RelativeLayout>
 

@@ -38,4 +38,6 @@
 
     <string name="not_connected">GoogleApiClient not yet connected. Try again.</string>
 
+    <string name="percent">%1$d%%</string>
+
 </resources>
