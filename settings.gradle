@@ -1,0 +1,1 @@
+include ':ActivityRecognition:app', ':BasicLocationSample:app:', ':Geofencing:app', ':LocationAddress:app', ':LocationUpdates:app', ':LocationUpdatesForegroundService:app', ':LocationUpdatesPendingIntent:app'

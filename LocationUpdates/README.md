@@ -18,10 +18,8 @@ location permissions you've requested (we use the ACCESS_FINE_LOCATION here)
 and the options you set in the location request.
 
 
-This sample uses
-[Google Play services (GoogleApiClient)](https://developer.android.com/reference/com/google/android/gms/common/api/GoogleApiClient.html)
-and the
-[FusedLocationApi] (https://developer.android.com/reference/com/google/android/gms/location/LocationServices.html).
+This sample uses the
+[FusedLocationProviderClient] (https://developer.android.com/reference/com/google/android/gms/location/LocationServices.html).
 
 To run this sample, **location must be enabled**.
 

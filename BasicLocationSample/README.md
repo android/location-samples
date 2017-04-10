@@ -16,9 +16,7 @@ for the device.
 To run this sample, **location must be enabled**.
 
 This sample uses
-[Google Play services (GoogleApiClient)](ihttps://developer.android.com/reference/com/google/android/gms/common/api/GoogleApiClient.html)
-and the
-[FusedLocationApi] (https://developer.android.com/reference/com/google/android/gms/location/LocationServices.html).
+[FusedLocationProviderClient] (https://developer.android.com/reference/com/google/android/gms/location/LocationServices.html).
 
 To run this sample, **location must be enabled**.
 

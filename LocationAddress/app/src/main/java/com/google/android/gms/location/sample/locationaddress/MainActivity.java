@@ -16,12 +16,19 @@
 
 package com.google.android.gms.location.sample.locationaddress;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.location.Geocoder;
 import android.location.Location;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.ResultReceiver;
+import android.provider.Settings;
+import android.support.annotation.NonNull;
+import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -30,20 +37,10 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.common.api.GoogleApiClient.ConnectionCallbacks;
-import com.google.android.gms.common.api.GoogleApiClient.OnConnectionFailedListener;
+import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
-
-import android.content.pm.PackageManager;
-import android.net.Uri;
-import android.provider.Settings;
-import android.support.design.widget.Snackbar;
-
-import android.support.annotation.NonNull;
-import android.support.v4.app.ActivityCompat;
-import android.Manifest;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 
 /**
  * Getting the Location Address.
@@ -62,13 +59,8 @@ import android.Manifest;
  *
  * For an example that shows location updates using the Fused Location Provider API, see
  * https://github.com/googlesamples/android-play-location/tree/master/LocationUpdates.
- *
- * This sample uses Google Play services (GoogleApiClient) but does not need to authenticate a user.
- * For an example that uses authentication, see
- * https://github.com/googlesamples/android-google-accounts/tree/master/QuickStart.
  */
-public class MainActivity extends AppCompatActivity implements
-        ConnectionCallbacks, OnConnectionFailedListener {
+public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = MainActivity.class.getSimpleName();
 
@@ -78,9 +70,9 @@ public class MainActivity extends AppCompatActivity implements
     private static final String LOCATION_ADDRESS_KEY = "location-address";
 
     /**
-     * Provides the entry point to Google Play services.
+     * Provides access to the Fused Location Provider API.
      */
-    private GoogleApiClient mGoogleApiClient;
+    private FusedLocationProviderClient mFusedLocationClient;
 
     /**
      * Represents a geographical location.
@@ -90,10 +82,6 @@ public class MainActivity extends AppCompatActivity implements
     /**
      * Tracks whether the user has requested an address. Becomes true when the user requests an
      * address and false when the address (or an error message) is delivered.
-     * The user requests an address by pressing the Fetch Address button. This may happen
-     * before GoogleApiClient connects. This activity uses this boolean to keep track of the
-     * user's intent. If the value is true, the activity tries to fetch the address as soon as
-     * GoogleApiClient connects.
      */
     private boolean mAddressRequested;
 
@@ -138,8 +126,20 @@ public class MainActivity extends AppCompatActivity implements
         mAddressOutput = "";
         updateValuesFromBundle(savedInstanceState);
 
+        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+
         updateUIWidgets();
-        buildGoogleApiClient();
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+
+        if (!checkPermissions()) {
+            requestPermissions();
+        } else {
+            getAddress();
+        }
     }
 
     /**
@@ -161,43 +161,20 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     /**
-     * Builds a GoogleApiClient. Uses {@code #addApi} to request the LocationServices API.
-     */
-    private synchronized void buildGoogleApiClient() {
-        mGoogleApiClient = new GoogleApiClient.Builder(this)
-                .enableAutoManage(this, this)
-                .addConnectionCallbacks(this)
-                .addOnConnectionFailedListener(this)
-                .addApi(LocationServices.API)
-                .build();
-    }
-
-    /**
-     * Runs when user clicks the Fetch Address button. Starts the service to fetch the address if
-     * GoogleApiClient is connected.
+     * Runs when user clicks the Fetch Address button.
      */
     @SuppressWarnings("unused")
     public void fetchAddressButtonHandler(View view) {
-        // We only start the service to fetch the address if GoogleApiClient is connected.
-        if (mGoogleApiClient.isConnected() && mLastLocation != null) {
+        if (mLastLocation != null) {
             startIntentService();
+            return;
         }
-        // If GoogleApiClient isn't connected, we process the user's request by setting
-        // mAddressRequested to true. Later, when GoogleApiClient connects, we launch the service to
-        // fetch the address. As far as the user is concerned, pressing the Fetch Address button
+
+        // If we have not yet retrieved the user location, we process the user's request by setting
+        // mAddressRequested to true. As far as the user is concerned, pressing the Fetch Address button
         // immediately kicks off the process of getting the address.
         mAddressRequested = true;
         updateUIWidgets();
-    }
-
-    /**
-     * Runs when a GoogleApiClient object successfully connects.
-     */
-    @Override
-    public void onConnected(Bundle connectionHint) {
-        if (!checkPermissions()) {
-            requestPermissions();
-        }
     }
 
     /**
@@ -220,46 +197,42 @@ public class MainActivity extends AppCompatActivity implements
         startService(intent);
     }
 
-    @Override
-    public void onConnectionFailed(@NonNull ConnectionResult result) {
-        // Refer to the javadoc for ConnectionResult to see what error codes might be returned in
-        // onConnectionFailed.
-        Log.i(TAG, "Connection failed: ConnectionResult.getErrorCode() = " + result.getErrorCode());
-    }
-
-
-    @Override
-    public void onConnectionSuspended(int cause) {
-        // The connection to Google Play services was lost for some reason. We call connect() to
-        // attempt to re-establish the connection.
-        Log.i(TAG, "Connection suspended");
-        mGoogleApiClient.connect();
-    }
-
     /**
      * Gets the address for the last known location.
      */
+    @SuppressWarnings("MissingPermission")
     private void getAddress() {
-        //noinspection MissingPermission
-        mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+        mFusedLocationClient.getLastLocation()
+                .addOnSuccessListener(this, new OnSuccessListener<Location>() {
+                    @Override
+                    public void onSuccess(Location location) {
+                        if (location == null) {
+                            Log.w(TAG, "onSuccess:null");
+                            return;
+                        }
 
-        // Gets the best and most recent location currently available, which may be null
-        // in rare cases.
-        if (mLastLocation != null) {
-            // Determine whether a Geocoder is available.
-            if (!Geocoder.isPresent()) {
-                Toast.makeText(this, R.string.no_geocoder_available, Toast.LENGTH_LONG).show();
-                return;
-            }
-            // It is possible that the user presses the button to get the address before the
-            // GoogleApiClient object successfully connects. In such a case, mAddressRequested
-            // is set to true, but no attempt is made to fetch the address (see
-            // fetchAddressButtonHandler()) . Instead, we start the intent service here if the
-            // user has requested an address, since we now have a connection to GoogleApiClient.
-            if (mAddressRequested) {
-                startIntentService();
-            }
-        }
+                        mLastLocation = location;
+
+                        // Determine whether a Geocoder is available.
+                        if (!Geocoder.isPresent()) {
+                            showSnackbar(getString(R.string.no_geocoder_available));
+                            return;
+                        }
+
+                        // If the user pressed the fetch address button before we had the location,
+                        // this will be set to true indicating that we should kick off the intent
+                        // service after fetching the location.
+                        if (mAddressRequested) {
+                            startIntentService();
+                        }
+                    }
+                })
+                .addOnFailureListener(this, new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.w(TAG, "getLastLocation:onFailure", e);
+                    }
+                });
     }
 
     /**
@@ -325,6 +298,18 @@ public class MainActivity extends AppCompatActivity implements
             // Reset. Enable the Fetch Address button and stop showing the progress bar.
             mAddressRequested = false;
             updateUIWidgets();
+        }
+    }
+
+    /**
+     * Shows a {@link Snackbar} using {@code text}.
+     *
+     * @param text The Snackbar text.
+     */
+    private void showSnackbar(final String text) {
+        View container = findViewById(android.R.id.content);
+        if (container != null) {
+            Snackbar.make(container, text, Snackbar.LENGTH_LONG).show();
         }
     }
 

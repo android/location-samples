@@ -2,8 +2,6 @@ Google Play Location Samples
 ============================
 
 Samples that use
-[Google Play services (GoogleApiClient)](ihttps://developer.android.com/reference/com/google/android/gms/common/api/GoogleApiClient.html)
-and
 [Location APIs](http://developer.android.com/google/play-services/location.html)
 to help you make your applications location aware.
 

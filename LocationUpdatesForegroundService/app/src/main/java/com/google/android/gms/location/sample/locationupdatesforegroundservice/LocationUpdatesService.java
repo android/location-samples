@@ -26,21 +26,22 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.location.Location;
 import android.os.Binder;
-import android.os.Bundle;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.IBinder;
+import android.os.Looper;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.location.LocationListener;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 
 /**
  * A bound and started service that is promoted to a foreground service when location updates have
@@ -56,8 +57,7 @@ import com.google.android.gms.location.LocationServices;
  * continue. When the activity comes back to the foreground, the foreground service stops, and the
  * notification assocaited with that service is removed.
  */
-public class LocationUpdatesService extends Service implements GoogleApiClient.ConnectionCallbacks,
-        GoogleApiClient.OnConnectionFailedListener, LocationListener {
+public class LocationUpdatesService extends Service {
 
     private static final String PACKAGE_NAME =
             "com.google.android.gms.location.sample.locationupdatesforegroundservice";
@@ -99,14 +99,19 @@ public class LocationUpdatesService extends Service implements GoogleApiClient.C
     private NotificationManager mNotificationManager;
 
     /**
-     * The entry point to Google Play Services.
-     */
-    private GoogleApiClient mGoogleApiClient;
-
-    /**
      * Contains parameters used by {@link com.google.android.gms.location.FusedLocationProviderApi}.
      */
     private LocationRequest mLocationRequest;
+
+    /**
+     * Provides access to the Fused Location Provider API.
+     */
+    private FusedLocationProviderClient mFusedLocationClient;
+
+    /**
+     * Callback for changes in location.
+     */
+    private LocationCallback mLocationCallback;
 
     private Handler mServiceHandler;
 
@@ -120,13 +125,18 @@ public class LocationUpdatesService extends Service implements GoogleApiClient.C
 
     @Override
     public void onCreate() {
-        mGoogleApiClient = new GoogleApiClient.Builder(this)
-                .addConnectionCallbacks(this)
-                .addOnConnectionFailedListener(this)
-                .addApi(LocationServices.API)
-                .build();
-        mGoogleApiClient.connect();
+        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+
+        mLocationCallback = new LocationCallback() {
+            @Override
+            public void onLocationResult(LocationResult locationResult) {
+                super.onLocationResult(locationResult);
+                onNewLocation(locationResult.getLastLocation());
+            }
+        };
+
         createLocationRequest();
+        getLastLocation();
 
         HandlerThread handlerThread = new HandlerThread(TAG);
         handlerThread.start();
@@ -203,7 +213,6 @@ public class LocationUpdatesService extends Service implements GoogleApiClient.C
     @Override
     public void onDestroy() {
         mServiceHandler.removeCallbacksAndMessages(null);
-        mGoogleApiClient.disconnect();
     }
 
     /**
@@ -215,8 +224,8 @@ public class LocationUpdatesService extends Service implements GoogleApiClient.C
         Utils.setRequestingLocationUpdates(this, true);
         startService(new Intent(getApplicationContext(), LocationUpdatesService.class));
         try {
-            LocationServices.FusedLocationApi.requestLocationUpdates(
-                    mGoogleApiClient, mLocationRequest, LocationUpdatesService.this);
+            mFusedLocationClient.requestLocationUpdates(mLocationRequest,
+                    mLocationCallback, Looper.myLooper());
         } catch (SecurityException unlikely) {
             Utils.setRequestingLocationUpdates(this, false);
             Log.e(TAG, "Lost location permission. Could not request updates. " + unlikely);
@@ -230,8 +239,7 @@ public class LocationUpdatesService extends Service implements GoogleApiClient.C
     public void removeLocationUpdates() {
         Log.i(TAG, "Removing location updates");
         try {
-            LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient,
-                    LocationUpdatesService.this);
+            mFusedLocationClient.removeLocationUpdates(mLocationCallback);
             Utils.setRequestingLocationUpdates(this, false);
             stopSelf();
         } catch (SecurityException unlikely) {
@@ -273,30 +281,25 @@ public class LocationUpdatesService extends Service implements GoogleApiClient.C
                 .setWhen(System.currentTimeMillis()).build();
     }
 
-    @Override
-    public void onConnected(@Nullable Bundle bundle) {
-        Log.i(TAG, "GoogleApiClient connected");
+    private void getLastLocation() {
         try {
-            mLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+            mFusedLocationClient.getLastLocation()
+                    .addOnCompleteListener(new OnCompleteListener<Location>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Location> task) {
+                            if (task.isSuccessful() && task.getResult() != null) {
+                                mLocation = task.getResult();
+                            } else {
+                                Log.w(TAG, "Failed to get location.");
+                            }
+                        }
+                    });
         } catch (SecurityException unlikely) {
             Log.e(TAG, "Lost location permission." + unlikely);
         }
     }
 
-    @Override
-    public void onConnectionSuspended(int i) {
-        // In this example, we merely log the suspension.
-        Log.e(TAG, "GoogleApiClient connection suspended.");
-    }
-
-    @Override
-    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-        // In this example, we merely log the failure.
-        Log.e(TAG, "GoogleApiClient connection failed.");
-    }
-
-    @Override
-    public void onLocationChanged(Location location) {
+    private void onNewLocation(Location location) {
         Log.i(TAG, "New location: " + location);
 
         mLocation = location;

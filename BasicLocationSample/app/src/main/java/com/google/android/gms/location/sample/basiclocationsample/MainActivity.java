@@ -16,28 +16,25 @@
 
 package com.google.android.gms.location.sample.basiclocationsample;
 
+import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.common.api.GoogleApiClient.ConnectionCallbacks;
-import com.google.android.gms.common.api.GoogleApiClient.OnConnectionFailedListener;
+import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
-
-import android.support.annotation.NonNull;
-import android.support.v4.app.ActivityCompat;
-import android.Manifest;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 
 import java.util.Locale;
 
@@ -45,21 +42,17 @@ import java.util.Locale;
  * Location sample.
  * <p>
  * Demonstrates use of the Location API to retrieve the last known location for a device.
- * This sample uses Google Play services (GoogleApiClient) but does not need to authenticate a user.
- * See https://github.com/googlesamples/android-google-accounts/tree/master/QuickStart if you are
- * also using APIs that need authentication.
  */
-public class MainActivity extends AppCompatActivity implements
-        ConnectionCallbacks, OnConnectionFailedListener {
+public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = MainActivity.class.getSimpleName();
 
     private static final int REQUEST_PERMISSIONS_REQUEST_CODE = 34;
 
     /**
-     * Provides the entry point to Google Play services.
+     * Provides the entry point to the Fused Location Provider API.
      */
-    private GoogleApiClient mGoogleApiClient;
+    private FusedLocationProviderClient mFusedLocationClient;
 
     /**
      * Represents a geographical location.
@@ -82,21 +75,19 @@ public class MainActivity extends AppCompatActivity implements
         mLatitudeText = (TextView) findViewById((R.id.latitude_text));
         mLongitudeText = (TextView) findViewById((R.id.longitude_text));
 
-        buildGoogleApiClient();
+        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
     }
 
-    /**
-     * Builds a GoogleApiClient. Uses the addApi() method to request the LocationServices API.
-     */
-    private synchronized void buildGoogleApiClient() {
-        mGoogleApiClient = new GoogleApiClient.Builder(this)
-                .enableAutoManage(this, this)
-                .addConnectionCallbacks(this)
-                .addOnConnectionFailedListener(this)
-                .addApi(LocationServices.API)
-                .build();
-    }
+    @Override
+    public void onStart() {
+        super.onStart();
 
+        if (!checkPermissions()) {
+            requestPermissions();
+        } else {
+            getLastLocation();
+        }
+    }
 
     /**
      * Provides a simple way of getting a device's location and is well suited for
@@ -106,43 +97,27 @@ public class MainActivity extends AppCompatActivity implements
      * <p>
      * Note: this method should be called after location permission has been granted.
      */
+    @SuppressWarnings("MissingPermission")
     private void getLastLocation() {
-        //noinspection MissingPermission
-        mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+        mFusedLocationClient.getLastLocation()
+                .addOnCompleteListener(this, new OnCompleteListener<Location>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Location> task) {
+                        if (task.isSuccessful() && task.getResult() != null) {
+                            mLastLocation = task.getResult();
 
-        if (mLastLocation != null) {
-            mLatitudeText.setText(String.format(Locale.ENGLISH, "%s: %f", mLatitudeLabel,
-                    mLastLocation.getLatitude()));
-            mLongitudeText.setText(String.format(Locale.ENGLISH, "%s: %f", mLongitudeLabel,
-                    mLastLocation.getLongitude()));
-        } else {
-            Toast.makeText(this, R.string.no_location_detected, Toast.LENGTH_LONG).show();
-        }
-    }
-
-    /**
-     * Runs when a GoogleApiClient object successfully connects.
-     */
-    @Override
-    public void onConnected(Bundle connectionHint) {
-        if (!checkPermissions()) {
-            requestPermissions();
-        }
-    }
-
-    @Override
-    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-        final String text = "Exception while connecting to Google Play services";
-        Log.w(TAG, text + ": " + connectionResult.getErrorMessage());
-        showSnackbar(text);
-    }
-
-
-    @Override
-    public void onConnectionSuspended(int cause) {
-        final String text = "Connection suspended";
-        Log.w(TAG, text + ": Error code: " + cause);
-        showSnackbar("Connection suspended");
+                            mLatitudeText.setText(String.format(Locale.ENGLISH, "%s: %f",
+                                    mLatitudeLabel,
+                                    mLastLocation.getLatitude()));
+                            mLongitudeText.setText(String.format(Locale.ENGLISH, "%s: %f",
+                                    mLongitudeLabel,
+                                    mLastLocation.getLongitude()));
+                        } else {
+                            Log.w(TAG, "getLastLocation:exception", task.getException());
+                            showSnackbar(getString(R.string.no_location_detected));
+                        }
+                    }
+                });
     }
 
     /**
@@ -177,8 +152,14 @@ public class MainActivity extends AppCompatActivity implements
      */
     private boolean checkPermissions() {
         int permissionState = ActivityCompat.checkSelfPermission(this,
-                Manifest.permission.ACCESS_FINE_LOCATION);
+                Manifest.permission.ACCESS_COARSE_LOCATION);
         return permissionState == PackageManager.PERMISSION_GRANTED;
+    }
+
+    private void startLocationPermissionRequest() {
+        ActivityCompat.requestPermissions(MainActivity.this,
+                new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                REQUEST_PERMISSIONS_REQUEST_CODE);
     }
 
     private void requestPermissions() {
@@ -196,9 +177,7 @@ public class MainActivity extends AppCompatActivity implements
                         @Override
                         public void onClick(View view) {
                             // Request permission
-                            ActivityCompat.requestPermissions(MainActivity.this,
-                                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
-                                    REQUEST_PERMISSIONS_REQUEST_CODE);
+                            startLocationPermissionRequest();
                         }
                     });
 
@@ -207,9 +186,7 @@ public class MainActivity extends AppCompatActivity implements
             // Request permission. It's possible this can be auto answered if device policy
             // sets the permission in a given state or the user denied the permission
             // previously and checked "Never ask again".
-            ActivityCompat.requestPermissions(MainActivity.this,
-                    new String[]{Manifest.permission.ACCESS_COARSE_LOCATION},
-                    REQUEST_PERMISSIONS_REQUEST_CODE);
+            startLocationPermissionRequest();
         }
     }
 
