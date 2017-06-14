@@ -411,6 +411,11 @@ public class MainActivity extends AppCompatActivity {
      * Removes location updates from the FusedLocationApi.
      */
     private void stopLocationUpdates() {
+        if (!mRequestingLocationUpdates) {
+            Log.d(TAG, "stopLocationUpdates: updates never requested, no-op.");
+            return;
+        }
+
         // It is a good practice to remove location requests when the activity is in a paused or
         // stopped state. Doing so helps battery performance and is especially
         // recommended in applications that request frequent location updates.
@@ -431,7 +436,7 @@ public class MainActivity extends AppCompatActivity {
         // location updates if the user has requested them.
         if (mRequestingLocationUpdates && checkPermissions()) {
             startLocationUpdates();
-        } else {
+        } else if (!checkPermissions()) {
             requestPermissions();
         }
 
@@ -441,6 +446,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
+
         // Remove location updates to save battery.
         stopLocationUpdates();
     }
@@ -524,7 +530,7 @@ public class MainActivity extends AppCompatActivity {
                 Log.i(TAG, "User interaction was cancelled.");
             } else if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 if (mRequestingLocationUpdates) {
-                    Log.i(TAG, "in onConnected(), starting location updates");
+                    Log.i(TAG, "Permission granted, updates requested, starting location updates");
                     startLocationUpdates();
                 }
             } else {
