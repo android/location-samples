@@ -27,8 +27,6 @@ Create geofences and process enter and exit transitions.
 1. [Recognizing the User's Current Activity](https://github.com/googlesamples/android-play-location/tree/master/ActivityRecognition):
 Use the
 [ActivityRecognitionApi](https://developer.android.com/reference/com/google/android/gms/location/ActivityRecognitionApi.html) to determine the user's current activity.
-1. [Location Settings](https://github.com/googlesamples/android-play-location/tree/master/LocationSettings):
-Use the
 
 Prerequisites
 --------------
