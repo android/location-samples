@@ -189,7 +189,8 @@ public class MainActivity extends AppCompatActivity implements
         // The connection to Google Play services was lost for some reason. We call connect() to
         // attempt to re-establish the connection.
         Log.i(TAG, "Connection suspended");
-        mGoogleApiClient.connect();
+        // The GoogleAPIClient will re-connect automatically. No need to call it.
+        // mGoogleApiClient.connect(); 
     }
 
     /**
