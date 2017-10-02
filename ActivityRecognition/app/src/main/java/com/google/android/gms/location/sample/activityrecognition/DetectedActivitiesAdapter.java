@@ -61,7 +61,7 @@ class DetectedActivitiesAdapter extends ArrayAdapter<DetectedActivity> {
 
         // Populate widgets with values.
         if (detectedActivity != null) {
-            activityName.setText(Constants.getActivityString(getContext(),
+            activityName.setText(Utils.getActivityString(getContext(),
                     detectedActivity.getType()));
 
             activityConfidenceLevel.setText(getContext().getString(R.string.percent,

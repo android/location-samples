@@ -33,10 +33,11 @@
 
     <string name="request_activity_updates">Request updates</string>
     <string name="remove_activity_updates">Remove updates</string>
-    <string name="activity_updates_added">Activity updates added</string>
-    <string name="activity_updates_removed">Activity updates removed</string>
 
-    <string name="not_connected">GoogleApiClient not yet connected. Try again.</string>
+    <string name="activity_updates_enabled">Activity updates enabled</string>
+    <string name="activity_updates_not_enabled">Failed to enable activity updates</string>
+    <string name="activity_updates_removed">Activity updates removed</string>
+    <string name="activity_updates_not_removed">Failed to remove activity updates</string>
 
     <string name="percent">%1$d%%</string>
 
