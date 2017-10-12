@@ -119,19 +119,7 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
     }
-
-    /**
-     * Shows a {@link Snackbar} using {@code text}.
-     *
-     * @param text The Snackbar text.
-     */
-    private void showSnackbar(final String text) {
-        View container = findViewById(R.id.main_activity_container);
-        if (container != null) {
-            Snackbar.make(container, text, Snackbar.LENGTH_LONG).show();
-        }
-    }
-
+  
     /**
      * Shows a {@link Snackbar}.
      *
