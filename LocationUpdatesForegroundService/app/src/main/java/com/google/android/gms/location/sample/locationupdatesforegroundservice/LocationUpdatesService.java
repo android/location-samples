@@ -18,6 +18,7 @@ package com.google.android.gms.location.sample.locationupdatesforegroundservice;
 
 import android.app.ActivityManager;
 import android.app.Notification;
+import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
@@ -26,6 +27,7 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.location.Location;
 import android.os.Binder;
+import android.os.Build;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.IBinder;
@@ -63,6 +65,11 @@ public class LocationUpdatesService extends Service {
             "com.google.android.gms.location.sample.locationupdatesforegroundservice";
 
     private static final String TAG = LocationUpdatesService.class.getSimpleName();
+
+    /**
+     * The name of the channel for notifications.
+     */
+    private static final String CHANNEL_ID = "channel_01";
 
     static final String ACTION_BROADCAST = PACKAGE_NAME + ".broadcast";
 
@@ -142,6 +149,17 @@ public class LocationUpdatesService extends Service {
         handlerThread.start();
         mServiceHandler = new Handler(handlerThread.getLooper());
         mNotificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+
+        // Android O requires a Notification Channel.
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            CharSequence name = getString(R.string.app_name);
+            // Create the channel for the notification
+            NotificationChannel mChannel =
+                    new NotificationChannel(CHANNEL_ID, name, NotificationManager.IMPORTANCE_DEFAULT);
+
+            // Set the Notification Channel for the Notification Manager.
+            mNotificationManager.createNotificationChannel(mChannel);
+        }
     }
 
     @Override
@@ -267,7 +285,7 @@ public class LocationUpdatesService extends Service {
         PendingIntent activityPendingIntent = PendingIntent.getActivity(this, 0,
                 new Intent(this, MainActivity.class), 0);
 
-        return new NotificationCompat.Builder(this)
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this)
                 .addAction(R.drawable.ic_launch, getString(R.string.launch_activity),
                         activityPendingIntent)
                 .addAction(R.drawable.ic_cancel, getString(R.string.remove_location_updates),
@@ -278,7 +296,14 @@ public class LocationUpdatesService extends Service {
                 .setPriority(Notification.PRIORITY_HIGH)
                 .setSmallIcon(R.mipmap.ic_launcher)
                 .setTicker(text)
-                .setWhen(System.currentTimeMillis()).build();
+                .setWhen(System.currentTimeMillis());
+
+        // Set the Channel ID for Android O.
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            builder.setChannelId(CHANNEL_ID); // Channel ID
+        }
+
+        return builder.build();
     }
 
     private void getLastLocation() {
