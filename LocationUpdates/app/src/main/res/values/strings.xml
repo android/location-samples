@@ -27,7 +27,7 @@
     <string name="location_settings_inadequate_warning">The location settings on the device are not
         adequate to run this sample. Fix in Settings.</string>
 
-    <string name="permission_rationale">Location permission is needed for core functionality</string>
+    <string name="permission_rationale">Location permission is needed for core functionality.</string>
     <string name="permission_denied_explanation">Permission was denied, but is needed for core
         functionality.</string>
     <string name="settings">Settings</string>
