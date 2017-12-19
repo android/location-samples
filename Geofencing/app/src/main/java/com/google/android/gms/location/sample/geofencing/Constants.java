@@ -16,6 +16,7 @@
 
 package com.google.android.gms.location.sample.geofencing;
 
+import com.google.android.gms.location.Geofence;
 import com.google.android.gms.maps.model.LatLng;
 
 import java.util.HashMap;
@@ -42,8 +43,8 @@ final class Constants {
     /**
      * For this sample, geofences expire after twelve hours.
      */
-    static final long GEOFENCE_EXPIRATION_IN_MILLISECONDS =
-            GEOFENCE_EXPIRATION_IN_HOURS * 60 * 60 * 1000;
+    static final long GEOFENCE_EXPIRATION_IN_MILLISECONDS = Geofence.NEVER_EXPIRE;
+            //GEOFENCE_EXPIRATION_IN_HOURS * 60 * 60 * 1000;
     static final float GEOFENCE_RADIUS_IN_METERS = 1609; // 1 mile, 1.6 km
 
     /**
