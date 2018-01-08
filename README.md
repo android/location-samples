@@ -7,7 +7,9 @@ to help you make your applications location aware.
 
 This repo contains the following samples:
 
-1. [Basic Location Sample](https://github.com/googlesamples/android-play-location/tree/master/BasicLocationSample):
+1. Basic Location Sample
+ ([Java](https://github.com/googlesamples/android-play-location/tree/master/BasicLocationSample),
+ [Kotlin](https://github.com/googlesamples/android-play-location/tree/master/BasicLocationSample-kotlinApp)):
 Retrieve the last known location for a device.
 1. [Location Updates](https://github.com/googlesamples/android-play-location/tree/master/LocationUpdates):
 Get updates about a device's location.
