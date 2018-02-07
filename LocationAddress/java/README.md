@@ -1,5 +1,5 @@
-Location Updates
-================
+Location Updates (Java)
+=======================
 
 Demonstrates how to use the
 [Geocode API](http://developer.android.com/reference/android/location/Geocoder.html)

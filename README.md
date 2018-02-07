@@ -19,10 +19,9 @@ implementation using an `IntentService` as well as a `BroadcastReceiver`.
 1. [Location Updates using a Foreground Service](https://github.com/googlesamples/android-play-location/tree/master/LocationUpdatesForegroundService):
 Get updates about a device's location using a bound and started foreground
 service.
-1. [Location Address](https://github.com/googlesamples/android-play-location/tree/master/LocationAddress):
-Use the
-[Geocode API](http://developer.android.com/reference/android/location/Geocoder.html)
-to display a device's location as an address.
+1. Location Address
+([Java](https://github.com/googlesamples/android-play-location/tree/master/LocationAddress/java), [Kotlin](https://github.com/googlesamples/android-play-location/tree/master/LocationAddress/kotlin)):
+Use the [Geocode API](http://developer.android.com/reference/android/location/Geocoder.html) to display a device's location as an address.
 1. [Creating and Monitoring Geofences](https://github.com/googlesamples/android-play-location/tree/master/Geofencing):
 Create geofences and process enter and exit transitions.
 1. [Recognizing the User's Current Activity](https://github.com/googlesamples/android-play-location/tree/master/ActivityRecognition):
