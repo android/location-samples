@@ -1,5 +1,5 @@
-Basic Location Sample
-=====================
+Basic Location Sample (Java)
+============================
 
 Demonstrates use of the Google Play services Location API to retrieve the last
 known location for a device.
@@ -15,10 +15,9 @@ for the device.
 
 To run this sample, **location must be enabled**.
 
-This sample uses
-[FusedLocationProviderClient] (https://developer.android.com/reference/com/google/android/gms/location/LocationServices.html).
+This sample uses [FusedLocationProviderClient](https://developer.android.com/reference/com/google/android/gms/location/LocationServices.html).
 
-To run this sample, **location must be enabled**.
+Also see the [Kotlin version](../kotlin) of this sample.
 
 Prerequisites
 --------------
