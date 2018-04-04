@@ -278,11 +278,11 @@ class MainActivity : FragmentActivity(), SharedPreferences.OnSharedPreferenceCha
      */
     private fun updateButtonsState(requestingLocationUpdates: Boolean) {
         if (requestingLocationUpdates) {
-            mRequestUpdatesButton!!.isEnabled = false
-            mRemoveUpdatesButton!!.isEnabled = true
+            mRequestUpdatesButton?.isEnabled = false
+            mRemoveUpdatesButton?.isEnabled = true
         } else {
-            mRequestUpdatesButton!!.isEnabled = true
-            mRemoveUpdatesButton!!.isEnabled = false
+            mRequestUpdatesButton?.isEnabled = true
+            mRemoveUpdatesButton?.isEnabled = false
         }
     }
 
