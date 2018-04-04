@@ -59,9 +59,9 @@ public class LocationUpdatesIntentService extends IntentService {
                 LocationResult result = LocationResult.extractResult(intent);
                 if (result != null) {
                     List<Location> locations = result.getLocations();
-                    Utils.setLocationUpdatesResult(this, locations);
-                    Utils.sendNotification(this, Utils.getLocationResultTitle(this, locations));
-                    Log.i(TAG, Utils.getLocationUpdatesResult(this));
+                    Utils.INSTANCE.setLocationUpdatesResult(this, locations);
+                    Utils.INSTANCE.sendNotification(this, Utils.INSTANCE.getLocationResultTitle(this, locations));
+                    Log.i(TAG, Utils.INSTANCE.getLocationUpdatesResult(this));
                 }
             }
         }
