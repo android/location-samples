@@ -140,10 +140,12 @@ public class MainActivity extends AppCompatActivity {
     private TextView mLastUpdateTimeTextView;
     private TextView mLatitudeTextView;
     private TextView mLongitudeTextView;
+    private TextView mAccuracyTextView;
 
     // Labels.
     private String mLatitudeLabel;
     private String mLongitudeLabel;
+    private String mAccuracyLabel;
     private String mLastUpdateTimeLabel;
 
     /**
@@ -169,11 +171,13 @@ public class MainActivity extends AppCompatActivity {
         mStopUpdatesButton = (Button) findViewById(R.id.stop_updates_button);
         mLatitudeTextView = (TextView) findViewById(R.id.latitude_text);
         mLongitudeTextView = (TextView) findViewById(R.id.longitude_text);
+        mAccuracyTextView = (TextView) findViewById(R.id.accuracy_text);
         mLastUpdateTimeTextView = (TextView) findViewById(R.id.last_update_time_text);
 
         // Set labels.
         mLatitudeLabel = getResources().getString(R.string.latitude_label);
         mLongitudeLabel = getResources().getString(R.string.longitude_label);
+        mAccuracyLabel = "Accuracy";
         mLastUpdateTimeLabel = getResources().getString(R.string.last_update_time_label);
 
         mRequestingLocationUpdates = false;
@@ -402,6 +406,8 @@ public class MainActivity extends AppCompatActivity {
                     mCurrentLocation.getLatitude()));
             mLongitudeTextView.setText(String.format(Locale.ENGLISH, "%s: %f", mLongitudeLabel,
                     mCurrentLocation.getLongitude()));
+            mAccuracyTextView.setText(String.format(Locale.ENGLISH, "%s: %f", mAccuracyLabel,
+                    mCurrentLocation.getAccuracy()));
             mLastUpdateTimeTextView.setText(String.format(Locale.ENGLISH, "%s: %s",
                     mLastUpdateTimeLabel, mLastUpdateTime));
         }
