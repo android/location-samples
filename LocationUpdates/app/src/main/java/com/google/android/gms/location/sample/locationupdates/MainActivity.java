@@ -18,10 +18,13 @@ package com.google.android.gms.location.sample.locationupdates;
 
 import android.Manifest;
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.content.pm.PackageManager;
 import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Looper;
@@ -45,13 +48,8 @@ import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.LocationSettingsRequest;
-import com.google.android.gms.location.LocationSettingsResponse;
 import com.google.android.gms.location.LocationSettingsStatusCodes;
 import com.google.android.gms.location.SettingsClient;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 
 import java.text.DateFormat;
 import java.util.Date;
@@ -72,7 +70,7 @@ import java.util.Locale;
  * This sample allows the user to request location updates using the ACCESS_FINE_LOCATION setting
  * (as specified in AndroidManifest.xml).
  */
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements LocationListener {
 
     private static final String TAG = MainActivity.class.getSimpleName();
 
@@ -141,12 +139,21 @@ public class MainActivity extends AppCompatActivity {
     private TextView mLatitudeTextView;
     private TextView mLongitudeTextView;
     private TextView mAccuracyTextView;
+    private TextView mLmAccuracyTextView;
+    private TextView mProviderAccuracy;
 
     // Labels.
     private String mLatitudeLabel;
     private String mLongitudeLabel;
     private String mAccuracyLabel;
+    private String mLmAccuracyLabel;
+    private String mProviderLabel;
     private String mLastUpdateTimeLabel;
+
+    // location manager
+    private LocationManager mLocationManager;
+    private Location mGpsLocation;
+    private String mLocationProvider;
 
     /**
      * Tracks the status of the location updates request. Value changes when the user presses the
@@ -172,12 +179,16 @@ public class MainActivity extends AppCompatActivity {
         mLatitudeTextView = findViewById(R.id.latitude_text);
         mLongitudeTextView = findViewById(R.id.longitude_text);
         mAccuracyTextView = findViewById(R.id.accuracy_text);
+        mLmAccuracyTextView = findViewById(R.id.lm_accuracy_text);
+        mProviderAccuracy = findViewById(R.id.provider_text);
         mLastUpdateTimeTextView = findViewById(R.id.last_update_time_text);
 
         // Set labels.
         mLatitudeLabel = getResources().getString(R.string.latitude_label);
         mLongitudeLabel = getResources().getString(R.string.longitude_label);
         mAccuracyLabel = "Accuracy";
+        mLmAccuracyLabel = "LM Accuracy";
+        mProviderLabel = "Provider";
         mLastUpdateTimeLabel = getResources().getString(R.string.last_update_time_label);
 
         mRequestingLocationUpdates = false;
@@ -188,6 +199,8 @@ public class MainActivity extends AppCompatActivity {
 
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
         mSettingsClient = LocationServices.getSettingsClient(this);
+        mLocationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
+        mLocationProvider = LocationManager.GPS_PROVIDER;
 
         // Kick off the process of building the LocationCallback, LocationRequest, and
         // LocationSettingsRequest objects.
@@ -338,6 +351,10 @@ public class MainActivity extends AppCompatActivity {
                     mFusedLocationClient.requestLocationUpdates(mLocationRequest,
                             mLocationCallback, Looper.myLooper());
 
+                    mLocationManager.requestLocationUpdates(mLocationProvider, 0, 0, this);
+
+                    mGpsLocation = mLocationManager.getLastKnownLocation(mLocationProvider);
+
                     updateUI();
                 })
                 .addOnFailureListener(this, e -> {
@@ -402,6 +419,12 @@ public class MainActivity extends AppCompatActivity {
                     mCurrentLocation.getLongitude()));
             mAccuracyTextView.setText(String.format(Locale.ENGLISH, "%s: %f", mAccuracyLabel,
                     mCurrentLocation.getAccuracy()));
+            if (mGpsLocation != null) {
+                mLmAccuracyTextView.setText(String.format(Locale.ENGLISH, "%s: %f", mLmAccuracyLabel,
+                        mGpsLocation.getAccuracy()));
+            }
+            mProviderAccuracy.setText(String.format(Locale.ENGLISH, "%s: %s", mProviderLabel,
+                    mCurrentLocation.getProvider()));
             mLastUpdateTimeTextView.setText(String.format(Locale.ENGLISH, "%s: %s",
                     mLastUpdateTimeLabel, mLastUpdateTime));
         }
@@ -554,4 +577,21 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     }
+
+    @Override
+    public void onLocationChanged(Location location) {
+        double latitude = location.getLatitude();
+        double longitude = location.getLongitude();
+
+        Log.i(TAG, "Latitude: " + latitude + ", Longitude: " + longitude + ", Accuracy: " + location.getAccuracy());
+    }
+
+    @Override
+    public void onProviderDisabled(String provider) { }
+
+    @Override
+    public void onProviderEnabled(String provider) { }
+
+    @Override
+    public void onStatusChanged(String provider, int status, Bundle extras) { }
 }
