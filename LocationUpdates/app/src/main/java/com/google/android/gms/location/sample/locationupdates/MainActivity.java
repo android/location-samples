@@ -163,16 +163,16 @@ public class MainActivity extends AppCompatActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_activity);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         // Locate the UI widgets.
-        mStartUpdatesButton = (Button) findViewById(R.id.start_updates_button);
-        mStopUpdatesButton = (Button) findViewById(R.id.stop_updates_button);
-        mLatitudeTextView = (TextView) findViewById(R.id.latitude_text);
-        mLongitudeTextView = (TextView) findViewById(R.id.longitude_text);
-        mAccuracyTextView = (TextView) findViewById(R.id.accuracy_text);
-        mLastUpdateTimeTextView = (TextView) findViewById(R.id.last_update_time_text);
+        mStartUpdatesButton = findViewById(R.id.start_updates_button);
+        mStopUpdatesButton = findViewById(R.id.stop_updates_button);
+        mLatitudeTextView = findViewById(R.id.latitude_text);
+        mLongitudeTextView = findViewById(R.id.longitude_text);
+        mAccuracyTextView = findViewById(R.id.accuracy_text);
+        mLastUpdateTimeTextView = findViewById(R.id.last_update_time_text);
 
         // Set labels.
         mLatitudeLabel = getResources().getString(R.string.latitude_label);
