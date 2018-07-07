@@ -17,14 +17,12 @@
 package com.google.android.gms.location.sample.activityrecognition;
 
 import android.app.PendingIntent;
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
-import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -32,49 +30,25 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.common.api.GoogleApiClient.ConnectionCallbacks;
-import com.google.android.gms.common.api.GoogleApiClient.OnConnectionFailedListener;
-import com.google.android.gms.common.api.ResultCallback;
-import com.google.android.gms.common.api.Status;
-import com.google.android.gms.location.ActivityRecognition;
+import com.google.android.gms.location.ActivityRecognitionClient;
 import com.google.android.gms.location.DetectedActivity;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 
 import java.util.ArrayList;
 
-
-/**
- * This sample demonstrates use of the
- * {@link com.google.android.gms.location.ActivityRecognitionApi} to recognize a user's current
- * activity, such as walking, driving, or standing still. It uses an
- * {@link android.app.IntentService} to broadcast detected activities through a
- * {@link BroadcastReceiver}. See the {@link DetectedActivity} class for a list of DetectedActivity
- * types.
- * <p/>
- * Note that this activity implements {@link ResultCallback}. Requesting activity detection
- * updates using
- * {@link com.google.android.gms.location.ActivityRecognitionApi#requestActivityUpdates}
- * and stopping updates using
- * {@link com.google.android.gms.location.ActivityRecognitionApi#removeActivityUpdates}
- * returns a {@link com.google.android.gms.common.api.PendingResult}, whose result
- * object is processed by the {@code onResult} callback.
- */
-public class MainActivity extends AppCompatActivity implements
-        ConnectionCallbacks, OnConnectionFailedListener, ResultCallback<Status> {
+public class MainActivity extends AppCompatActivity
+        implements SharedPreferences.OnSharedPreferenceChangeListener {
 
     protected static final String TAG = "MainActivity";
 
-    /**
-     * A receiver for DetectedActivity objects broadcast by the
-     * {@code ActivityDetectionIntentService}.
-     */
-    protected ActivityDetectionBroadcastReceiver mBroadcastReceiver;
+    private Context mContext;
 
     /**
-     * Provides the entry point to Google Play services.
+     * The entry point for interacting with activity recognition.
      */
-    protected GoogleApiClient mGoogleApiClient;
+    private ActivityRecognitionClient mActivityRecognitionClient;
 
     // UI elements.
     private Button mRequestActivityUpdatesButton;
@@ -85,14 +59,6 @@ public class MainActivity extends AppCompatActivity implements
      */
     private DetectedActivitiesAdapter mAdapter;
 
-    /**
-     * The DetectedActivities that we track in this sample. We use this for initializing the
-     * {@code DetectedActivitiesAdapter}. We also use this for persisting state in
-     * {@code onSaveInstanceState()} and restoring it in {@code onCreate()}. This ensures that each
-     * activity is displayed with the correct confidence level upon orientation changes.
-     */
-    @SuppressWarnings("unchecked")
-    private ArrayList<DetectedActivity> mDetectedActivities;
 
     @SuppressWarnings("unchecked")
     @Override
@@ -100,169 +66,110 @@ public class MainActivity extends AppCompatActivity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_activity);
 
+        mContext = this;
+
         // Get the UI widgets.
         mRequestActivityUpdatesButton = (Button) findViewById(R.id.request_activity_updates_button);
         mRemoveActivityUpdatesButton = (Button) findViewById(R.id.remove_activity_updates_button);
         ListView detectedActivitiesListView = (ListView) findViewById(
                 R.id.detected_activities_listview);
 
-        // Get a receiver for broadcasts from ActivityDetectionIntentService.
-        mBroadcastReceiver = new ActivityDetectionBroadcastReceiver();
-
         // Enable either the Request Updates button or the Remove Updates button depending on
         // whether activity updates have been requested.
         setButtonsEnabledState();
 
-        // Reuse the value of mDetectedActivities from the bundle if possible. This maintains state
-        // across device orientation changes. If mDetectedActivities is not stored in the bundle,
-        // populate it with DetectedActivity objects whose confidence is set to 0. Doing this
-        // ensures that the bar graphs for only only the most recently detected activities are
-        // filled in.
-        if (savedInstanceState != null && savedInstanceState.containsKey(
-                Constants.DETECTED_ACTIVITIES)) {
-
-            mDetectedActivities = (ArrayList) savedInstanceState.getSerializable(
-                    Constants.DETECTED_ACTIVITIES);
-        } else {
-            mDetectedActivities = new ArrayList<>();
-
-            // Set the confidence level of each monitored activity to zero.
-            for (int i = 0; i < Constants.MONITORED_ACTIVITIES.length; i++) {
-                mDetectedActivities.add(new DetectedActivity(Constants.MONITORED_ACTIVITIES[i], 0));
-            }
-        }
+        ArrayList<DetectedActivity> detectedActivities = Utils.detectedActivitiesFromJson(
+                PreferenceManager.getDefaultSharedPreferences(this).getString(
+                        Constants.KEY_DETECTED_ACTIVITIES, ""));
 
         // Bind the adapter to the ListView responsible for display data for detected activities.
-        mAdapter = new DetectedActivitiesAdapter(this, mDetectedActivities);
+        mAdapter = new DetectedActivitiesAdapter(this, detectedActivities);
         detectedActivitiesListView.setAdapter(mAdapter);
 
-        // Kick off the request to build GoogleApiClient.
-        buildGoogleApiClient();
-    }
-
-    /**
-     * Builds a GoogleApiClient. Uses the {@code #addApi} method to request the
-     * ActivityRecognition API.
-     */
-    protected synchronized void buildGoogleApiClient() {
-        mGoogleApiClient = new GoogleApiClient.Builder(this)
-                .enableAutoManage(this, this)
-                .addConnectionCallbacks(this)
-                .addOnConnectionFailedListener(this)
-                .addApi(ActivityRecognition.API)
-                .build();
+        mActivityRecognitionClient = new ActivityRecognitionClient(this);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        // Register the broadcast receiver that informs this activity of the DetectedActivity
-        // object broadcast sent by the intent service.
-        LocalBroadcastManager.getInstance(this).registerReceiver(mBroadcastReceiver,
-                new IntentFilter(Constants.BROADCAST_ACTION));
+        PreferenceManager.getDefaultSharedPreferences(this)
+                .registerOnSharedPreferenceChangeListener(this);
+        updateDetectedActivitiesList();
     }
 
     @Override
     protected void onPause() {
-        // Unregister the broadcast receiver that was registered during onResume().
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(mBroadcastReceiver);
+        PreferenceManager.getDefaultSharedPreferences(this)
+                .unregisterOnSharedPreferenceChangeListener(this);
         super.onPause();
     }
 
     /**
-     * Runs when a GoogleApiClient object successfully connects.
-     */
-    @Override
-    public void onConnected(Bundle connectionHint) {
-        Log.i(TAG, "Connected to GoogleApiClient");
-    }
-
-    @Override
-    public void onConnectionFailed(@NonNull ConnectionResult result) {
-        // Refer to the javadoc for ConnectionResult to see what error codes might be returned in
-        // onConnectionFailed.
-        Log.i(TAG, "Connection failed: ConnectionResult.getErrorCode() = " + result.getErrorCode());
-    }
-
-    @Override
-    public void onConnectionSuspended(int cause) {
-        // The connection to Google Play services was lost for some reason. We call connect() to
-        // attempt to re-establish the connection.
-        Log.i(TAG, "Connection suspended");
-        mGoogleApiClient.connect();
-    }
-
-    /**
      * Registers for activity recognition updates using
-     * {@link com.google.android.gms.location.ActivityRecognitionApi#requestActivityUpdates} which
-     * returns a {@link com.google.android.gms.common.api.PendingResult}. Since this activity
-     * implements the PendingResult interface, the activity itself receives the callback, and the
-     * code within {@code onResult} executes. Note: once {@code requestActivityUpdates()} completes
-     * successfully, the {@code DetectedActivitiesIntentService} starts receiving callbacks when
-     * activities are detected.
+     * {@link ActivityRecognitionClient#requestActivityUpdates(long, PendingIntent)}.
+     * Registers success and failure callbacks.
      */
     public void requestActivityUpdatesButtonHandler(View view) {
-        if (!mGoogleApiClient.isConnected()) {
-            Toast.makeText(this, getString(R.string.not_connected),
-                    Toast.LENGTH_SHORT).show();
-            return;
-        }
-        ActivityRecognition.ActivityRecognitionApi.requestActivityUpdates(
-                mGoogleApiClient,
+        Task<Void> task = mActivityRecognitionClient.requestActivityUpdates(
                 Constants.DETECTION_INTERVAL_IN_MILLISECONDS,
-                getActivityDetectionPendingIntent()
-        ).setResultCallback(this);
+                getActivityDetectionPendingIntent());
+
+        task.addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void result) {
+                Toast.makeText(mContext,
+                        getString(R.string.activity_updates_enabled),
+                        Toast.LENGTH_SHORT)
+                        .show();
+                setUpdatesRequestedState(true);
+                updateDetectedActivitiesList();
+            }
+        });
+
+        task.addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Log.w(TAG, getString(R.string.activity_updates_not_enabled));
+                Toast.makeText(mContext,
+                        getString(R.string.activity_updates_not_enabled),
+                        Toast.LENGTH_SHORT)
+                        .show();
+                setUpdatesRequestedState(false);
+            }
+        });
     }
+
 
     /**
      * Removes activity recognition updates using
-     * {@link com.google.android.gms.location.ActivityRecognitionApi#removeActivityUpdates} which
-     * returns a {@link com.google.android.gms.common.api.PendingResult}. Since this activity
-     * implements the PendingResult interface, the activity itself receives the callback, and the
-     * code within {@code onResult} executes. Note: once {@code removeActivityUpdates()} completes
-     * successfully, the {@code DetectedActivitiesIntentService} stops receiving callbacks about
-     * detected activities.
+     * {@link ActivityRecognitionClient#removeActivityUpdates(PendingIntent)}. Registers success and
+     * failure callbacks.
      */
     public void removeActivityUpdatesButtonHandler(View view) {
-        if (!mGoogleApiClient.isConnected()) {
-            Toast.makeText(this, getString(R.string.not_connected),
-                    Toast.LENGTH_SHORT).show();
-            return;
-        }
-        // Remove all activity updates for the PendingIntent that was used to request activity
-        // updates.
-        ActivityRecognition.ActivityRecognitionApi.removeActivityUpdates(
-                mGoogleApiClient,
-                getActivityDetectionPendingIntent()
-        ).setResultCallback(this);
-    }
+        Task<Void> task = mActivityRecognitionClient.removeActivityUpdates(
+                getActivityDetectionPendingIntent());
+        task.addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void result) {
+                Toast.makeText(mContext,
+                        getString(R.string.activity_updates_removed),
+                        Toast.LENGTH_SHORT)
+                        .show();
+                setUpdatesRequestedState(false);
+                // Reset the display.
+                mAdapter.updateActivities(new ArrayList<DetectedActivity>());
+            }
+        });
 
-    /**
-     * Runs when the result of calling requestActivityUpdates() and removeActivityUpdates() becomes
-     * available. Either method can complete successfully or with an error.
-     *
-     * @param status The Status returned through a PendingIntent when requestActivityUpdates()
-     *               or removeActivityUpdates() are called.
-     */
-    public void onResult(@NonNull Status status) {
-        if (status.isSuccess()) {
-            // Toggle the status of activity updates requested, and save in shared preferences.
-            boolean requestingUpdates = !getUpdatesRequestedState();
-            setUpdatesRequestedState(requestingUpdates);
-
-            // Update the UI. Requesting activity updates enables the Remove Activity Updates
-            // button, and removing activity updates enables the Add Activity Updates button.
-            setButtonsEnabledState();
-
-            Toast.makeText(
-                    this,
-                    getString(requestingUpdates ? R.string.activity_updates_added :
-                            R.string.activity_updates_removed),
-                    Toast.LENGTH_SHORT
-            ).show();
-        } else {
-            Log.e(TAG, "Error adding or removing activity detection: " + status.getStatusMessage());
-        }
+        task.addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Log.w(TAG, "Failed to enable activity recognition.");
+                Toast.makeText(mContext, getString(R.string.activity_updates_not_removed),
+                        Toast.LENGTH_SHORT).show();
+                setUpdatesRequestedState(true);
+            }
+        });
     }
 
     /**
@@ -292,41 +199,24 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     /**
-     * Retrieves a SharedPreference object used to store or read values in this app. If a
-     * preferences file passed as the first argument to {@link #getSharedPreferences}
-     * does not exist, it is created when {@link SharedPreferences.Editor} is used to commit
-     * data.
-     */
-    private SharedPreferences getSharedPreferencesInstance() {
-        return getSharedPreferences(Constants.SHARED_PREFERENCES_NAME, MODE_PRIVATE);
-    }
-
-    /**
      * Retrieves the boolean from SharedPreferences that tracks whether we are requesting activity
      * updates.
      */
     private boolean getUpdatesRequestedState() {
-        return getSharedPreferencesInstance()
-                .getBoolean(Constants.ACTIVITY_UPDATES_REQUESTED_KEY, false);
+        return PreferenceManager.getDefaultSharedPreferences(this)
+                .getBoolean(Constants.KEY_ACTIVITY_UPDATES_REQUESTED, false);
     }
 
     /**
      * Sets the boolean in SharedPreferences that tracks whether we are requesting activity
      * updates.
      */
-    private void setUpdatesRequestedState(boolean requestingUpdates) {
-        getSharedPreferencesInstance()
+    private void setUpdatesRequestedState(boolean requesting) {
+        PreferenceManager.getDefaultSharedPreferences(this)
                 .edit()
-                .putBoolean(Constants.ACTIVITY_UPDATES_REQUESTED_KEY, requestingUpdates)
+                .putBoolean(Constants.KEY_ACTIVITY_UPDATES_REQUESTED, requesting)
                 .apply();
-    }
-
-    /**
-     * Stores the list of detected activities in the Bundle.
-     */
-    public void onSaveInstanceState(Bundle savedInstanceState) {
-        savedInstanceState.putSerializable(Constants.DETECTED_ACTIVITIES, mDetectedActivities);
-        super.onSaveInstanceState(savedInstanceState);
+        setButtonsEnabledState();
     }
 
     /**
@@ -334,21 +224,18 @@ public class MainActivity extends AppCompatActivity implements
      * DetectedActivities with new {@code DetectedActivity} objects reflecting the latest detected
      * activities.
      */
-    protected void updateDetectedActivitiesList(ArrayList<DetectedActivity> detectedActivities) {
+    protected void updateDetectedActivitiesList() {
+        ArrayList<DetectedActivity> detectedActivities = Utils.detectedActivitiesFromJson(
+                PreferenceManager.getDefaultSharedPreferences(mContext)
+                        .getString(Constants.KEY_DETECTED_ACTIVITIES, ""));
+
         mAdapter.updateActivities(detectedActivities);
     }
 
-    /**
-     * Receiver for intents sent by DetectedActivitiesIntentService via a sendBroadcast().
-     * Receives a list of one or more DetectedActivity objects associated with the current state of
-     * the device.
-     */
-    public class ActivityDetectionBroadcastReceiver extends BroadcastReceiver {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            ArrayList<DetectedActivity> updatedActivities =
-                    intent.getParcelableArrayListExtra(Constants.ACTIVITY_EXTRA);
-            updateDetectedActivitiesList(updatedActivities);
+    @Override
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String s) {
+        if (s.equals(Constants.KEY_DETECTED_ACTIVITIES)) {
+            updateDetectedActivitiesList();
         }
     }
 }

@@ -1,0 +1,29 @@
+apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
+
+android {
+    compileSdkVersion parent.ext.compileSdkVersion
+    buildToolsVersion parent.ext.supportLibVersion
+
+    defaultConfig {
+        applicationId "com.google.android.gms.location.sample.basiclocationsample"
+        minSdkVersion parent.ext.minSdkVersion
+        targetSdkVersion parent.ext.targetSdkVersion
+        versionCode 1
+        versionName "1.0"
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+}
+
+dependencies {
+    compile "com.android.support:appcompat-v7:$parent.ext.supportLibVersion"
+    compile "com.android.support:design:$parent.ext.supportLibVersion"
+    compile "com.google.android.gms:play-services-location:$parent.ext.playServicesVersion"
+    compile "org.jetbrains.kotlin:kotlin-stdlib-jre7:$parent.ext.kotlinVersion"
+}
