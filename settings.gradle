@@ -1,1 +1,1 @@
-include ':ActivityRecognition:app', ':BasicLocationSample:java:app', ':BasicLocationSample:kotlin:app', ':Geofencing:app', ':LocationAddress:java:app', ':LocationAddress:kotlin:app' ':LocationUpdates:app', ':LocationUpdatesForegroundService:app', ':LocationUpdatesPendingIntent:app'
+include ':ActivityRecognition:app', ':BasicLocationSample:java:app', ':BasicLocationSample:kotlin:app', ':Geofencing:app', ':LocationAddress:java:app', ':LocationAddress:kotlin:app', ':LocationUpdates:app', ':LocationUpdatesForegroundService:app', ':LocationUpdatesPendingIntent:app'
