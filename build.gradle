@@ -1,11 +1,23 @@
 buildscript {
+    ext.kotlin_version = '1.3.11'
     repositories {
+        google()
         jcenter()
         mavenLocal()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:2.3.2'
+        classpath 'com.android.tools.build:gradle:3.2.1'
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
     }
+}
+apply plugin: 'kotlin'
+
+ext {
+    compileSdkV = 28
+    minSdkV = 14
+    targetSdkV = 28
+    supportLibVersion = "28.0.0"
+    playServicesVersion = "16.0.0"
 }
 
 allprojects {
@@ -15,6 +27,13 @@ allprojects {
     }
 }
 
-task clean(type: Delete) {
-    delete rootProject.buildDir
+compileKotlin {
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
+}
+compileTestKotlin {
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
 }

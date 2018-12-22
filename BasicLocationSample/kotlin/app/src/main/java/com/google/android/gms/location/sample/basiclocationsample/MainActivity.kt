@@ -26,13 +26,11 @@ import android.os.Bundle
 import android.provider.Settings
 import android.support.design.widget.Snackbar
 import android.support.design.widget.Snackbar.LENGTH_INDEFINITE
-import android.support.design.widget.Snackbar.LENGTH_LONG
 import android.support.v4.app.ActivityCompat
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.view.View
 import android.widget.TextView
-
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.sample.basiclocationsample.BuildConfig.APPLICATION_ID
@@ -86,10 +84,8 @@ class MainActivity : AppCompatActivity() {
         fusedLocationClient.lastLocation
                 .addOnCompleteListener(this) { task ->
                     if (task.isSuccessful && task.result != null) {
-                        latitudeText.text = resources
-                                .getString(R.string.latitude_label, task.result.latitude)
-                        longitudeText.text = resources
-                                .getString(R.string.longitude_label, task.result.longitude)
+                        latitudeText.text = resources.getString(R.string.latitude_label, task.result!!.latitude)
+                        longitudeText.text = resources.getString(R.string.longitude_label, task.result!!.longitude)
                     } else {
                         Log.w(TAG, "getLastLocation:exception", task.exception)
                         showSnackbar(R.string.no_location_detected)
@@ -105,9 +101,9 @@ class MainActivity : AppCompatActivity() {
      * @param listener The listener associated with the Snackbar action.
      */
     private fun showSnackbar(
-        snackStrId: Int,
-        actionStrId: Int = 0,
-        listener: View.OnClickListener? = null
+            snackStrId: Int,
+            actionStrId: Int = 0,
+            listener: View.OnClickListener? = null
     ) {
         val snackbar = Snackbar.make(findViewById(android.R.id.content), getString(snackStrId),
                 LENGTH_INDEFINITE)
@@ -151,9 +147,9 @@ class MainActivity : AppCompatActivity() {
      * Callback received when a permissions request has been completed.
      */
     override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<String>,
-        grantResults: IntArray
+            requestCode: Int,
+            permissions: Array<String>,
+            grantResults: IntArray
     ) {
         Log.i(TAG, "onRequestPermissionResult")
         if (requestCode == REQUEST_PERMISSIONS_REQUEST_CODE) {
