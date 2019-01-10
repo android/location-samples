@@ -22,8 +22,8 @@ android {
 }
 
 dependencies {
-    implementation "com.android.support:appcompat-v7:$parent.ext.supportLibVersion"
-    implementation "com.android.support:design:$parent.ext.supportLibVersion"
+    implementation 'androidx.appcompat:appcompat:1.1.0-alpha01'
+    implementation 'com.google.android.material:material:1.1.0-alpha02'
     implementation "com.google.android.gms:play-services-location:$parent.ext.playServicesVersion"
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$parent.ext.kotlinVersion"
 }
