@@ -4,7 +4,6 @@ apply plugin: 'kotlin-android-extensions'
 
 android {
     compileSdkVersion parent.ext.compileSdkVersion
-    buildToolsVersion parent.ext.supportLibVersion
 
     defaultConfig {
         applicationId "com.google.android.gms.location.sample.basiclocationsample"
