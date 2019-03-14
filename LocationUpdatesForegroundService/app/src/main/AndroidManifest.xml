@@ -16,6 +16,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.google.android.gms.location.sample.locationupdatesforegroundservice">
 
+    <!-- Required for foreground services on P+. -->
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
 
     <application
@@ -31,10 +34,12 @@
             </intent-filter>
         </activity>
 
+        <!-- Foreground services in Q+ require type. -->
         <service
             android:name=".LocationUpdatesService"
             android:enabled="true"
-            android:exported="true" />
+            android:exported="true"
+            android:foregroundServiceType="location" />
     </application>
 
 </manifest>

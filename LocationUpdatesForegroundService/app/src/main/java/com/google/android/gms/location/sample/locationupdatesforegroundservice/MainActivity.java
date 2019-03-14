@@ -49,6 +49,22 @@ import android.widget.Toast;
 /**
  * The only activity in this sample.
  *
+ * Note: Users have three options in "Q" regarding location:
+ * <ul>
+ *     <li>Allow all the time</li>
+ *     <li>Allow while app is in use, i.e., while app is in foreground</li>
+ *     <li>Not allow location at all</li>
+ * </ul>
+ * Because this app creates a foreground service (tied to a Notification) when the user navigates
+ * away from the app, it only needs location "while in use." That is, there is no need to ask for
+ * location all the time (which requires additional permissions in the manifest).
+ *
+ * "Q" also now requires developers to specify foreground service type in the manifest (in this
+ * case, "location").
+ *
+ * Note: For Foreground Services, "P" requires additional permission in manifest. Please check
+ * project manifest for more information.
+ *
  * Note: for apps running in the background on "O" devices (regardless of the targetSdkVersion),
  * location may be computed less frequently than requested when the app is not in the foreground.
  * Apps that use a foreground service -  which involves displaying a non-dismissable
