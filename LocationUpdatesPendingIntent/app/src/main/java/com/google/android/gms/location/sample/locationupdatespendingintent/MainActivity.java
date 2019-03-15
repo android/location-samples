@@ -43,6 +43,23 @@ import com.google.android.gms.location.LocationServices;
  * The only activity in this sample. Displays UI widgets for requesting and removing location
  * updates, and for the batched location updates that are reported.
  *
+ * "Q" supports three user choices for location:
+ * <ul>
+ *     <li>Allow all the time</li>
+ *     <li>Allow while app is in use, i.e., while app is in foreground</li>
+ *     <li>Not allow location</li>
+ * </ul>
+ *
+ * Because this app requires location updates while the app isn't in use to work, i.e., not in the
+ * foreground, the app requires the users to approve "all the time" for location access.
+ *
+ * However, best practice is to handle "all the time" and "while in use" permissions via a
+ * foreground service + Notification. This use case is shown in the
+ * LocationUpdatesForegroundService sample in this same repo.
+ *
+ * We still wanted to show an example where the app needs location access "all the time" for its
+ * location features to be enabled (this sample).
+ *
  * Location updates requested through this activity continue even when the activity is not in the
  * foreground. Note: apps running on "O" devices (regardless of targetSdkVersion) may receive
  * updates less frequently than the interval specified in the {@link LocationRequest} when the app
@@ -181,15 +198,30 @@ public class MainActivity extends FragmentActivity implements
      * Return the current state of the permissions needed.
      */
     private boolean checkPermissions() {
-        int permissionState = ActivityCompat.checkSelfPermission(this,
-                Manifest.permission.ACCESS_FINE_LOCATION);
-        return permissionState == PackageManager.PERMISSION_GRANTED;
+        int fineLocationPermissionState = ActivityCompat.checkSelfPermission(
+                this, Manifest.permission.ACCESS_FINE_LOCATION);
+
+        int backgroundLocationPermissionState = ActivityCompat.checkSelfPermission(
+                this, Manifest.permission.ACCESS_BACKGROUND_LOCATION);
+
+        return (fineLocationPermissionState == PackageManager.PERMISSION_GRANTED) &&
+                (backgroundLocationPermissionState == PackageManager.PERMISSION_GRANTED);
     }
 
     private void requestPermissions() {
+
+        boolean permissionAccessFineLocationApproved =
+                ActivityCompat.checkSelfPermission(
+                        this, Manifest.permission.ACCESS_FINE_LOCATION)
+                        == PackageManager.PERMISSION_GRANTED;
+
+        boolean backgroundLocationPermissionApproved =
+                ActivityCompat.checkSelfPermission(
+                        this, Manifest.permission.ACCESS_BACKGROUND_LOCATION)
+                        == PackageManager.PERMISSION_GRANTED;
+
         boolean shouldProvideRationale =
-                ActivityCompat.shouldShowRequestPermissionRationale(this,
-                        Manifest.permission.ACCESS_FINE_LOCATION);
+                permissionAccessFineLocationApproved && backgroundLocationPermissionApproved;
 
         // Provide an additional rationale to the user. This would happen if the user denied the
         // request previously, but didn't check the "Don't ask again" checkbox.
@@ -204,7 +236,9 @@ public class MainActivity extends FragmentActivity implements
                         public void onClick(View view) {
                             // Request permission
                             ActivityCompat.requestPermissions(MainActivity.this,
-                                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                                    new String[] {
+                                            Manifest.permission.ACCESS_FINE_LOCATION,
+                                            Manifest.permission.ACCESS_BACKGROUND_LOCATION },
                                     REQUEST_PERMISSIONS_REQUEST_CODE);
                         }
                     })
@@ -215,7 +249,9 @@ public class MainActivity extends FragmentActivity implements
             // sets the permission in a given state or the user denied the permission
             // previously and checked "Never ask again".
             ActivityCompat.requestPermissions(MainActivity.this,
-                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                    new String[] {
+                            Manifest.permission.ACCESS_FINE_LOCATION,
+                            Manifest.permission.ACCESS_BACKGROUND_LOCATION },
                     REQUEST_PERMISSIONS_REQUEST_CODE);
         }
     }
@@ -232,9 +268,13 @@ public class MainActivity extends FragmentActivity implements
                 // If user interaction was interrupted, the permission request is cancelled and you
                 // receive empty arrays.
                 Log.i(TAG, "User interaction was cancelled.");
-            } else if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+            } else if ((grantResults[0] == PackageManager.PERMISSION_GRANTED) &&
+                    (grantResults[1] == PackageManager.PERMISSION_GRANTED)
+            ) {
                 // Permission was granted.
                 requestLocationUpdates(null);
+
             } else {
                 // Permission denied.
 
