@@ -88,7 +88,7 @@ class MainActivity : AppCompatActivity() {
     /**
      * The formatted location address.
      */
-    private var addressOutput = ""
+    private var addressOutput : String? = ""
 
     /**
      * Receiver registered with this activity to get the response from FetchAddressIntentService.
