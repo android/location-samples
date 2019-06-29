@@ -85,11 +85,12 @@ class MainActivity : AppCompatActivity() {
     private fun getLastLocation() {
         fusedLocationClient.lastLocation
                 .addOnCompleteListener(this) { task ->
-                    if (task.isSuccessful && task.result != null) {
+                    val mLastLocation = task.result
+                    if (task.isSuccessful && mLastLocation != null) {
                         latitudeText.text = resources
-                                .getString(R.string.latitude_label, task.result.latitude)
+                                .getString(R.string.latitude_label, mLastLocation.latitude)
                         longitudeText.text = resources
-                                .getString(R.string.longitude_label, task.result.longitude)
+                                .getString(R.string.longitude_label, mLastLocation.longitude)
                     } else {
                         Log.w(TAG, "getLastLocation:exception", task.exception)
                         showSnackbar(R.string.no_location_detected)
