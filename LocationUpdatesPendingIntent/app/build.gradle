@@ -1,12 +1,12 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 'android-Q'
+    compileSdkVersion 29
 
     defaultConfig {
         applicationId "com.google.android.gms.location.sample.locationupdatespendingintent"
         minSdkVersion 16
-        targetSdkVersion 'Q'
+        targetSdkVersion 29
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
