@@ -18,8 +18,8 @@
 status:       PUBLISHED
 technologies: [Android]
 categories:   [Location]
-languages:    [Java]
+languages:    [Kotlin]
 solutions:    [Mobile]
-github:       android-play-location
+github:       android/location-samples
 level:        BEGINNER
 license:      apache2
