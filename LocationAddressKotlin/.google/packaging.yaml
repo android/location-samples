@@ -20,6 +20,6 @@ technologies: [Android]
 categories:   [Location]
 languages:    [Kotlin]
 solutions:    [Mobile]
-github:       android-play-location
+github:       android/location-samples
 level:        BEGINNER
 license:      apache2
