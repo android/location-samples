@@ -21,6 +21,7 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.content.pm.PackageManager.PERMISSION_GRANTED
+import android.location.Location
 import android.net.Uri
 import android.os.Bundle
 import android.provider.Settings
@@ -36,6 +37,7 @@ import android.widget.TextView
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.sample.basiclocationsample.BuildConfig.APPLICATION_ID
+import com.google.android.gms.tasks.Task
 
 /**
  * Demonstrates use of the Location API to retrieve the last known location for a device.
@@ -84,14 +86,17 @@ class MainActivity : AppCompatActivity() {
     @SuppressLint("MissingPermission")
     private fun getLastLocation() {
         fusedLocationClient.lastLocation
-                .addOnCompleteListener(this) { task ->
-                    if (task.isSuccessful && task.result != null) {
+                .addOnCompleteListener { taskLocation ->
+                    if (taskLocation.isSuccessful && taskLocation.result != null) {
+
+                        val location = taskLocation.result
+
                         latitudeText.text = resources
-                                .getString(R.string.latitude_label, task.result.latitude)
+                                .getString(R.string.latitude_label, location?.latitude)
                         longitudeText.text = resources
-                                .getString(R.string.longitude_label, task.result.longitude)
+                                .getString(R.string.longitude_label, location?.longitude)
                     } else {
-                        Log.w(TAG, "getLastLocation:exception", task.exception)
+                        Log.w(TAG, "getLastLocation:exception", taskLocation.exception)
                         showSnackbar(R.string.no_location_detected)
                     }
                 }
