@@ -249,7 +249,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    public override fun onSaveInstanceState(savedInstanceState: Bundle?) {
+    override fun onSaveInstanceState(savedInstanceState: Bundle) {
         savedInstanceState ?: return
 
         with(savedInstanceState) {
