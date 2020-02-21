@@ -36,7 +36,7 @@
             android:layout_marginEnd="16dp"
             android:layout_marginRight="16dp"
             android:layout_marginBottom="16dp"
-            android:text="@string/explanation_fine_permission_text_fragment"
+            android:text="@string/fine_location_access_rationale_text"
             android:textSize="24sp"
             app:layout_constraintBottom_toTopOf="@+id/permissionRequestButton"
             app:layout_constraintEnd_toEndOf="parent"

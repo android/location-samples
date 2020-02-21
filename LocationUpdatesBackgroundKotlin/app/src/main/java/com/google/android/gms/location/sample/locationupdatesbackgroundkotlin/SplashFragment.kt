@@ -70,11 +70,11 @@ class SplashFragment : Fragment() {
         when (permissionRequestType) {
             PermissionRequestType.FINE_LOCATION ->
                 binding.explanationTextView.text =
-                    getString(R.string.explanation_fine_permission_text_fragment)
+                    getString(R.string.fine_location_access_rationale_text)
 
             PermissionRequestType.BACKGROUND_LOCATION ->
                 binding.explanationTextView.text =
-                    getString(R.string.explanation_background_permission_text_fragment)
+                    getString(R.string.background_location_access_rationale_text)
         }
 
         binding.permissionRequestButton.setOnClickListener {
@@ -130,7 +130,6 @@ class SplashFragment : Fragment() {
                         R.string.permission_denied_explanation,
                         Snackbar.LENGTH_LONG
                     )
-                        // TODO: Check on if this is still valid.
                         .setAction(R.string.settings) {
                             // Build intent that displays the App settings screen.
                             val intent = Intent()
@@ -176,7 +175,7 @@ class SplashFragment : Fragment() {
             if (provideRationale) {
                 Snackbar.make(
                     binding.frameLayout,
-                    R.string.permission_rationale,
+                    R.string.simple_permission_rationale,
                     Snackbar.LENGTH_LONG
                 )
                     .setAction(R.string.ok) {
