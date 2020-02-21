@@ -17,11 +17,59 @@ package com.google.android.gms.location.sample.locationupdatesbackgroundkotlin
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.databinding.DataBindingUtil.setContentView
 
-class MainActivity : AppCompatActivity() {
+
+
+import com.google.android.gms.location.sample.locationupdatesbackgroundkotlin.SplashFragment.OnFragmentInteractionListener
+import com.google.android.gms.location.sample.locationupdatesbackgroundkotlin.databinding.ActivityMainBinding
+
+
+/**
+ * This app allows a user to track their location in the background.
+ *
+ * IMPORTANT NOTE: You should always prefer 'while-in-use' location tracking, i.e., track location
+ * while the app is in use and create a foreground service (tied to a Notification) when the
+ * user navigates away from the app.
+ *
+ * If you do have an approved use case for tracking location in the background, it will require an
+ * additional permission.
+ *
+ * Note: Users have four options in Android 11+ regarding location:
+ *
+ *  * One time only
+ *  * Allow while app is in use, i.e., while app is in foreground
+ *  * Allow all the time
+ *  * Not allow location at all
+ *
+ * Best practice requires you spread out your first fine/course request and your background request.
+ */
+class MainActivity : AppCompatActivity(), OnFragmentInteractionListener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+
+        setContentView<ActivityMainBinding>(this, R.layout.activity_main)
+
+        val currentFragment = supportFragmentManager.findFragmentById(R.id.fragment_container)
+
+        if (currentFragment == null) {
+
+            val fragment = SplashFragment.newInstance(PermissionRequestType.FINE_LOCATION)
+
+            supportFragmentManager
+                .beginTransaction()
+                .replace(R.id.fragment_container, fragment)
+                .addToBackStack(null)
+                .commit()
+        }
+    }
+
+    override fun onFragmentFinePermissionApproved() {
+        TODO("Add redirect to main app fragment")
+    }
+
+    override fun onFragmentBackgroundPermissionState(approved: Boolean) {
+        TODO("Add redirect to main app fragment")
     }
 }
