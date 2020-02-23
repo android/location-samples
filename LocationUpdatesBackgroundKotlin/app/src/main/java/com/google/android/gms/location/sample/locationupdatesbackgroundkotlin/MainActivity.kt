@@ -21,7 +21,7 @@ import androidx.databinding.DataBindingUtil.setContentView
 
 
 
-import com.google.android.gms.location.sample.locationupdatesbackgroundkotlin.SplashFragment.OnFragmentInteractionListener
+import com.google.android.gms.location.sample.locationupdatesbackgroundkotlin.PermissionRequestFragment.Callbacks
 import com.google.android.gms.location.sample.locationupdatesbackgroundkotlin.databinding.ActivityMainBinding
 
 
@@ -44,7 +44,7 @@ import com.google.android.gms.location.sample.locationupdatesbackgroundkotlin.da
  *
  * Best practice requires you spread out your first fine/course request and your background request.
  */
-class MainActivity : AppCompatActivity(), OnFragmentInteractionListener {
+class MainActivity : AppCompatActivity(), Callbacks {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -55,7 +55,7 @@ class MainActivity : AppCompatActivity(), OnFragmentInteractionListener {
 
         if (currentFragment == null) {
 
-            val fragment = SplashFragment.newInstance(PermissionRequestType.FINE_LOCATION)
+            val fragment = PermissionRequestFragment.newInstance(PermissionRequestType.FINE_LOCATION)
 
             supportFragmentManager
                 .beginTransaction()
@@ -65,11 +65,7 @@ class MainActivity : AppCompatActivity(), OnFragmentInteractionListener {
         }
     }
 
-    override fun onFragmentFinePermissionApproved() {
-        TODO("Add redirect to main app fragment")
-    }
-
-    override fun onFragmentBackgroundPermissionState(approved: Boolean) {
+    override fun displayLocationUI() {
         TODO("Add redirect to main app fragment")
     }
 }

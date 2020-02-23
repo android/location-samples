@@ -29,10 +29,10 @@ import android.view.ViewGroup
 import androidx.core.content.ContextCompat.checkSelfPermission
 import androidx.fragment.app.Fragment
 
-import com.google.android.gms.location.sample.locationupdatesbackgroundkotlin.databinding.FragmentSplashBinding
+import com.google.android.gms.location.sample.locationupdatesbackgroundkotlin.databinding.FragmentPermissionRequestBinding
 import com.google.android.material.snackbar.Snackbar
 
-private const val TAG = "SplashFragment"
+private const val TAG = "PermissionRequestFrag"
 
 /**
  * Displays information about why a user should enable either the FINE location permission or the
@@ -40,14 +40,14 @@ private const val TAG = "SplashFragment"
  *
  * Allows users to grant the permissions as well.
  */
-class SplashFragment : Fragment() {
+class PermissionRequestFragment : Fragment() {
 
     // Set by Activity for which type of permission to request (Fine or background).
     private var permissionRequestType: PermissionRequestType? = null
 
-    private lateinit var binding: FragmentSplashBinding
+    private lateinit var binding: FragmentPermissionRequestBinding
 
-    private var activityListener: OnFragmentInteractionListener? = null
+    private var activityListener: Callbacks? = null
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -65,7 +65,7 @@ class SplashFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
 
-        binding = FragmentSplashBinding.inflate(inflater, container, false)
+        binding = FragmentPermissionRequestBinding.inflate(inflater, container, false)
 
         when (permissionRequestType) {
             PermissionRequestType.FINE_LOCATION ->
@@ -93,7 +93,7 @@ class SplashFragment : Fragment() {
     override fun onAttach(context: Context) {
         super.onAttach(context)
 
-        if (context is OnFragmentInteractionListener) {
+        if (context is Callbacks) {
             activityListener = context
         } else {
             throw RuntimeException("$context must implement OnFragmentInteractionListener")
@@ -121,7 +121,7 @@ class SplashFragment : Fragment() {
                     Log.d(TAG, "User interaction was cancelled.")
 
                 grantResults[0] == PackageManager.PERMISSION_GRANTED ->
-                    activityListener?.onFragmentFinePermissionApproved()
+                    activityListener?.displayLocationUI()
 
                 else -> {
 
@@ -162,7 +162,7 @@ class SplashFragment : Fragment() {
     private fun requestFineLocationPermission() {
 
         if (fineLocationPermissionApproved()) {
-            activityListener?.onFragmentFinePermissionApproved()
+            activityListener?.displayLocationUI()
 
         } else {
 
@@ -207,9 +207,8 @@ class SplashFragment : Fragment() {
      * (http://developer.android.com/training/basics/fragments/communicating.html)
      * for more information.
      */
-    interface OnFragmentInteractionListener {
-        fun onFragmentFinePermissionApproved()
-        fun onFragmentBackgroundPermissionState(approved: Boolean)
+    interface Callbacks {
+        fun displayLocationUI()
     }
 
     companion object {
@@ -223,11 +222,11 @@ class SplashFragment : Fragment() {
          * this fragment using the provided parameters.
          *
          * @param permissionRequestType Type of permission you would like to request.
-         * @return A new instance of fragment SplashFragment.
+         * @return A new instance of fragment PermissionRequestFragment.
          */
         @JvmStatic
         fun newInstance(permissionRequestType: PermissionRequestType) =
-            SplashFragment().apply {
+            PermissionRequestFragment().apply {
                 arguments = Bundle().apply {
                     putSerializable(ARG_PERMISSION_REQUEST_TYPE, permissionRequestType)
                 }
