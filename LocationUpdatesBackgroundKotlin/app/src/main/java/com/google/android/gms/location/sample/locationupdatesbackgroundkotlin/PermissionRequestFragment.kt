@@ -53,10 +53,8 @@ class PermissionRequestFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        arguments?.let {
-            permissionRequestType =
-                it.getSerializable(ARG_PERMISSION_REQUEST_TYPE) as PermissionRequestType
-        }
+        permissionRequestType =
+            arguments?.getSerializable(ARG_PERMISSION_REQUEST_TYPE) as PermissionRequestType
     }
 
     override fun onCreateView(
