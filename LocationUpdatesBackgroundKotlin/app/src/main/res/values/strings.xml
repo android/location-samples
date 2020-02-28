@@ -15,5 +15,29 @@
  limitations under the License.
 -->
 <resources>
-    <string name="app_name">LocationUpdatesBackgroundKotlin</string>
+    <string name="app_name">Location Updates via Background</string>
+
+    <string name="simple_permission_rationale">Location permission needed for core functionality</string>
+    <string name="permission_denied_explanation">Permission was denied, but is needed for core functionality.</string>
+    <string name="settings">Settings</string>
+    <string name="ok">OK</string>
+
+    <string name="fine_location_access_rationale_text">Welcome to the Location in Background
+        Sample.\n\nFor this app to show you your location, you will need to approve the app\'s
+        access to your location.\n\nPlease do that below.
+    </string>
+
+    <string name="background_location_access_rationale_text">To make the Location in
+        Background Sample even better and track our location even when the app isn\'t open,
+        allow us to access your background location. \n\nFor this app to show you your location,
+        you will need to approve the app\'s access to your location.\n\nPlease do that below.
+    </string>
+
+
+    <string name="enable_fine_location_button_text">Grant Fine Location</string>
+    <string name="enable_background_location_button_text">Grant Background Location</string>
+
+
+
+
 </resources>
