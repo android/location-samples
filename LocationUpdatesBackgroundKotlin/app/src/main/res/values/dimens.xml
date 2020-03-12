@@ -14,15 +14,12 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 -->
-<layout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools">
+<resources>
+    <dimen name="margin_normal">16dp</dimen>
+    <dimen name="margin_large">32dp</dimen>
 
-    <FrameLayout
-        android:id="@+id/fragment_container"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:context=".ui.MainActivity">
-    </FrameLayout>
+    <dimen name="permission_icon_vector_dimension">120dp</dimen>
 
-</layout>
+    <dimen name="fragment_permission_title_text_size">24sp</dimen>
+    <dimen name="fragment_permission_body_text_size">18sp</dimen>
+</resources>
