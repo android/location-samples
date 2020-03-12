@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.android.gms.location.sample.locationupdatesbackgroundkotlin
+package com.google.android.gms.location.sample.locationupdatesbackgroundkotlin.ui
 
 import android.Manifest
 import android.content.Context
@@ -26,29 +26,76 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.content.ContextCompat.checkSelfPermission
+
 import androidx.fragment.app.Fragment
 
-import com.google.android.gms.location.sample.locationupdatesbackgroundkotlin.databinding.FragmentPermissionRequestBinding
 import com.google.android.material.snackbar.Snackbar
+
+import com.google.android.gms.location.sample.locationupdatesbackgroundkotlin.BuildConfig
+import com.google.android.gms.location.sample.locationupdatesbackgroundkotlin.R
+import com.google.android.gms.location.sample.locationupdatesbackgroundkotlin.databinding.FragmentPermissionRequestBinding
+import com.google.android.gms.location.sample.locationupdatesbackgroundkotlin.hasPermission
+import com.google.android.gms.location.sample.locationupdatesbackgroundkotlin.requestPermissionWithRationale
+
 
 private const val TAG = "PermissionRequestFrag"
 
 /**
- * Displays information about why a user should enable either the FINE location permission or the
+ * Displays information about why a user should enable either the fine location permission or the
  * background location permission (depending on what is needed).
  *
  * Allows users to grant the permissions as well.
  */
 class PermissionRequestFragment : Fragment() {
 
-    // Set by Activity for which type of permission to request (Fine or background).
+    // Type of permission to request (fine or background). Set by calling Activity.
     private var permissionRequestType: PermissionRequestType? = null
 
     private lateinit var binding: FragmentPermissionRequestBinding
 
     private var activityListener: Callbacks? = null
 
+
+    // If the user denied a previous permission request, but didn't check "Don't ask again", these
+    // Snackbars provided an explanation for why user should approve, i.e., the additional
+    // rationale.
+    private val fineLocationRationalSnackbar by lazy {
+        Snackbar.make(
+                binding.frameLayout,
+                R.string.fine_location_permission_rationale,
+                Snackbar.LENGTH_LONG
+            )
+            .setAction(R.string.ok) {
+                requestPermissions(
+                    arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
+                    REQUEST_FINE_LOCATION_PERMISSIONS_REQUEST_CODE
+                )
+            }
+    }
+
+    private val backgroundRationalSnackbar by lazy {
+        Snackbar.make(
+                binding.frameLayout,
+                R.string.background_location_permission_rationale,
+                Snackbar.LENGTH_LONG
+            )
+            .setAction(R.string.ok) {
+                requestPermissions(
+                    arrayOf(Manifest.permission.ACCESS_BACKGROUND_LOCATION),
+                    REQUEST_BACKGROUND_LOCATION_PERMISSIONS_REQUEST_CODE
+                )
+            }
+    }
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+
+        if (context is Callbacks) {
+            activityListener = context
+        } else {
+            throw RuntimeException("$context must implement PermissionRequestFragment.Callbacks")
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -66,13 +113,31 @@ class PermissionRequestFragment : Fragment() {
         binding = FragmentPermissionRequestBinding.inflate(inflater, container, false)
 
         when (permissionRequestType) {
-            PermissionRequestType.FINE_LOCATION ->
-                binding.explanationTextView.text =
-                    getString(R.string.fine_location_access_rationale_text)
+            PermissionRequestType.FINE_LOCATION -> {
 
-            PermissionRequestType.BACKGROUND_LOCATION ->
-                binding.explanationTextView.text =
-                    getString(R.string.background_location_access_rationale_text)
+                binding.apply {
+                    iconImageView.setImageResource(R.drawable.ic_location_on_24px)
+
+                    titleTextView.text =
+                        getString(R.string.fine_location_access_rationale_title_text)
+
+                    detailsTextView.text =
+                        getString(R.string.fine_location_access_rationale_details_text)
+                }
+            }
+
+            PermissionRequestType.BACKGROUND_LOCATION -> {
+
+                binding.apply {
+                    iconImageView.setImageResource(R.drawable.ic_my_location_24px)
+
+                    titleTextView.text =
+                        getString(R.string.background_location_access_rationale_title_text)
+
+                    detailsTextView.text =
+                        getString(R.string.background_location_access_rationale_details_text)
+                }
+            }
         }
 
         binding.permissionRequestButton.setOnClickListener {
@@ -81,21 +146,11 @@ class PermissionRequestFragment : Fragment() {
                     requestFineLocationPermission()
 
                 PermissionRequestType.BACKGROUND_LOCATION ->
-                    TODO("Add system background permission request.")
+                    requestBackgroundLocationPermission()
             }
         }
 
         return binding.root
-    }
-
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-
-        if (context is Callbacks) {
-            activityListener = context
-        } else {
-            throw RuntimeException("$context must implement OnFragmentInteractionListener")
-        }
     }
 
     override fun onDetach() {
@@ -112,7 +167,8 @@ class PermissionRequestFragment : Fragment() {
         Log.d(TAG, "onRequestPermissionResult")
 
         when (requestCode) {
-            REQUEST_FINE_LOCATION_PERMISSIONS_REQUEST_CODE -> when {
+            REQUEST_FINE_LOCATION_PERMISSIONS_REQUEST_CODE,
+            REQUEST_BACKGROUND_LOCATION_PERMISSIONS_REQUEST_CODE -> when {
                 grantResults.isEmpty() ->
                     // If user interaction was interrupted, the permission request
                     // is cancelled and you receive an empty array.
@@ -123,9 +179,16 @@ class PermissionRequestFragment : Fragment() {
 
                 else -> {
 
+                    val permissionDeniedExplanation =
+                        if (requestCode == REQUEST_FINE_LOCATION_PERMISSIONS_REQUEST_CODE) {
+                            R.string.fine_permission_denied_explanation
+                        } else {
+                            R.string.background_permission_denied_explanation
+                        }
+
                     Snackbar.make(
                         binding.frameLayout,
-                        R.string.permission_denied_explanation,
+                        permissionDeniedExplanation,
                         Snackbar.LENGTH_LONG
                     )
                         .setAction(R.string.settings) {
@@ -147,52 +210,35 @@ class PermissionRequestFragment : Fragment() {
         }
     }
 
-    private fun fineLocationPermissionApproved(): Boolean {
-
-        val context = context ?: return false
-
-        return PackageManager.PERMISSION_GRANTED == checkSelfPermission(
-            context,
-            Manifest.permission.ACCESS_FINE_LOCATION
-        )
-    }
-
     private fun requestFineLocationPermission() {
+        val permissionApproved =
+            context?.hasPermission(Manifest.permission.ACCESS_FINE_LOCATION) ?: return
 
-        if (fineLocationPermissionApproved()) {
+        if (permissionApproved) {
             activityListener?.displayLocationUI()
 
         } else {
-
-            val provideRationale = shouldShowRequestPermissionRationale(
-                Manifest.permission.ACCESS_FINE_LOCATION
-            )
-
-            // If the user denied a previous request, but didn't check "Don't ask again", provide
-            // additional rationale.
-            if (provideRationale) {
-                Snackbar.make(
-                    binding.frameLayout,
-                    R.string.simple_permission_rationale,
-                    Snackbar.LENGTH_LONG
-                )
-                    .setAction(R.string.ok) {
-                        requestPermissions(
-                            arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
-                            REQUEST_FINE_LOCATION_PERMISSIONS_REQUEST_CODE
-                        )
-                    }
-                    .show()
-            } else {
-                Log.d(TAG, "Request fine location permission")
-                requestPermissions(
-                    arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
-                    REQUEST_FINE_LOCATION_PERMISSIONS_REQUEST_CODE
-                )
-            }
+            requestPermissionWithRationale(
+                Manifest.permission.ACCESS_FINE_LOCATION,
+                REQUEST_FINE_LOCATION_PERMISSIONS_REQUEST_CODE,
+                fineLocationRationalSnackbar)
         }
     }
 
+    private fun requestBackgroundLocationPermission() {
+        val permissionApproved =
+            context?.hasPermission(Manifest.permission.ACCESS_BACKGROUND_LOCATION) ?: return
+
+        if (permissionApproved) {
+            activityListener?.displayLocationUI()
+
+        } else {
+            requestPermissionWithRationale(
+                Manifest.permission.ACCESS_BACKGROUND_LOCATION,
+                REQUEST_BACKGROUND_LOCATION_PERMISSIONS_REQUEST_CODE,
+                backgroundRationalSnackbar)
+        }
+    }
 
     /**
      * This interface must be implemented by activities that contain this
@@ -214,6 +260,7 @@ class PermissionRequestFragment : Fragment() {
             "com.google.android.gms.location.sample.locationupdatesbackgroundkotlin.PERMISSION_REQUEST_TYPE"
 
         private const val REQUEST_FINE_LOCATION_PERMISSIONS_REQUEST_CODE = 34
+        private const val REQUEST_BACKGROUND_LOCATION_PERMISSIONS_REQUEST_CODE = 56
 
         /**
          * Use this factory method to create a new instance of
@@ -235,3 +282,6 @@ class PermissionRequestFragment : Fragment() {
 enum class PermissionRequestType {
     FINE_LOCATION, BACKGROUND_LOCATION
 }
+
+
+
