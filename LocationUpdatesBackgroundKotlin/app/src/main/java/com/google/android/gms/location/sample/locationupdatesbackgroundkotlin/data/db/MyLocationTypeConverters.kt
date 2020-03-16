@@ -16,7 +16,6 @@
 package com.google.android.gms.location.sample.locationupdatesbackgroundkotlin.data.db
 
 import androidx.room.TypeConverter
-
 import java.util.Date
 import java.util.UUID
 

@@ -16,14 +16,13 @@
 package com.google.android.gms.location.sample.locationupdatesbackgroundkotlin.data
 
 import android.content.Context
-
+import androidx.annotation.MainThread
 import androidx.lifecycle.LiveData
-
-import java.util.UUID
-import java.util.concurrent.Executors
-
 import com.google.android.gms.location.sample.locationupdatesbackgroundkotlin.data.db.MyLocationDatabase
 import com.google.android.gms.location.sample.locationupdatesbackgroundkotlin.data.db.MyLocationEntity
+import java.util.UUID
+import java.util.concurrent.ExecutorService
+import java.util.concurrent.Executors
 
 private const val TAG = "LocationRepository"
 
@@ -31,27 +30,39 @@ private const val TAG = "LocationRepository"
  * Access point for database (MyLocation data) and location APIs (start/stop location tracking and
  * checking tracking status).
  */
-class LocationRepository private constructor(private val myLocationDatabase: MyLocationDatabase,
-                                             private val myLocationManager: MyLocationManager
-                                         ) {
+class LocationRepository private constructor(
+    private val myLocationDatabase: MyLocationDatabase,
+    private val myLocationManager: MyLocationManager,
+    private val executor:ExecutorService
+) {
 
     // Database related fields/methods:
     private val locationDao = myLocationDatabase.locationDao()
 
-    private val executor = Executors.newSingleThreadExecutor()
-
+    /**
+     * Returns all recorded locations from database.
+     */
     fun getLocations(): LiveData<List<MyLocationEntity>> = locationDao.getLocations()
 
     // Not being used now but could in future versions.
+    /**
+     * Returns specific location in database.
+     */
     fun getLocation(id: UUID): LiveData<MyLocationEntity> = locationDao.getLocation(id)
 
     // Not being used now but could in future versions.
+    /**
+     * Updates location in database.
+     */
     fun updateLocation(myLocationEntity: MyLocationEntity) {
         executor.execute {
             locationDao.updateLocation(myLocationEntity)
         }
     }
 
+    /**
+     * Adds location to the database.
+     */
     fun addLocation(myLocationEntity: MyLocationEntity) {
         executor.execute {
             locationDao.addLocation(myLocationEntity)
@@ -59,20 +70,32 @@ class LocationRepository private constructor(private val myLocationDatabase: MyL
     }
 
     // Location related fields/methods:
+    /**
+     * Tracks whether the app is actively subscribed to location changes.
+     */
     val trackingLocation: LiveData<Boolean> = myLocationManager.trackingLocation
 
+    /**
+     * Subscribes to location updates.
+     */
+    @MainThread
     fun startLocationUpdates() = myLocationManager.startLocationUpdates()
 
+    /**
+     * Un-subscribes from location updates.
+     */
+    @MainThread
     fun stopLocationUpdates() = myLocationManager.stopLocationUpdates()
 
     companion object {
-        private var INSTANCE: LocationRepository? = null
+        @Volatile private var INSTANCE: LocationRepository? = null
 
-        fun getInstance(context: Context): LocationRepository {
+        fun getInstance(context: Context, executor: ExecutorService): LocationRepository {
             return INSTANCE ?: synchronized(this) {
                 INSTANCE ?: LocationRepository(
                     MyLocationDatabase.getInstance(context),
-                    MyLocationManager.getInstance(context))
+                    MyLocationManager.getInstance(context),
+                    executor)
                     .also { INSTANCE = it }
             }
         }

@@ -16,7 +16,6 @@
 package com.google.android.gms.location.sample.locationupdatesbackgroundkotlin.data.db
 
 import android.content.Context
-
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
@@ -29,7 +28,7 @@ private const val DATABASE_NAME = "my-location-database"
  */
 @Database(entities = [MyLocationEntity::class], version = 1)
 @TypeConverters(MyLocationTypeConverters::class)
-abstract class MyLocationDatabase: RoomDatabase() {
+abstract class MyLocationDatabase : RoomDatabase() {
     abstract fun locationDao(): MyLocationDao
 
     companion object {
@@ -37,12 +36,8 @@ abstract class MyLocationDatabase: RoomDatabase() {
         @Volatile private var INSTANCE: MyLocationDatabase? = null
 
         fun getInstance(context: Context): MyLocationDatabase {
-            return INSTANCE
-                ?: synchronized(this) {
-                INSTANCE
-                    ?: buildDatabase(
-                        context
-                    ).also { INSTANCE = it }
+            return INSTANCE ?: synchronized(this) {
+                INSTANCE ?: buildDatabase(context).also { INSTANCE = it }
             }
         }
 
@@ -51,8 +46,7 @@ abstract class MyLocationDatabase: RoomDatabase() {
                     context,
                     MyLocationDatabase::class.java,
                     DATABASE_NAME
-                )
-                .build()
+                ).build()
         }
     }
 }

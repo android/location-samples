@@ -20,11 +20,10 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Update
-
 import java.util.UUID
 
 /**
- * Definition of SQL for mapping to database.
+ * Defines database operations.
  */
 @Dao
 interface MyLocationDao {
@@ -35,10 +34,8 @@ interface MyLocationDao {
     @Query("SELECT * FROM my_location_table WHERE id=(:id)")
     fun getLocation(id: UUID): LiveData<MyLocationEntity>
 
-
     @Update
     fun updateLocation(myLocationEntity: MyLocationEntity)
-
 
     @Insert
     fun addLocation(myLocationEntity: MyLocationEntity)
