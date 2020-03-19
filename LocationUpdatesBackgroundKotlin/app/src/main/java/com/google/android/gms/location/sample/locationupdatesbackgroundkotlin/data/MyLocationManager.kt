@@ -37,15 +37,15 @@ private const val TAG = "MyLocationManager"
  */
 class MyLocationManager private constructor(private val context: Context) {
 
-    private val _trackingLocation: MutableLiveData<Boolean> = MutableLiveData<Boolean>(false)
+    private val _receivingLocationUpdates: MutableLiveData<Boolean> = MutableLiveData<Boolean>(false)
 
     /**
-     * Tracks whether the app is actively subscribed to location changes.
+     * Status of location updates, i.e., whether the app is actively subscribed to location changes.
      */
-    val trackingLocation: LiveData<Boolean>
-        get() = _trackingLocation
+    val receivingLocationUpdates: LiveData<Boolean>
+        get() = _receivingLocationUpdates
 
-    // The Fused Location Provider provides access to location tracking APIs.
+    // The Fused Location Provider provides access to location APIs.
     private val fusedLocationClient: FusedLocationProviderClient =
         LocationServices.getFusedLocationProviderClient(context)
 
@@ -85,7 +85,7 @@ class MyLocationManager private constructor(private val context: Context) {
     }
 
     /**
-     * Uses the FusedLocationProvider to start tracking location if the correct fine locations are
+     * Uses the FusedLocationProvider to start location updates if the correct fine locations are
      * approved.
      *
      * @throws SecurityException if ACCESS_FINE_LOCATION permission is removed before the
@@ -99,12 +99,12 @@ class MyLocationManager private constructor(private val context: Context) {
         if (!context.hasPermission(Manifest.permission.ACCESS_FINE_LOCATION)) return
 
         try {
-            _trackingLocation.value = true
+            _receivingLocationUpdates.value = true
             // If the PendingIntent is the same as the last request (which it always is), this
             // request will replace any requestLocationUpdates() called before.
             fusedLocationClient.requestLocationUpdates(locationRequest, locationUpdatePendingIntent)
         } catch (permissionRevoked: SecurityException) {
-            _trackingLocation.value = false
+            _receivingLocationUpdates.value = false
 
             // Exception only occurs if the user revokes the FINE location permission before
             // requestLocationUpdates() is finished executing (very rare).
@@ -116,7 +116,7 @@ class MyLocationManager private constructor(private val context: Context) {
     @MainThread
     fun stopLocationUpdates() {
         Log.d(TAG, "stopLocationUpdates()")
-        _trackingLocation.value = false
+        _receivingLocationUpdates.value = false
         fusedLocationClient.removeLocationUpdates(locationUpdatePendingIntent)
     }
 

@@ -36,7 +36,7 @@
             android:layout_marginBottom="@dimen/margin_normal"
             android:scrollbars="vertical"
             android:textIsSelectable="true"
-            app:layout_constraintBottom_toTopOf="@+id/startOrStopLocationTrackingButton"
+            app:layout_constraintBottom_toTopOf="@id/startOrStopLocationUpdatesButton"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.438"
             app:layout_constraintStart_toStartOf="parent"
@@ -44,7 +44,7 @@
             tools:text="Outputs location in intervals" />
 
         <Button
-            android:id="@+id/startOrStopLocationTrackingButton"
+            android:id="@+id/startOrStopLocationUpdatesButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/margin_normal"
@@ -52,7 +52,7 @@
             android:layout_marginEnd="@dimen/margin_normal"
             android:layout_marginRight="@dimen/margin_normal"
             android:layout_marginBottom="@dimen/margin_normal"
-            android:text="@string/start_location_tracking"
+            android:text="@string/start_receiving_location"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />

@@ -85,10 +85,10 @@ class LocationUpdateFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        locationUpdateViewModel.trackingLocation.observe(
+        locationUpdateViewModel.receivingLocationUpdates.observe(
             viewLifecycleOwner,
-            androidx.lifecycle.Observer { trackingLocation ->
-                updateStartOrStopButtonState(trackingLocation)
+            androidx.lifecycle.Observer { receivingLocation ->
+                updateStartOrStopButtonState(receivingLocation)
             }
         )
 
@@ -103,7 +103,6 @@ class LocationUpdateFragment : Fragment() {
                             getString(R.string.emptyLocationDatabaseMessage)
                     } else {
                         val outputStringBuilder = StringBuilder("")
-
                         for (location in locations) {
                             outputStringBuilder.append(location.toString() + "\n")
                         }
@@ -139,18 +138,18 @@ class LocationUpdateFragment : Fragment() {
         }
     }
 
-    private fun updateStartOrStopButtonState(trackingLocation:Boolean) {
+    private fun updateStartOrStopButtonState(receivingLocation:Boolean) {
 
-        if (trackingLocation) {
-            binding.startOrStopLocationTrackingButton.apply {
-                text = "Stop Tracking Location"
+        if (receivingLocation) {
+            binding.startOrStopLocationUpdatesButton.apply {
+                text = getString(R.string.stop_receiving_location)
                 setOnClickListener {
                     locationUpdateViewModel.stopLocationUpdates()
                 }
             }
         } else {
-            binding.startOrStopLocationTrackingButton.apply {
-                text = "Start Tracking Location"
+            binding.startOrStopLocationUpdatesButton.apply {
+                text = getString(R.string.start_receiving_location)
                 setOnClickListener {
                     locationUpdateViewModel.startLocationUpdates()
                 }

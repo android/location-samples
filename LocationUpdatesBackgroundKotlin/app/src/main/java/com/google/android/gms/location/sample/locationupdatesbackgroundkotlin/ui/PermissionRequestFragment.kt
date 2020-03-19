@@ -123,6 +123,9 @@ class PermissionRequestFragment : Fragment() {
 
                     detailsTextView.text =
                         getString(R.string.fine_location_access_rationale_details_text)
+
+                    permissionRequestButton.text =
+                        getString(R.string.enable_fine_location_button_text)
                 }
             }
 
@@ -136,6 +139,9 @@ class PermissionRequestFragment : Fragment() {
 
                     detailsTextView.text =
                         getString(R.string.background_location_access_rationale_details_text)
+
+                    permissionRequestButton.text =
+                        getString(R.string.enable_background_location_button_text)
                 }
             }
         }

@@ -26,6 +26,7 @@ import com.google.android.gms.location.sample.locationupdatesbackgroundkotlin.da
 import com.google.android.gms.location.sample.locationupdatesbackgroundkotlin.data.LocationRepository
 
 import java.util.Date
+import java.util.concurrent.Executors
 
 private const val TAG = "LUBroadcastReceiver"
 
@@ -58,7 +59,8 @@ class LocationUpdatesBroadcastReceiver : BroadcastReceiver() {
                             foreground = isAppInForeground(context),
                             date = Date(location.time)
                         )
-                    LocationRepository.getInstance(context).addLocation(myLocation)
+                    LocationRepository.getInstance(context, Executors.newSingleThreadExecutor())
+                        .addLocation(myLocation)
                 }
             }
         }
