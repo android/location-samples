@@ -32,7 +32,7 @@ private const val TAG = "LocationRepository"
 class LocationRepository private constructor(
     private val myLocationDatabase: MyLocationDatabase,
     private val myLocationManager: MyLocationManager,
-    private val executor:ExecutorService
+    private val executor: ExecutorService
 ) {
 
     // Database related fields/methods:

@@ -26,17 +26,13 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-
 import androidx.fragment.app.Fragment
-
-import com.google.android.material.snackbar.Snackbar
-
 import com.google.android.gms.location.sample.locationupdatesbackgroundkotlin.BuildConfig
 import com.google.android.gms.location.sample.locationupdatesbackgroundkotlin.R
 import com.google.android.gms.location.sample.locationupdatesbackgroundkotlin.databinding.FragmentPermissionRequestBinding
 import com.google.android.gms.location.sample.locationupdatesbackgroundkotlin.hasPermission
 import com.google.android.gms.location.sample.locationupdatesbackgroundkotlin.requestPermissionWithRationale
-
+import com.google.android.material.snackbar.Snackbar
 
 private const val TAG = "PermissionRequestFrag"
 
@@ -54,7 +50,6 @@ class PermissionRequestFragment : Fragment() {
     private lateinit var binding: FragmentPermissionRequestBinding
 
     private var activityListener: Callbacks? = null
-
 
     // If the user denied a previous permission request, but didn't check "Don't ask again", these
     // Snackbars provided an explanation for why user should approve, i.e., the additional
@@ -222,7 +217,6 @@ class PermissionRequestFragment : Fragment() {
 
         if (permissionApproved) {
             activityListener?.displayLocationUI()
-
         } else {
             requestPermissionWithRationale(
                 Manifest.permission.ACCESS_FINE_LOCATION,
@@ -237,7 +231,6 @@ class PermissionRequestFragment : Fragment() {
 
         if (permissionApproved) {
             activityListener?.displayLocationUI()
-
         } else {
             requestPermissionWithRationale(
                 Manifest.permission.ACCESS_BACKGROUND_LOCATION,
@@ -288,6 +281,3 @@ class PermissionRequestFragment : Fragment() {
 enum class PermissionRequestType {
     FINE_LOCATION, BACKGROUND_LOCATION
 }
-
-
-

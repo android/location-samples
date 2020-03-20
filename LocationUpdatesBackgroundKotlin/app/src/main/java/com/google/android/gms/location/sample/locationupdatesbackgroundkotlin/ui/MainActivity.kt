@@ -16,10 +16,8 @@
 package com.google.android.gms.location.sample.locationupdatesbackgroundkotlin.ui
 
 import android.os.Bundle
-
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil.setContentView
-
 import com.google.android.gms.location.sample.locationupdatesbackgroundkotlin.R
 import com.google.android.gms.location.sample.locationupdatesbackgroundkotlin.databinding.ActivityMainBinding
 

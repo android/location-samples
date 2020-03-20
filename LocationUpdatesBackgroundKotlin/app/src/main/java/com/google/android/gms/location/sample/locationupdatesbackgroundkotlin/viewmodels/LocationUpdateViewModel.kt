@@ -18,7 +18,6 @@ package com.google.android.gms.location.sample.locationupdatesbackgroundkotlin.v
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
-
 import com.google.android.gms.location.sample.locationupdatesbackgroundkotlin.data.LocationRepository
 import java.util.concurrent.Executors
 

@@ -20,11 +20,9 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.util.Log
-
 import com.google.android.gms.location.LocationResult
-import com.google.android.gms.location.sample.locationupdatesbackgroundkotlin.data.db.MyLocationEntity
 import com.google.android.gms.location.sample.locationupdatesbackgroundkotlin.data.LocationRepository
-
+import com.google.android.gms.location.sample.locationupdatesbackgroundkotlin.data.db.MyLocationEntity
 import java.util.Date
 import java.util.concurrent.Executors
 
@@ -66,7 +64,7 @@ class LocationUpdatesBroadcastReceiver : BroadcastReceiver() {
         }
     }
 
-    private fun isAppInForeground(context: Context):Boolean {
+    private fun isAppInForeground(context: Context): Boolean {
         val activityManager = context.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
         val appProcesses = activityManager.runningAppProcesses ?: return false
 

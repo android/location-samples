@@ -22,16 +22,13 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
-
-import java.lang.StringBuilder
-
 import com.google.android.gms.location.sample.locationupdatesbackgroundkotlin.R
 import com.google.android.gms.location.sample.locationupdatesbackgroundkotlin.databinding.FragmentLocationUpdateBinding
 import com.google.android.gms.location.sample.locationupdatesbackgroundkotlin.hasPermission
 import com.google.android.gms.location.sample.locationupdatesbackgroundkotlin.viewmodels.LocationUpdateViewModel
+import java.lang.StringBuilder
 
 private const val TAG = "LocationUpdateFragment"
 
@@ -61,7 +58,6 @@ class LocationUpdateFragment : Fragment() {
             if (!context.hasPermission(Manifest.permission.ACCESS_FINE_LOCATION)) {
                 activityListener?.requestFineLocationPermission()
             }
-
         } else {
             throw RuntimeException("$context must implement LocationUpdateFragment.Callbacks")
         }
@@ -98,7 +94,7 @@ class LocationUpdateFragment : Fragment() {
                 locations?.let {
                     Log.d(TAG, "Got ${locations.size} locations")
 
-                    if(locations.isEmpty()) {
+                    if (locations.isEmpty()) {
                         binding.locationOutputTextView.text =
                             getString(R.string.emptyLocationDatabaseMessage)
                     } else {
@@ -138,8 +134,7 @@ class LocationUpdateFragment : Fragment() {
         }
     }
 
-    private fun updateStartOrStopButtonState(receivingLocation:Boolean) {
-
+    private fun updateStartOrStopButtonState(receivingLocation: Boolean) {
         if (receivingLocation) {
             binding.startOrStopLocationUpdatesButton.apply {
                 text = getString(R.string.stop_receiving_location)
