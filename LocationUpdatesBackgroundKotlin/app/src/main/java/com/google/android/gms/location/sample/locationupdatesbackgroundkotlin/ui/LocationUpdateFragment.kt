@@ -169,7 +169,6 @@ class LocationUpdateFragment : Fragment() {
     }
 
     companion object {
-        fun newInstance() =
-            LocationUpdateFragment()
+        fun newInstance() = LocationUpdateFragment()
     }
 }

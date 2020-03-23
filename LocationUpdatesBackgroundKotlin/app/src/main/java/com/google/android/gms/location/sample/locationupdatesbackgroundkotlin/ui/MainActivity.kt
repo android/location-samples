@@ -80,10 +80,7 @@ class MainActivity : AppCompatActivity(), PermissionRequestFragment.Callbacks,
     // Triggers a splash screen (fragment) to help users decide if they want to approve the missing
     // fine location permission.
     override fun requestFineLocationPermission() {
-        val fragment =
-            PermissionRequestFragment.newInstance(
-                PermissionRequestType.FINE_LOCATION
-            )
+        val fragment = PermissionRequestFragment.newInstance(PermissionRequestType.FINE_LOCATION)
 
         supportFragmentManager
             .beginTransaction()
@@ -95,10 +92,9 @@ class MainActivity : AppCompatActivity(), PermissionRequestFragment.Callbacks,
     // Triggers a splash screen (fragment) to help users decide if they want to approve the missing
     // background location permission.
     override fun requestBackgroundLocationPermission() {
-        val fragment =
-            PermissionRequestFragment.newInstance(
-                PermissionRequestType.BACKGROUND_LOCATION
-            )
+        val fragment = PermissionRequestFragment.newInstance(
+            PermissionRequestType.BACKGROUND_LOCATION
+        )
 
         supportFragmentManager
             .beginTransaction()

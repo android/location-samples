@@ -37,13 +37,10 @@
     <string name="background_location_access_rationale_title_text">Improve location accuracy!</string>
 
     <string name="background_location_access_rationale_details_text">
-        Dev Tip: If it\'s important for your app\'s core use case to continuously receive location updates in the background, your app can receive location updates that way.
+        Dev Tip: Unless you have a valid use case for background location updates, you should instead only request updates while your app is in the foreground (app/foreground service).
         \n\n
-        For this app, improve your location accuracy by receiving location updates in the background.
+        For this app, you would explain why the particular use case requires background location updates and direct user to click \"Allow all the time\" below.
         \n\n
-        That means you don\'t have to keep this wonderful app open all the time to accurately receive location updates!
-        \n\n
-        To improve the location accuracy, please choose \"Allow all the time\" via the button below.
     </string>
 
 

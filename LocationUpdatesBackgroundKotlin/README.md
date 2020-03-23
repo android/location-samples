@@ -4,10 +4,10 @@ Demonstrates retrieving location updates in the background.
 
 Introduction
 ============
-This app allows a user to receive location updates in the background via a PendingIntent.
+This app allows a user to receive location updates in the background via a `PendingIntent`.
 
 If you are just interested in seeing the code that subscribes to a location request, please
-review the **MyLocationManager** file and the **LocationUpdatesBroadcastReceiver** file for the
+review the **`MyLocationManager`** file and the **`LocationUpdatesBroadcastReceiver`** file for the
 BroadcastReceiver triggered by location changes.
 
 Users have four options in Android 11+ regarding location:
@@ -16,9 +16,9 @@ Users have four options in Android 11+ regarding location:
 * Allow all the time
 * Not allow location at all
 
-In addition to the FINE location permission (android.permission.ACCESS_FINE_LOCATION), if you do
+In addition to the FINE location permission (`android.permission.ACCESS_FINE_LOCATION`), if you do
 have an approved use case for receiving location updates in the background, it will require an
-additional permission (android.permission.ACCESS_BACKGROUND_LOCATION).
+additional permission (`android.permission.ACCESS_BACKGROUND_LOCATION`).
 
 To run this sample, **location must be enabled**.
 

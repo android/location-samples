@@ -47,16 +47,14 @@ class LocationUpdatesBroadcastReceiver : BroadcastReceiver() {
         Log.d(TAG, "onReceive() context:$context, intent:$intent")
 
         if (intent.action == ACTION_PROCESS_UPDATES) {
-            val result = LocationResult.extractResult(intent)
-            if (result != null) {
-                for (location in result.locations) {
-                    val myLocation =
-                        MyLocationEntity(
-                            latitude = location.latitude,
-                            longitude = location.longitude,
-                            foreground = isAppInForeground(context),
-                            date = Date(location.time)
-                        )
+            LocationResult.extractResult(intent)?.let { locationResult ->
+                locationResult.locations.forEach { location ->
+                    val myLocation = MyLocationEntity(
+                        latitude = location.latitude,
+                        longitude = location.longitude,
+                        foreground = isAppInForeground(context),
+                        date = Date(location.time)
+                    )
                     LocationRepository.getInstance(context, Executors.newSingleThreadExecutor())
                         .addLocation(myLocation)
                 }
@@ -68,15 +66,14 @@ class LocationUpdatesBroadcastReceiver : BroadcastReceiver() {
         val activityManager = context.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
         val appProcesses = activityManager.runningAppProcesses ?: return false
 
-        val packageName = context.packageName
-
-        for (appProcess in appProcesses) {
+        appProcesses.forEach { appProcess ->
             if (appProcess.importance ==
                 ActivityManager.RunningAppProcessInfo.IMPORTANCE_FOREGROUND &&
-                appProcess.processName == packageName) {
+                appProcess.processName == context.packageName) {
                 return true
             }
         }
+
         return false
     }
 
