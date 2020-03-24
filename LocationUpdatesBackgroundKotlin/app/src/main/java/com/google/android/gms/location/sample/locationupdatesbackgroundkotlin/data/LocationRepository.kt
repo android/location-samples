@@ -22,18 +22,17 @@ import com.google.android.gms.location.sample.locationupdatesbackgroundkotlin.da
 import com.google.android.gms.location.sample.locationupdatesbackgroundkotlin.data.db.MyLocationEntity
 import java.util.UUID
 import java.util.concurrent.ExecutorService
-import java.util.concurrent.Executors
 
 private const val TAG = "LocationRepository"
 
 /**
- * Access point for database (MyLocation data) and location APIs (start/stop location tracking and
- * checking tracking status).
+ * Access point for database (MyLocation data) and location APIs (start/stop location updates and
+ * checking location update status).
  */
 class LocationRepository private constructor(
     private val myLocationDatabase: MyLocationDatabase,
     private val myLocationManager: MyLocationManager,
-    private val executor:ExecutorService
+    private val executor: ExecutorService
 ) {
 
     // Database related fields/methods:
@@ -69,11 +68,20 @@ class LocationRepository private constructor(
         }
     }
 
+    /**
+     * Adds list of locations to the database.
+     */
+    fun addLocations(myLocationEntities: List<MyLocationEntity>) {
+        executor.execute {
+            locationDao.addLocations(myLocationEntities)
+        }
+    }
+
     // Location related fields/methods:
     /**
-     * Tracks whether the app is actively subscribed to location changes.
+     * Status of whether the app is actively subscribed to location changes.
      */
-    val trackingLocation: LiveData<Boolean> = myLocationManager.trackingLocation
+    val receivingLocationUpdates: LiveData<Boolean> = myLocationManager.receivingLocationUpdates
 
     /**
      * Subscribes to location updates.
