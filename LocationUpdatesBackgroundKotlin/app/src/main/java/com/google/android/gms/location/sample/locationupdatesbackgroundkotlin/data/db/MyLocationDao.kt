@@ -39,4 +39,7 @@ interface MyLocationDao {
 
     @Insert
     fun addLocation(myLocationEntity: MyLocationEntity)
+
+    @Insert
+    fun addLocations(myLocationEntities: List<MyLocationEntity>)
 }

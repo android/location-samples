@@ -15,7 +15,7 @@
  limitations under the License.
 -->
 <resources>
-    <string name="app_name">Location Updates via Background</string>
+    <string name="app_name">Location Updates from Background</string>
 
     <string name="fine_location_permission_rationale">The fine location permission is needed for core functionality.</string>
     <string name="fine_permission_denied_explanation">Fine location permission was denied, but is needed for core functionality.</string>

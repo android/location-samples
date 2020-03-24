@@ -48,15 +48,17 @@ class LocationUpdatesBroadcastReceiver : BroadcastReceiver() {
 
         if (intent.action == ACTION_PROCESS_UPDATES) {
             LocationResult.extractResult(intent)?.let { locationResult ->
-                locationResult.locations.forEach { location ->
-                    val myLocation = MyLocationEntity(
+                val locations = locationResult.locations.map { location ->
+                    MyLocationEntity(
                         latitude = location.latitude,
                         longitude = location.longitude,
                         foreground = isAppInForeground(context),
                         date = Date(location.time)
                     )
+                }
+                if (locations.isNotEmpty()) {
                     LocationRepository.getInstance(context, Executors.newSingleThreadExecutor())
-                        .addLocation(myLocation)
+                        .addLocations(locations)
                 }
             }
         }

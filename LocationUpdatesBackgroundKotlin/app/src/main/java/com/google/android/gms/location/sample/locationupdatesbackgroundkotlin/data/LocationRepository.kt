@@ -68,6 +68,15 @@ class LocationRepository private constructor(
         }
     }
 
+    /**
+     * Adds list of locations to the database.
+     */
+    fun addLocations(myLocationEntities: List<MyLocationEntity>) {
+        executor.execute {
+            locationDao.addLocations(myLocationEntities)
+        }
+    }
+
     // Location related fields/methods:
     /**
      * Status of whether the app is actively subscribed to location changes.
