@@ -115,6 +115,21 @@ class LocationUpdateFragment : Fragment() {
         updateBackgroundButtonState()
     }
 
+    override fun onPause() {
+        super.onPause()
+
+        // Stops location updates if background permissions aren't approved. The FusedLocationClient
+        // won't trigger any PendingIntents with location updates anyway if you don't have the
+        // background permission approved, but it's best practice to unsubscribing anyway.
+        // To simplify the sample, we are unsubscribing from updates here in the Fragment, but you
+        // could do it at the Activity level if you want to continue receiving location updates
+        // while the user is moving between Fragments.
+        if ((locationUpdateViewModel.receivingLocationUpdates.value == true) &&
+            (!requireContext().hasPermission(Manifest.permission.ACCESS_BACKGROUND_LOCATION))) {
+            locationUpdateViewModel.stopLocationUpdates()
+        }
+    }
+
     override fun onDetach() {
         super.onDetach()
 
@@ -126,7 +141,6 @@ class LocationUpdateFragment : Fragment() {
     }
 
     private fun updateBackgroundButtonState() {
-
         if (showBackgroundButton()) {
             binding.enableBackgroundLocationButton.visibility = View.VISIBLE
         } else {
