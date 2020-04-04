@@ -36,7 +36,7 @@
             android:layout_marginBottom="@dimen/margin_normal"
             android:scrollbars="vertical"
             android:textIsSelectable="true"
-            app:layout_constraintBottom_toTopOf="@id/startOrStopLocationUpdatesButton"
+            app:layout_constraintBottom_toTopOf="@+id/startOrStopLocationUpdatesButton"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.438"
             app:layout_constraintStart_toStartOf="parent"
