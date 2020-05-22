@@ -132,8 +132,34 @@ class PermissionRequestFragment : Fragment() {
                     titleTextView.text =
                         getString(R.string.background_location_access_rationale_title_text)
 
-                    detailsTextView.text =
+                    var backgroundDetailsText:String =
                         getString(R.string.background_location_access_rationale_details_text)
+
+                    // Users must approve the ACCESS_BACKGROUND_LOCATION permission in settings in
+                    // Android 11 and above (R+) vs a Dialog in pre-Android 11.
+                    // To help users find the option to grant the permission, you can include the
+                    // user-visible label of the settings option in your app's UI via
+                    // getBackgroundPermissionOptionLabel().
+                    // This label is localized to the user's device language preference.
+                    // If you are targeting Android 11, feel free to uncomment the block below.
+                    // TODO: Uncomment and covert if statement to the code below on R release:
+                    // android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.R
+                    /*
+                    if (BuildCompat.isAtLeastR()) {
+                        // ERROR IS RAISED WITH THE LINE BELOW
+                        val backgroundPermissionOptionLabel =
+                            context?.packageManager?.backgroundPermissionOptionLabel
+                        Log.d(
+                            TAG,
+                            "Android 11 Permission Label: $backgroundPermissionOptionLabel"
+                        )
+                        backgroundDetailsText +=
+                            context?.packageManager?.backgroundPermissionOptionLabel
+                    }
+                    */
+                    Log.d(TAG, "detailsText: $backgroundDetailsText")
+
+                    detailsTextView.text = backgroundDetailsText
 
                     permissionRequestButton.text =
                         getString(R.string.enable_background_location_button_text)
