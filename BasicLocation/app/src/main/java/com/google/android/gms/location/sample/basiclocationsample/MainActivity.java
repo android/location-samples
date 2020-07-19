@@ -99,6 +99,7 @@ public class MainActivity extends AppCompatActivity {
      */
     @SuppressWarnings("MissingPermission")
     private void getLastLocation() {
+        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
         mFusedLocationClient.getLastLocation()
                 .addOnCompleteListener(this, new OnCompleteListener<Location>() {
                     @Override
