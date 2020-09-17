@@ -128,7 +128,7 @@ public class MainActivity extends AppCompatActivity implements
 
         // Check that the user hasn't revoked permissions by going to Settings.
         if (Utils.requestingLocationUpdates(this)) {
-            if (!checkPermissions()) {
+            if (checkPermissions()) {
                 requestPermissions();
             }
         }
@@ -140,23 +140,16 @@ public class MainActivity extends AppCompatActivity implements
         PreferenceManager.getDefaultSharedPreferences(this)
                 .registerOnSharedPreferenceChangeListener(this);
 
-        mBinding.requestLocationUpdatesButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (!checkPermissions()) {
-                    requestPermissions();
-                } else {
-                    mService.requestLocationUpdates();
-                }
+        mBinding.requestLocationUpdatesButton.setOnClickListener(view -> {
+            if (checkPermissions()) {
+                requestPermissions();
+            } else {
+                mService.requestLocationUpdates();
             }
         });
 
-        mBinding.removeLocationUpdatesButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                mService.removeLocationUpdates();
-            }
-        });
+        mBinding.removeLocationUpdatesButton.setOnClickListener(
+            view -> mService.removeLocationUpdates());
 
         // Restore the state of the buttons when the activity (re)launches.
         setButtonsState(Utils.requestingLocationUpdates(this));
@@ -198,8 +191,8 @@ public class MainActivity extends AppCompatActivity implements
      * Returns the current state of the permissions needed.
      */
     private boolean checkPermissions() {
-        return  PackageManager.PERMISSION_GRANTED == ActivityCompat.checkSelfPermission(this,
-                Manifest.permission.ACCESS_FINE_LOCATION);
+        return PackageManager.PERMISSION_GRANTED != ActivityCompat.checkSelfPermission(this,
+            Manifest.permission.ACCESS_FINE_LOCATION);
     }
 
     private void requestPermissions() {
@@ -215,14 +208,11 @@ public class MainActivity extends AppCompatActivity implements
                     findViewById(R.id.activity_main),
                     R.string.permission_rationale,
                     Snackbar.LENGTH_INDEFINITE)
-                    .setAction(R.string.ok, new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            // Request permission
-                            ActivityCompat.requestPermissions(MainActivity.this,
-                                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
-                                    REQUEST_PERMISSIONS_REQUEST_CODE);
-                        }
+                    .setAction(R.string.ok, view -> {
+                        // Request permission
+                        ActivityCompat.requestPermissions(MainActivity.this,
+                                new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                                REQUEST_PERMISSIONS_REQUEST_CODE);
                     })
                     .show();
         } else {
@@ -258,19 +248,16 @@ public class MainActivity extends AppCompatActivity implements
                         findViewById(R.id.activity_main),
                         R.string.permission_denied_explanation,
                         Snackbar.LENGTH_INDEFINITE)
-                        .setAction(R.string.settings, new View.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-                                // Build intent that displays the App settings screen.
-                                Intent intent = new Intent();
-                                intent.setAction(
-                                        Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
-                                Uri uri = Uri.fromParts("package",
-                                    BuildConfig.LIBRARY_PACKAGE_NAME, null);
-                                intent.setData(uri);
-                                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                                startActivity(intent);
-                            }
+                        .setAction(R.string.settings, view -> {
+                            // Build intent that displays the App settings screen.
+                            Intent intent = new Intent();
+                            intent.setAction(
+                                    Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+                            Uri uri = Uri.fromParts("package",
+                                BuildConfig.LIBRARY_PACKAGE_NAME, null);
+                            intent.setData(uri);
+                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                            startActivity(intent);
                         })
                         .show();
             }

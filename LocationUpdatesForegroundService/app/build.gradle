@@ -17,6 +17,10 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    compileOptions {
+        sourceCompatibility = 1.8
+        targetCompatibility = 1.8
+    }
     buildFeatures {
         viewBinding true
     }
@@ -26,6 +30,8 @@ ext {
     // Jetpack
     // AppCompat
     appCompatVersion = "1.2.0"
+    // LocalBroadcastManager
+    localBroadcastManager = "1.0.0"
     // MaterialComponents
     materialComponentsVersion = "1.2.1"
 
@@ -47,7 +53,7 @@ dependencies {
     // AppCompat
     implementation "androidx.appcompat:appcompat:$appCompatVersion"
     // LocalBroadcastManager
-    implementation 'androidx.localbroadcastmanager:localbroadcastmanager:1.0.0'
+    implementation "androidx.localbroadcastmanager:localbroadcastmanager:$localBroadcastManager"
     // MaterialComponents
     implementation "com.google.android.material:material:$materialComponentsVersion"
 
