@@ -31,7 +31,9 @@ ext {
     // AppCompat
     appCompatVersion = "1.2.0"
     // LocalBroadcastManager
-    localBroadcastManager = "1.0.0"
+    localBroadcastManagerVersion = "1.0.0"
+    // Preference
+    preferenceVersion = "1.1.1"
     // MaterialComponents
     materialComponentsVersion = "1.2.1"
 
@@ -53,7 +55,9 @@ dependencies {
     // AppCompat
     implementation "androidx.appcompat:appcompat:$appCompatVersion"
     // LocalBroadcastManager
-    implementation "androidx.localbroadcastmanager:localbroadcastmanager:$localBroadcastManager"
+    implementation "androidx.localbroadcastmanager:localbroadcastmanager:$localBroadcastManagerVersion"
+    // Preference
+    implementation "androidx.preference:preference:$preferenceVersion"
     // MaterialComponents
     implementation "com.google.android.material:material:$materialComponentsVersion"
 
