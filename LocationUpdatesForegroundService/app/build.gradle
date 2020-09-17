@@ -17,6 +17,9 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    buildFeatures {
+        viewBinding true
+    }
 }
 
 ext {
@@ -43,6 +46,8 @@ dependencies {
     // Jetpack
     // AppCompat
     implementation "androidx.appcompat:appcompat:$appCompatVersion"
+    // LocalBroadcastManager
+    implementation 'androidx.localbroadcastmanager:localbroadcastmanager:1.0.0'
     // MaterialComponents
     implementation "com.google.android.material:material:$materialComponentsVersion"
 

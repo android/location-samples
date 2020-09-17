@@ -16,6 +16,7 @@
 
 package com.google.android.gms.location.sample.locationupdatesforegroundservice;
 
+import android.Manifest;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
@@ -23,28 +24,25 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.location.Location;
+import android.net.Uri;
+import android.os.Bundle;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
-import androidx.localbroadcastmanager.content.LocalBroadcastManager;
-import androidx.appcompat.app.AppCompatActivity;
-import android.os.Bundle;
-import android.util.Log;
-
-import android.Manifest;
-
-import android.content.pm.PackageManager;
-
-import android.net.Uri;
-
 import android.provider.Settings;
-import androidx.annotation.NonNull;
-import com.google.android.material.snackbar.Snackbar;
-import androidx.core.app.ActivityCompat;
-
+import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+import androidx.viewbinding.BuildConfig;
+
+import com.google.android.gms.location.sample.locationupdatesforegroundservice.databinding.ActivityMainBinding;
+import com.google.android.material.snackbar.Snackbar;
 
 /**
  * The only activity in this sample.
@@ -98,8 +96,7 @@ public class MainActivity extends AppCompatActivity implements
     private boolean mBound = false;
 
     // UI elements.
-    private Button mRequestLocationUpdatesButton;
-    private Button mRemoveLocationUpdatesButton;
+    private ActivityMainBinding mBinding;
 
     // Monitors the state of the connection to the service.
     private final ServiceConnection mServiceConnection = new ServiceConnection() {
@@ -121,8 +118,13 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        
+        // ViewBinding initialization
+        mBinding = ActivityMainBinding.inflate(getLayoutInflater());
+        View view = mBinding.getRoot();
+        setContentView(view);
+    
         myReceiver = new MyReceiver();
-        setContentView(R.layout.activity_main);
 
         // Check that the user hasn't revoked permissions by going to Settings.
         if (Utils.requestingLocationUpdates(this)) {
@@ -138,10 +140,7 @@ public class MainActivity extends AppCompatActivity implements
         PreferenceManager.getDefaultSharedPreferences(this)
                 .registerOnSharedPreferenceChangeListener(this);
 
-        mRequestLocationUpdatesButton = (Button) findViewById(R.id.request_location_updates_button);
-        mRemoveLocationUpdatesButton = (Button) findViewById(R.id.remove_location_updates_button);
-
-        mRequestLocationUpdatesButton.setOnClickListener(new View.OnClickListener() {
+        mBinding.requestLocationUpdatesButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (!checkPermissions()) {
@@ -152,7 +151,7 @@ public class MainActivity extends AppCompatActivity implements
             }
         });
 
-        mRemoveLocationUpdatesButton.setOnClickListener(new View.OnClickListener() {
+        mBinding.removeLocationUpdatesButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 mService.removeLocationUpdates();
@@ -267,7 +266,7 @@ public class MainActivity extends AppCompatActivity implements
                                 intent.setAction(
                                         Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
                                 Uri uri = Uri.fromParts("package",
-                                        BuildConfig.APPLICATION_ID, null);
+                                    BuildConfig.LIBRARY_PACKAGE_NAME, null);
                                 intent.setData(uri);
                                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                                 startActivity(intent);
@@ -303,11 +302,11 @@ public class MainActivity extends AppCompatActivity implements
 
     private void setButtonsState(boolean requestingLocationUpdates) {
         if (requestingLocationUpdates) {
-            mRequestLocationUpdatesButton.setEnabled(false);
-            mRemoveLocationUpdatesButton.setEnabled(true);
+            mBinding.requestLocationUpdatesButton.setEnabled(false);
+            mBinding.removeLocationUpdatesButton.setEnabled(true);
         } else {
-            mRequestLocationUpdatesButton.setEnabled(true);
-            mRemoveLocationUpdatesButton.setEnabled(false);
+            mBinding.requestLocationUpdatesButton.setEnabled(true);
+            mBinding.removeLocationUpdatesButton.setEnabled(false);
         }
     }
 }
