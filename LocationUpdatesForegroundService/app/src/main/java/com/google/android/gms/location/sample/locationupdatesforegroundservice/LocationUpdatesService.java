@@ -296,7 +296,7 @@ public class LocationUpdatesService extends Service {
         builder.setContentText(text);
         builder.setContentTitle(Utils.getLocationTitle(this));
         builder.setOngoing(true);
-        builder.setPriority(Notification.PRIORITY_HIGH);
+        builder.setPriority(NotificationCompat.PRIORITY_HIGH);
         builder.setSmallIcon(R.mipmap.ic_launcher);
         builder.setTicker(text);
         builder.setWhen(System.currentTimeMillis());
