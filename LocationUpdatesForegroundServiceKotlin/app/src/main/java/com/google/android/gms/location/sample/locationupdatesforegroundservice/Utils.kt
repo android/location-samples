@@ -13,54 +13,49 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.google.android.gms.location.sample.locationupdatesforegroundservice
 
-package com.google.android.gms.location.sample.locationupdatesforegroundservice;
+import android.content.Context
+import android.location.Location
+import androidx.preference.PreferenceManager
+import java.text.DateFormat
+import java.util.*
 
-
-import android.content.Context;
-import android.location.Location;
-
-import androidx.preference.PreferenceManager;
-
-import java.text.DateFormat;
-import java.util.Date;
-
-class Utils {
-
-    static final String KEY_REQUESTING_LOCATION_UPDATES = "requesting_location_updates";
-
+internal object Utils {
+    const val KEY_REQUESTING_LOCATION_UPDATES = "requesting_location_updates"
+    
     /**
      * Returns true if requesting location updates, otherwise returns false.
      *
-     * @param context The {@link Context}.
+     * @param context The [Context].
      */
-    static boolean requestingLocationUpdates(Context context) {
+    fun requestingLocationUpdates(context: Context?): Boolean {
         return PreferenceManager.getDefaultSharedPreferences(context)
-                .getBoolean(KEY_REQUESTING_LOCATION_UPDATES, false);
+            .getBoolean(KEY_REQUESTING_LOCATION_UPDATES, false)
     }
-
+    
     /**
      * Stores the location updates state in SharedPreferences.
      * @param requestingLocationUpdates The location updates state.
      */
-    static void setRequestingLocationUpdates(Context context, boolean requestingLocationUpdates) {
+    fun setRequestingLocationUpdates(context: Context?, requestingLocationUpdates: Boolean) {
         PreferenceManager.getDefaultSharedPreferences(context)
-                .edit()
-                .putBoolean(KEY_REQUESTING_LOCATION_UPDATES, requestingLocationUpdates)
-                .apply();
+            .edit()
+            .putBoolean(KEY_REQUESTING_LOCATION_UPDATES, requestingLocationUpdates)
+            .apply()
     }
-
+    
     /**
-     * Returns the {@code location} object as a human readable string.
-     * @param location  The {@link Location}.
+     * Returns the `location` object as a human readable string.
+     * @param location  The [Location].
      */
-    static String getLocationText(Location location) {
-        return location == null ? "Unknown location" :
-                "(" + location.getLatitude() + ", " + location.getLongitude() + ")";
+    fun getLocationText(location: Location?): String {
+        return if (location == null) "Unknown location"
+        else "(${location.latitude}, ${location.longitude})"
     }
-
-    static String getLocationTitle(Context context) {
+    
+    fun getLocationTitle(context: Context): String {
         return context.getString(R.string.location_updated,
-                DateFormat.getDateTimeInstance().format(new Date()));
+            DateFormat.getDateTimeInstance().format(Date()))
     }
 }
