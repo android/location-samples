@@ -24,7 +24,6 @@ import android.os.Bundle
 import android.os.IBinder
 import android.provider.Settings
 import android.util.Log
-import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
@@ -70,6 +69,13 @@ import com.google.android.material.snackbar.Snackbar
  * notification. This dismisses the notification and stops the service.
  */
 class MainActivity : AppCompatActivity(), SharedPreferences.OnSharedPreferenceChangeListener {
+    companion object {
+        private val TAG = MainActivity::class.java.simpleName
+        
+        // Used in checking for runtime permissions.
+        private const val REQUEST_PERMISSIONS_REQUEST_CODE = 34
+    }
+    
     // The BroadcastReceiver used to listen from broadcasts from the service.
     private var myReceiver: MyReceiver? = null
     
@@ -80,7 +86,7 @@ class MainActivity : AppCompatActivity(), SharedPreferences.OnSharedPreferenceCh
     private var mBound = false
     
     // UI elements.
-    private var mBinding: ActivityMainBinding? = null
+    private lateinit var mBinding: ActivityMainBinding
     
     // Monitors the state of the connection to the service.
     private val mServiceConnection: ServiceConnection = object : ServiceConnection {
@@ -96,12 +102,25 @@ class MainActivity : AppCompatActivity(), SharedPreferences.OnSharedPreferenceCh
         }
     }
     
+    /**
+     * Receiver for broadcasts sent by [LocationUpdatesService].
+     */
+    private inner class MyReceiver : BroadcastReceiver() {
+        override fun onReceive(context: Context, intent: Intent) {
+            val location = intent.getParcelableExtra<Location>(LocationUpdatesService.EXTRA_LOCATION)
+            if (location != null) {
+                Toast.makeText(this@MainActivity, Utils.getLocationText(location),
+                    Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+    
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         
         // ViewBinding initialization
         mBinding = ActivityMainBinding.inflate(layoutInflater)
-        val view: View = mBinding!!.root
+        val view = mBinding.root
         setContentView(view)
         myReceiver = MyReceiver()
         
@@ -117,14 +136,18 @@ class MainActivity : AppCompatActivity(), SharedPreferences.OnSharedPreferenceCh
         super.onStart()
         PreferenceManager.getDefaultSharedPreferences(this)
             .registerOnSharedPreferenceChangeListener(this)
-        mBinding!!.requestLocationUpdatesButton.setOnClickListener { view: View? ->
+        
+        mBinding.requestLocationUpdatesButton.setOnClickListener {
             if (checkPermissions()) {
                 requestPermissions()
             } else {
-                mService!!.requestLocationUpdates()
+                mService?.requestLocationUpdates()
             }
         }
-        mBinding!!.removeLocationUpdatesButton.setOnClickListener { view: View? -> mService!!.removeLocationUpdates() }
+        
+        mBinding.removeLocationUpdatesButton.setOnClickListener {
+            mService?.removeLocationUpdates()
+        }
         
         // Restore the state of the buttons when the activity (re)launches.
         setButtonsState(Utils.requestingLocationUpdates(this))
@@ -137,12 +160,15 @@ class MainActivity : AppCompatActivity(), SharedPreferences.OnSharedPreferenceCh
     
     override fun onResume() {
         super.onResume()
-        LocalBroadcastManager.getInstance(this).registerReceiver(myReceiver!!,
-            IntentFilter(LocationUpdatesService.ACTION_BROADCAST))
+        myReceiver?.let {
+            LocalBroadcastManager.getInstance(this)
+                .registerReceiver(it, IntentFilter(LocationUpdatesService.ACTION_BROADCAST))
+        }
     }
     
     override fun onPause() {
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(myReceiver!!)
+        myReceiver?.let { LocalBroadcastManager.getInstance(this)
+            .unregisterReceiver(it) }
         super.onPause()
     }
     
@@ -176,12 +202,13 @@ class MainActivity : AppCompatActivity(), SharedPreferences.OnSharedPreferenceCh
         if (shouldProvideRationale) {
             Log.i(TAG, "Displaying permission rationale to provide additional context.")
             Snackbar.make(
-                mBinding!!.root,
+                mBinding.root,
                 R.string.permission_rationale,
                 Snackbar.LENGTH_INDEFINITE)
-                .setAction(R.string.ok) { view: View? ->
+                .setAction(R.string.ok) {
                     // Request permission
-                    ActivityCompat.requestPermissions(this@MainActivity, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
+                    ActivityCompat.requestPermissions(this@MainActivity,
+                        arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
                         REQUEST_PERMISSIONS_REQUEST_CODE)
                 }
                 .show()
@@ -190,7 +217,8 @@ class MainActivity : AppCompatActivity(), SharedPreferences.OnSharedPreferenceCh
             // Request permission. It's possible this can be auto answered if device policy
             // sets the permission in a given state or the user denied the permission
             // previously and checked "Never ask again".
-            ActivityCompat.requestPermissions(this@MainActivity, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
+            ActivityCompat.requestPermissions(this@MainActivity,
+                arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
                 REQUEST_PERMISSIONS_REQUEST_CODE)
         }
     }
@@ -202,21 +230,21 @@ class MainActivity : AppCompatActivity(), SharedPreferences.OnSharedPreferenceCh
                                             grantResults: IntArray) {
         Log.i(TAG, "onRequestPermissionResult")
         if (requestCode == REQUEST_PERMISSIONS_REQUEST_CODE) {
-            if (grantResults.size <= 0) {
+            if (grantResults.isEmpty()) {
                 // If user interaction was interrupted, the permission request is cancelled and you
                 // receive empty arrays.
                 Log.i(TAG, "User interaction was cancelled.")
             } else if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 // Permission was granted.
-                mService!!.requestLocationUpdates()
+                mService?.requestLocationUpdates()
             } else {
                 // Permission denied.
                 setButtonsState(false)
                 Snackbar.make(
-                    mBinding!!.root,
+                    mBinding.root,
                     R.string.permission_denied_explanation,
                     Snackbar.LENGTH_INDEFINITE)
-                    .setAction(R.string.settings) { view: View? ->
+                    .setAction(R.string.settings) {
                         // Build intent that displays the App settings screen.
                         val intent = Intent()
                         intent.action = Settings.ACTION_APPLICATION_DETAILS_SETTINGS
@@ -231,19 +259,6 @@ class MainActivity : AppCompatActivity(), SharedPreferences.OnSharedPreferenceCh
         }
     }
     
-    /**
-     * Receiver for broadcasts sent by [LocationUpdatesService].
-     */
-    private inner class MyReceiver : BroadcastReceiver() {
-        override fun onReceive(context: Context, intent: Intent) {
-            val location = intent.getParcelableExtra<Location>(LocationUpdatesService.EXTRA_LOCATION)
-            if (location != null) {
-                Toast.makeText(this@MainActivity, Utils.getLocationText(location),
-                    Toast.LENGTH_SHORT).show()
-            }
-        }
-    }
-    
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences, string: String) {
         // Update the buttons state depending on whether location updates are being requested.
         if (string == Utils.KEY_REQUESTING_LOCATION_UPDATES) {
@@ -254,18 +269,11 @@ class MainActivity : AppCompatActivity(), SharedPreferences.OnSharedPreferenceCh
     
     private fun setButtonsState(requestingLocationUpdates: Boolean) {
         if (requestingLocationUpdates) {
-            mBinding!!.requestLocationUpdatesButton.isEnabled = false
-            mBinding!!.removeLocationUpdatesButton.isEnabled = true
+            mBinding.requestLocationUpdatesButton.isEnabled = false
+            mBinding.removeLocationUpdatesButton.isEnabled = true
         } else {
-            mBinding!!.requestLocationUpdatesButton.isEnabled = true
-            mBinding!!.removeLocationUpdatesButton.isEnabled = false
+            mBinding.requestLocationUpdatesButton.isEnabled = true
+            mBinding.removeLocationUpdatesButton.isEnabled = false
         }
-    }
-    
-    companion object {
-        private val TAG = MainActivity::class.java.simpleName
-        
-        // Used in checking for runtime permissions.
-        private const val REQUEST_PERMISSIONS_REQUEST_CODE = 34
     }
 }
