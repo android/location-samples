@@ -1,0 +1,9 @@
+# Directories
+build/
+.idea
+.gradle
+
+# Files
+*.iml
+local.properties
+.DS_Store
