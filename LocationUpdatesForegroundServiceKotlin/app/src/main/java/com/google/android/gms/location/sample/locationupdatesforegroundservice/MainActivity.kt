@@ -230,31 +230,35 @@ class MainActivity : AppCompatActivity(), SharedPreferences.OnSharedPreferenceCh
                                             grantResults: IntArray) {
         Log.i(TAG, "onRequestPermissionResult")
         if (requestCode == REQUEST_PERMISSIONS_REQUEST_CODE) {
-            if (grantResults.isEmpty()) {
-                // If user interaction was interrupted, the permission request is cancelled and you
-                // receive empty arrays.
-                Log.i(TAG, "User interaction was cancelled.")
-            } else if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                // Permission was granted.
-                mService?.requestLocationUpdates()
-            } else {
-                // Permission denied.
-                setButtonsState(false)
-                Snackbar.make(
-                    mBinding.root,
-                    R.string.permission_denied_explanation,
-                    Snackbar.LENGTH_INDEFINITE)
-                    .setAction(R.string.settings) {
-                        // Build intent that displays the App settings screen.
-                        val intent = Intent()
-                        intent.action = Settings.ACTION_APPLICATION_DETAILS_SETTINGS
-                        val uri = Uri.fromParts("package",
-                            BuildConfig.LIBRARY_PACKAGE_NAME, null)
-                        intent.data = uri
-                        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-                        startActivity(intent)
-                    }
-                    .show()
+            when {
+                grantResults.isEmpty() -> {
+                    // If user interaction was interrupted, the permission request is cancelled and you
+                    // receive empty arrays.
+                    Log.i(TAG, "User interaction was cancelled.")
+                }
+                grantResults[0] == PackageManager.PERMISSION_GRANTED -> {
+                    // Permission was granted.
+                    mService?.requestLocationUpdates()
+                }
+                else -> {
+                    // Permission denied.
+                    setButtonsState(false)
+                    Snackbar.make(
+                        mBinding.root,
+                        R.string.permission_denied_explanation,
+                        Snackbar.LENGTH_INDEFINITE)
+                        .setAction(R.string.settings) {
+                            // Build intent that displays the App settings screen.
+                            val intent = Intent()
+                            intent.action = Settings.ACTION_APPLICATION_DETAILS_SETTINGS
+                            val uri = Uri.fromParts("package",
+                                BuildConfig.LIBRARY_PACKAGE_NAME, null)
+                            intent.data = uri
+                            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                            startActivity(intent)
+                        }
+                        .show()
+                }
             }
         }
     }
