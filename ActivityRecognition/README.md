@@ -17,7 +17,7 @@ The sample uses an `IntentService` to process detected activity changes, which
 are sent using [ActivityRecognitionResult][2] objects. The IntentService gets a
 list of probable detected activities and broadcasts them through a BroadcastReceiver. See the
 [DetectedActivity][3] class for a list of DetectedActivity types. Each
-`DetectedActivity` is associdated with a confidence level, which is an int
+`DetectedActivity` is associated with a confidence level, which is an int
 between 0 and 100.
 
 To run this sample, **location must be enabled**.
