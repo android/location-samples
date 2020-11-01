@@ -5,7 +5,6 @@ apply plugin: 'kotlin-android-extensions'
 android {
     compileSdkVersion parent.ext.compileSdkVersion
 
-
     defaultConfig {
         applicationId "com.google.android.gms.location.sample.basiclocationsample"
         minSdkVersion parent.ext.minSdkVersion
@@ -19,11 +18,35 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+
+    buildFeatures {
+        viewBinding true
+    }
+}
+
+ext {
+    // Android Jetpack
+    // AppCompat
+    appCompatVersion = "1.2.0"
+    // MaterialComponents
+    materialComponentsVersion = "1.2.1"
+
+    // Google PlayServices
+    // Location
+    locationVersion = "17.1.0"
 }
 
 dependencies {
-    implementation 'androidx.appcompat:appcompat:1.1.0'
-    implementation 'com.google.android.material:material:1.0.0'
-    implementation "com.google.android.gms:play-services-location:17.0.0"
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.3.50"
+    // Android Jetpack
+    // AppCompat
+    implementation "androidx.appcompat:appcompat:$appCompatVersion"
+    // MaterialComponents
+    implementation "com.google.android.material:material:$materialComponentsVersion"
+
+    // Google PlayServices
+    // Location
+    implementation "com.google.android.gms:play-services-location:$locationVersion"
+
+    // Kotlin
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlinVersion"
 }
