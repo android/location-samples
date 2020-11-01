@@ -1,7 +1,7 @@
 buildscript {
     ext {
         // Android Gradle plugin
-        gradlePluginVersion = '4.0.1'
+        gradlePluginVersion = '4.1.0'
     }
     repositories {
         google()
