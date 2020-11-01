@@ -26,7 +26,7 @@
     android:paddingTop="@dimen/activity_vertical_margin">
 
     <TextView
-        android:id="@+id/latitude_text"
+        android:id="@+id/current_latitude"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/margin_start"
@@ -35,7 +35,7 @@
         android:textSize="@dimen/lat_long_text_size" />
 
     <TextView
-        android:id="@+id/longitude_text"
+        android:id="@+id/current_longitude"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/margin_start"
