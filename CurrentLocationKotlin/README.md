@@ -4,8 +4,9 @@ Demonstrates retrieving the current location in Kotlin.
 
 Introduction
 ============
-This app allows a user to receive the current location without subscribing to location updates (and
-then unsubscribe once you retrieve the location).
+This app allows a user to request a current location without subscribing to location updates via
+[FusedLocationProviderClient#getCurrentLocation()](https://developers.google.com/android/reference/com/google/android/gms/location/FusedLocationProviderClient#getCurrentLocation(int,%20com.google.android.gms.tasks.CancellationToken)
+).
 
 Users have four options in Android 11+ regarding location:
 * One time only
