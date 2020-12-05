@@ -171,7 +171,7 @@ class MainActivity : AppCompatActivity() {
             )
 
             currentLocationTask.addOnCompleteListener { task: Task<Location> ->
-                val result = if (task.isSuccessful) {
+                val result = if (task.isSuccessful && task.result != null) {
                     val result: Location = task.result
                     "Location (success): ${result.latitude}, ${result.longitude}"
                 } else {
