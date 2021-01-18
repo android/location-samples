@@ -13,23 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.android.example.wear.sleepsamplekotlin
+package com.android.example.wear.sleepsamplekotlin.data.db
 
-import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
-import com.android.example.wear.sleepsamplekotlin.databinding.ActivityMainBinding
+import androidx.room.ColumnInfo
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 
 /**
- * Demos how to subscribe/unsubscribe to sleep transitions, save the data, and display it for use.
+ * Data class for Sleep Segment Events which represents the time the user slept at night.
  */
-class MainActivity : AppCompatActivity() {
+@Entity(tableName = "sleep_segment_events_table")
+data class SleepSegmentEventEntity(
+    @PrimaryKey
+    @ColumnInfo(name = "id")
+    val id: Int,
 
-    private lateinit var binding: ActivityMainBinding
+    @ColumnInfo(name = "status")
+    val status: Int,
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+    @ColumnInfo(name = "start_time_millis")
+    val startTimeMillis: Long,
 
-        binding = ActivityMainBinding.inflate(layoutInflater)
-        setContentView(binding.root)
-    }
-}
+    @ColumnInfo(name = "end_time_millis")
+    val endTimeMillis: Long
+)
