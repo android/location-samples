@@ -7,10 +7,12 @@ Introduction
 ============
 
 Demonstrates use of the [ActivityRecognitionApi][1] to recognize a user's current sleep
-activity..
+activity.
 
 Users can request activity updates by pressing the "Request Updates" button,
 and stop receiving updates using the "Remove Updates" button.
+
+Note: The Sleep APIs work on 29 and above, so this sample targets the minimum API level of 29.
 
 [1]: https://developer.android.com/reference/com/google/android/gms/location/ActivityRecognitionApi.html
 

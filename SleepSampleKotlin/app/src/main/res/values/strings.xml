@@ -17,4 +17,11 @@
 <resources>
     <string name="app_name">SleepSampleKotlin</string>
     <string name="default_greeting_message">Click on the button below to subscribe to Sleep Transitions!</string>
+    <string name="sleep_button_text">Sleep Data</string>
+
+    <string name="action_settings">Settings</string>
+    <string name="permission_rational">Sample requires activity transition permissions to function.</string>
+    <string name="no">No</string>
+    <string name="yes">Yes</string>
+    <string name="permission_approved">Permission Approved!</string>
 </resources>
