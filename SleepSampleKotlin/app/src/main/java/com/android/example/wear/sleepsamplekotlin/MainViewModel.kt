@@ -30,14 +30,14 @@ class MainViewModel(private val repository: SleepRepository) : ViewModel() {
     // - We can put an observer on the data (instead of polling for changes) and only update the
     //   UI when the data actually changes.
     // - Repository is completely separated from the UI through the ViewModel.
-    val allWords: LiveData<List<SleepSegmentEventEntity>> =
+    val allSleepSegments: LiveData<List<SleepSegmentEventEntity>> =
         repository.allSleepSegmentEvents.asLiveData()
 
     /**
      * Launching a new coroutine to insert the data in a non-blocking way
      */
-    fun insert(sleepSegmentEventEntity: SleepSegmentEventEntity) = viewModelScope.launch {
-        repository.insert(sleepSegmentEventEntity)
+    fun insertSleepSegment(sleepSegmentEventEntity: SleepSegmentEventEntity) = viewModelScope.launch {
+        repository.insertSleepSegment(sleepSegmentEventEntity)
     }
 }
 

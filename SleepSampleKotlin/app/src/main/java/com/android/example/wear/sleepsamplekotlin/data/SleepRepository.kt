@@ -15,7 +15,6 @@
  */
 package com.android.example.wear.sleepsamplekotlin.data
 
-import androidx.annotation.WorkerThread
 import com.android.example.wear.sleepsamplekotlin.data.db.SleepSegmentEventDao
 import com.android.example.wear.sleepsamplekotlin.data.db.SleepSegmentEventEntity
 import kotlinx.coroutines.flow.Flow
@@ -29,8 +28,14 @@ class SleepRepository(private val sleepSegmentEventDao: SleepSegmentEventDao) {
     // By default Room runs suspend queries off the main thread. Therefore, we don't need to
     // implement anything else to ensure we're not doing long-running database work off the
     // main thread.
-    @WorkerThread
-    suspend fun insert(sleepSegmentEventEntity: SleepSegmentEventEntity) {
+    suspend fun insertSleepSegment(sleepSegmentEventEntity: SleepSegmentEventEntity) {
         sleepSegmentEventDao.insert(sleepSegmentEventEntity)
+    }
+
+    // By default Room runs suspend queries off the main thread. Therefore, we don't need to
+    // implement anything else to ensure we're not doing long-running database work off the
+    // main thread.
+    suspend fun insertSleepSegments(sleepSegmentEventEntities: List<SleepSegmentEventEntity>) {
+        sleepSegmentEventDao.insertAll(sleepSegmentEventEntities)
     }
 }
