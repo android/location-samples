@@ -20,6 +20,7 @@ import android.content.Context
 import android.content.Intent
 import android.util.Log
 import com.android.example.wear.sleepsamplekotlin.data.SleepRepository
+import com.android.example.wear.sleepsamplekotlin.data.db.SleepClassifyEventEntity
 import com.android.example.wear.sleepsamplekotlin.data.db.SleepSegmentEventEntity
 import com.google.android.gms.location.SleepClassifyEvent
 import com.google.android.gms.location.SleepSegmentEvent
@@ -48,9 +49,8 @@ class SleepReceiver : BroadcastReceiver() {
         } else if (SleepClassifyEvent.hasEvents(intent)) {
             val sleepClassifyEvents: List<SleepClassifyEvent> =
                 SleepClassifyEvent.extractEvents(intent)
-
-            // TODO: Save SleepClassifyEvents to DB.
             Log.d(TAG, "SleepClassifyEvent List: $sleepClassifyEvents")
+            addSleepClassifyEventsToDatabase(repository, sleepClassifyEvents)
         }
     }
 
@@ -65,6 +65,21 @@ class SleepReceiver : BroadcastReceiver() {
                         SleepSegmentEventEntity.from(it)
                     }
                 repository.insertSleepSegments(convertedToEntityVersion)
+            }
+        }
+    }
+
+    private fun addSleepClassifyEventsToDatabase(
+        repository: SleepRepository,
+        sleepClassifyEvents: List<SleepClassifyEvent>
+    ) {
+        if (sleepClassifyEvents.isNotEmpty()) {
+            scope.launch {
+                val convertedToEntityVersion: List<SleepClassifyEventEntity> =
+                    sleepClassifyEvents.map {
+                        SleepClassifyEventEntity.from(it)
+                    }
+                repository.insertSleepClassifyEvents(convertedToEntityVersion)
             }
         }
     }

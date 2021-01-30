@@ -31,7 +31,8 @@ class MainApplication : Application() {
 
     val repository by lazy {
         SleepRepository(
-            sleepSegmentEventDao = database.sleepSegmentEventDao()
+            sleepSegmentEventDao = database.sleepSegmentEventDao(),
+            sleepClassifyEventDao = database.sleepClassifyEventDao()
         )
     }
 }
