@@ -16,6 +16,9 @@
 package com.android.example.wear.sleepsamplekotlin
 
 import android.Manifest.permission
+import android.app.PendingIntent
+import android.app.PendingIntent.FLAG_CANCEL_CURRENT
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
@@ -28,6 +31,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import com.android.example.wear.sleepsamplekotlin.databinding.ActivityMainBinding
+import com.google.android.gms.location.ActivityRecognition
 import com.google.android.material.snackbar.Snackbar
 
 /**
@@ -37,19 +41,63 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
 
+    // TODO: Move to data layer (to support subscriptions without app in foreground and reboots).
+    private var subscribedToSleepData = false
+
+    private lateinit var sleepIntent: Intent
+    private lateinit var sleepPendingIntent: PendingIntent
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        sleepIntent = Intent(applicationContext, SleepReceiver::class.java)
+        sleepPendingIntent = PendingIntent.getBroadcast(
+            applicationContext,
+            0,
+            sleepIntent,
+            FLAG_CANCEL_CURRENT
+        )
     }
 
     fun onClickRequestSleepData(view: View) {
         if (activityRecognitionPermissionApproved()) {
-            // TODO: Implement BroadcastReceiver for sleep events
-            Log.d(TAG, "Permission already approved.")
+            if (subscribedToSleepData) {
+                unsubscribeToSleepSegmentUpdates(applicationContext, sleepPendingIntent)
+            } else {
+                subscribeToSleepSegmentUpdates(applicationContext, sleepPendingIntent)
+            }
         } else {
             requestPermissionLauncher.launch(permission.ACTIVITY_RECOGNITION)
+        }
+    }
+
+    private fun subscribeToSleepSegmentUpdates(context: Context, pendingIntent: PendingIntent) {
+        Log.d(TAG, "requestSleepSegmentUpdates()")
+        val task = ActivityRecognition.getClient(context).requestSleepSegmentUpdates(pendingIntent)
+
+        task.addOnSuccessListener {
+            subscribedToSleepData = true
+            Log.d(TAG, "Successfully subscribed to sleep data.")
+        }
+        task.addOnFailureListener { exception ->
+            Log.d(TAG, "Exception when subscribing to sleep data: $exception")
+        }
+    }
+
+    private fun unsubscribeToSleepSegmentUpdates(context: Context, pendingIntent: PendingIntent) {
+        Log.d(TAG, "unsubscribeToSleepSegmentUpdates()")
+        val task = ActivityRecognition.getClient(context).removeSleepSegmentUpdates(pendingIntent)
+
+        task.addOnSuccessListener {
+            subscribedToSleepData = false
+            pendingIntent.cancel()
+            Log.d(TAG, "Successfully unsubscribed to sleep data.")
+        }
+        task.addOnFailureListener { exception ->
+            Log.d(TAG, "Exception when unsubscribing to sleep data: $exception")
         }
     }
 
