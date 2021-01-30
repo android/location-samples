@@ -19,10 +19,9 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.asLiveData
-import androidx.lifecycle.viewModelScope
 import com.android.example.wear.sleepsamplekotlin.data.SleepRepository
+import com.android.example.wear.sleepsamplekotlin.data.db.SleepClassifyEventEntity
 import com.android.example.wear.sleepsamplekotlin.data.db.SleepSegmentEventEntity
-import kotlinx.coroutines.launch
 
 class MainViewModel(private val repository: SleepRepository) : ViewModel() {
 
@@ -33,12 +32,8 @@ class MainViewModel(private val repository: SleepRepository) : ViewModel() {
     val allSleepSegments: LiveData<List<SleepSegmentEventEntity>> =
         repository.allSleepSegmentEvents.asLiveData()
 
-    /**
-     * Launching a new coroutine to insert the data in a non-blocking way
-     */
-    fun insertSleepSegment(sleepSegmentEventEntity: SleepSegmentEventEntity) = viewModelScope.launch {
-        repository.insertSleepSegment(sleepSegmentEventEntity)
-    }
+    val allSleepClassifyEventEntities: LiveData<List<SleepClassifyEventEntity>> =
+        repository.allSleepClassifyEvents.asLiveData()
 }
 
 class MainViewModelFactory(private val repository: SleepRepository) : ViewModelProvider.Factory {

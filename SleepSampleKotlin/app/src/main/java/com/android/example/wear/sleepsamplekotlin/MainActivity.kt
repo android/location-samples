@@ -16,6 +16,7 @@
 package com.android.example.wear.sleepsamplekotlin
 
 import android.Manifest.permission
+import android.annotation.SuppressLint
 import android.app.PendingIntent
 import android.app.PendingIntent.FLAG_CANCEL_CURRENT
 import android.content.Context
@@ -32,7 +33,9 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import com.android.example.wear.sleepsamplekotlin.databinding.ActivityMainBinding
 import com.google.android.gms.location.ActivityRecognition
+import com.google.android.gms.location.SleepSegmentEvent
 import com.google.android.material.snackbar.Snackbar
+import java.util.Calendar
 
 /**
  * Demos Android's Sleep APIs; subscribe/unsubscribe to sleep data, save that data, and display it.
@@ -41,8 +44,26 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
 
+    private val mainViewModel: MainViewModel by lazy {
+        MainViewModel((application as MainApplication).repository)
+    }
+
+    // Used to construct the output from multiple tables (very basic implementation just to show
+    // the live data coming in).
+    private var sleepSegmentOutput: String = ""
+    private var sleepClassifyOutput: String = ""
+
     // TODO: Move to data layer (to support subscriptions without app in foreground and reboots).
     private var subscribedToSleepData = false
+        set(newSubscribedToSleepData) {
+            field = newSubscribedToSleepData
+            if (newSubscribedToSleepData) {
+                binding.button.text = getString(R.string.sleep_button_unsubscribe_text)
+            } else {
+                binding.button.text = getString(R.string.sleep_button_subscribe_text)
+            }
+            updateOutput()
+        }
 
     private lateinit var sleepIntent: Intent
     private lateinit var sleepPendingIntent: PendingIntent
@@ -52,6 +73,40 @@ class MainActivity : AppCompatActivity() {
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        // Adds observers on LiveData from [SleepRepository]. Data is saved to the database via
+        // [SleepReceiver] and when that data changes, we get notified of changes.
+        // Note: The data returned is Entity versions of the sleep classes, so they don't contain
+        // all the data, as I just saved the minimum to show it's being saved.
+        mainViewModel.allSleepSegments.observe(this) { sleepSegmentEventEntities ->
+            Log.d(TAG, "sleepSegmentEventEntities: $sleepSegmentEventEntities")
+
+            if (sleepSegmentEventEntities.isNotEmpty()) {
+                // Converts database table version to official class ([SleepSegmentEvent]).
+                val sleepSegmentEvent: List<SleepSegmentEvent> = sleepSegmentEventEntities.map {
+                    it.toSleepSegmentEvent()
+                }
+
+                sleepSegmentOutput = sleepSegmentEvent.joinToString {
+                    "\t$it\n"
+                }
+                updateOutput()
+            }
+        }
+
+        mainViewModel.allSleepClassifyEventEntities.observe(this) {
+                sleepClassifyEventEntities ->
+            Log.d(TAG, "sleepClassifyEventEntities: $sleepClassifyEventEntities")
+
+            if (sleepClassifyEventEntities.isNotEmpty()) {
+                // Constructor isn't accessible for [SleepClassifyEvent], so we just output the
+                // database table version.
+                sleepClassifyOutput = sleepClassifyEventEntities.joinToString {
+                    "\t$it\n"
+                }
+                updateOutput()
+            }
+        }
 
         sleepIntent = Intent(applicationContext, SleepReceiver::class.java)
         sleepPendingIntent = PendingIntent.getBroadcast(
@@ -74,6 +129,8 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    // Permission is checked before this method is called.
+    @SuppressLint("MissingPermission")
     private fun subscribeToSleepSegmentUpdates(context: Context, pendingIntent: PendingIntent) {
         Log.d(TAG, "requestSleepSegmentUpdates()")
         val task = ActivityRecognition.getClient(context).requestSleepSegmentUpdates(pendingIntent)
@@ -119,7 +176,6 @@ class MainActivity : AppCompatActivity() {
             } else {
                 // Permission was granted (either by approval or Android version below Q).
                 binding.outputTextView.text = getString(R.string.permission_approved)
-                // TODO: Track sleep
             }
         }
 
@@ -143,6 +199,31 @@ class MainActivity : AppCompatActivity() {
                 startActivity(intent)
             }
             .show()
+    }
+
+    /**
+     * Redimentary implementation of the output from multiple tables. The [LiveData] observers just
+     * save their data to one of the strings (segmentOutput or classifyOutput) and triggers this
+     * function.
+     */
+    private fun updateOutput() {
+        Log.d(TAG, "updateOutput()")
+
+        val header = if (subscribedToSleepData) {
+            val timestamp = Calendar.getInstance().time.toString()
+            getString(R.string.main_output_header1_subscribed_sleep_data, timestamp)
+        } else {
+            getString(R.string.main_output_header1_unsubscribed_sleep_data)
+        }
+
+        val sleepData = getString(
+            R.string.main_output_header2_and_sleep_data,
+            sleepSegmentOutput,
+            sleepClassifyOutput
+        )
+
+        val newOutput = header + sleepData
+        binding.outputTextView.text = newOutput
     }
 
     companion object {
