@@ -34,9 +34,13 @@ import com.google.android.gms.common.util.PlatformVersion
 import com.google.android.gms.location.ActivityRecognitionResult
 import com.google.android.gms.tasks.Task
 import com.google.android.material.snackbar.Snackbar
+import java.util.Calendar
 
 /**
  * Demonstrates requesting/displaying a Awareness Snapshot.
+ * NOTE: The Awareness APIs (both Snapshot and Fend) require an API key in your manifest. Check
+ * this link for more information:
+ * https://developers.google.com/awareness/android-api/get-a-key
  */
 class MainActivity : AppCompatActivity() {
 
@@ -73,7 +77,6 @@ class MainActivity : AppCompatActivity() {
                     detectedActivityResponse.activityRecognitionResult
                 Log.d(TAG, "Snapshot successfully retrieved: $activityRecognitionResult")
                 printSnapshotResult(detectedActivityResponse.activityRecognitionResult)
-
             } else {
                 Log.d(TAG, "Data was not able to be retrieved: ${taskResponse.exception}")
             }
@@ -126,7 +129,8 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun printSnapshotResult(activityRecognitionResult: ActivityRecognitionResult) {
-        val output = "Current Snapshot:\n\n$activityRecognitionResult"
+        val timestamp = Calendar.getInstance().time.toString()
+        val output = "Current Snapshot ($timestamp):\n\n$activityRecognitionResult"
         binding.output.text = output
     }
 

@@ -32,6 +32,15 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.AwarenessApisSampleKotlin">
+
+        <!--
+        The Awareness APIs require a API Key to work. To get one, read this link:
+        https://developers.google.com/awareness/android-api/get-a-key
+        -->
+        <meta-data
+            android:name="com.google.android.awareness.API_KEY"
+            android:value="<var>YOUR_API_KEY_WITHOUT_VAR_ELEMENTS_TAGS</var>"/>
+
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
