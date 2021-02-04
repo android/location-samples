@@ -68,6 +68,9 @@ dependencies {
     kapt "androidx.room:room-compiler:2.2.6"
     androidTestImplementation "androidx.room:room-testing:2.2.6"
 
+    // DataStore components
+    implementation "androidx.datastore:datastore-preferences:1.0.0-alpha06"
+
     // Lifecycle components
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.2.0"
     implementation "androidx.lifecycle:lifecycle-livedata-ktx:2.2.0"

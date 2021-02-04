@@ -19,11 +19,19 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.asLiveData
+import androidx.lifecycle.viewModelScope
 import com.android.example.wear.sleepsamplekotlin.data.SleepRepository
 import com.android.example.wear.sleepsamplekotlin.data.db.SleepClassifyEventEntity
 import com.android.example.wear.sleepsamplekotlin.data.db.SleepSegmentEventEntity
+import kotlinx.coroutines.launch
 
 class MainViewModel(private val repository: SleepRepository) : ViewModel() {
+
+    val subscribedToSleepDataLiveData = repository.subscribedToSleepDataFlow.asLiveData()
+
+    fun updateSubscribedToSleepData(subscribed: Boolean) = viewModelScope.launch {
+        repository.updateSubscribedToSleepData(subscribed)
+    }
 
     // Using LiveData and caching what allWords returns has several benefits:
     // - We can put an observer on the data (instead of polling for changes) and only update the
