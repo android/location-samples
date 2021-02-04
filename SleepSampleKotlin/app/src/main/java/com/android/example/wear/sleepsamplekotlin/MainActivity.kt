@@ -18,7 +18,6 @@ package com.android.example.wear.sleepsamplekotlin
 import android.Manifest.permission
 import android.annotation.SuppressLint
 import android.app.PendingIntent
-import android.app.PendingIntent.FLAG_CANCEL_CURRENT
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -32,6 +31,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import com.android.example.wear.sleepsamplekotlin.databinding.ActivityMainBinding
+import com.android.example.wear.sleepsamplekotlin.receiver.SleepReceiver
 import com.google.android.gms.location.ActivityRecognition
 import com.google.android.gms.location.SleepSegmentEvent
 import com.google.android.material.snackbar.Snackbar
@@ -66,7 +66,6 @@ class MainActivity : AppCompatActivity() {
             updateOutput()
         }
 
-    private lateinit var sleepIntent: Intent
     private lateinit var sleepPendingIntent: PendingIntent
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -115,13 +114,8 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        sleepIntent = Intent(applicationContext, SleepReceiver::class.java)
-        sleepPendingIntent = PendingIntent.getBroadcast(
-            applicationContext,
-            0,
-            sleepIntent,
-            FLAG_CANCEL_CURRENT
-        )
+        sleepPendingIntent =
+            SleepReceiver.createSleepReceiverPendingIntent(context = applicationContext)
     }
 
     fun onClickRequestSleepData(view: View) {
