@@ -16,6 +16,7 @@
 package com.android.example.awarenessapissamplekotlin
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
@@ -63,18 +64,17 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    // Permission is checked in onClickSnapshot before this method is called.
+    @SuppressLint("MissingPermission")
     private fun requestSnapshot() {
         Log.d(TAG, "requestSnapshot()")
 
-        val task: Task<DetectedActivityResponse> =
-            Awareness.getSnapshotClient(this).detectedActivity
+        val task = Awareness.getSnapshotClient(this).detectedActivity
 
-        task.addOnCompleteListener { taskResponse: Task<DetectedActivityResponse> ->
-
+        task.addOnCompleteListener { taskResponse ->
             if (taskResponse.isSuccessful) {
-                val detectedActivityResponse: DetectedActivityResponse = taskResponse.result
-                val activityRecognitionResult: ActivityRecognitionResult =
-                    detectedActivityResponse.activityRecognitionResult
+                val detectedActivityResponse = taskResponse.result
+                val activityRecognitionResult = detectedActivityResponse.activityRecognitionResult
                 Log.d(TAG, "Snapshot successfully retrieved: $activityRecognitionResult")
                 printSnapshotResult(detectedActivityResponse.activityRecognitionResult)
             } else {
