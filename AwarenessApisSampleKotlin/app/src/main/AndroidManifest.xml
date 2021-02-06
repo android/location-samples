@@ -16,6 +16,14 @@
 -->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.android.example.awarenessapissamplekotlin">
+    <!--
+    The two permissions below are both required to target different specific API ranges for the
+    activity recognition permission (needed for the Sleep APIs).
+    -->
+    <!-- Required for 28 and below. -->
+    <uses-permission android:name="com.google.android.gms.permission.ACTIVITY_RECOGNITION" />
+    <!-- Required for 29+. -->
+    <uses-permission android:name="android.permission.ACTIVITY_RECOGNITION" />
 
     <application
         android:allowBackup="true"
@@ -24,13 +32,20 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.AwarenessApisSampleKotlin">
+
+        <!--
+        The Awareness APIs require a API Key to work. To get one, read this link:
+        https://developers.google.com/awareness/android-api/get-a-key
+        -->
+        <meta-data
+            android:name="com.google.android.awareness.API_KEY"
+            android:value="<var>YOUR_API_KEY_WITHOUT_VAR_ELEMENTS_TAGS</var>"/>
+
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
     </application>
-
 </manifest>
