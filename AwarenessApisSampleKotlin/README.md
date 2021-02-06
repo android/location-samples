@@ -20,8 +20,12 @@ Developers can find more about this API and other Awareness APIs in our [Getting
 
 Users can request the current environment by pressing the "Request Snapshot" button.
 
+**IMPORTANT NOTE**: The Awareness APIs (both Snapshot and Fend) require an API key in your manifest.
+Check [this link][3] for more information.
+
 [1]: https://developers.google.com/android/reference/com/google/android/gms/awareness/Awareness#getSnapshotClient(android.app.Activity)
 [2]: https://developers.google.com/awareness/overview
+[3]: https://developers.google.com/awareness/android-api/get-a-key
 
 Prerequisites
 --------------
