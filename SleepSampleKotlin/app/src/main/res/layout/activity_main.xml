@@ -44,7 +44,7 @@
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="16dp"
-        android:text="@string/sleep_button_text"
+        android:text="@string/sleep_button_subscribe_text"
         android:onClick="onClickRequestSleepData"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
