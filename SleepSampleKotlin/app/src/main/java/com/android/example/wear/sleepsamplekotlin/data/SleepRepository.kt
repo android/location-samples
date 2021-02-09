@@ -15,15 +15,22 @@
  */
 package com.android.example.wear.sleepsamplekotlin.data
 
+import com.android.example.wear.sleepsamplekotlin.data.db.SleepClassifyEventDao
+import com.android.example.wear.sleepsamplekotlin.data.db.SleepClassifyEventEntity
 import com.android.example.wear.sleepsamplekotlin.data.db.SleepSegmentEventDao
 import com.android.example.wear.sleepsamplekotlin.data.db.SleepSegmentEventEntity
 import kotlinx.coroutines.flow.Flow
 
-class SleepRepository(private val sleepSegmentEventDao: SleepSegmentEventDao) {
+class SleepRepository(
+    private val sleepSegmentEventDao: SleepSegmentEventDao,
+    private val sleepClassifyEventDao: SleepClassifyEventDao
+) {
 
+    // Methods for SleepSegmentEventDao
     // Room executes all queries on a separate thread.
     // Observed Flow will notify the observer when the data has changed.
-    val allSleepSegmentEvents: Flow<List<SleepSegmentEventEntity>> = sleepSegmentEventDao.getAll()
+    val allSleepSegmentEvents: Flow<List<SleepSegmentEventEntity>> =
+        sleepSegmentEventDao.getAll()
 
     // By default Room runs suspend queries off the main thread. Therefore, we don't need to
     // implement anything else to ensure we're not doing long-running database work off the
@@ -37,5 +44,18 @@ class SleepRepository(private val sleepSegmentEventDao: SleepSegmentEventDao) {
     // main thread.
     suspend fun insertSleepSegments(sleepSegmentEventEntities: List<SleepSegmentEventEntity>) {
         sleepSegmentEventDao.insertAll(sleepSegmentEventEntities)
+    }
+
+    // Methods for SleepClassifyEventDao
+    // Observed Flow will notify the observer when the data has changed.
+    val allSleepClassifyEvents: Flow<List<SleepClassifyEventEntity>> =
+        sleepClassifyEventDao.getAll()
+
+    suspend fun insertSleepClassifyEvent(sleepClassifyEventEntity: SleepClassifyEventEntity) {
+        sleepClassifyEventDao.insert(sleepClassifyEventEntity)
+    }
+
+    suspend fun insertSleepClassifyEvents(sleepClassifyEventEntities: List<SleepClassifyEventEntity>) {
+        sleepClassifyEventDao.insertAll(sleepClassifyEventEntities)
     }
 }

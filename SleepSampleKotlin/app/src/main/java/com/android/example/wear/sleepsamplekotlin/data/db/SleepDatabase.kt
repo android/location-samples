@@ -26,13 +26,14 @@ private const val DATABASE_NAME = "sleep_segments_database"
  * Stores all sleep segment data.
  */
 @Database(
-    entities = [SleepSegmentEventEntity::class],
-    version = 2,
+    entities = [SleepSegmentEventEntity::class, SleepClassifyEventEntity::class],
+    version = 3,
     exportSchema = false
 )
 abstract class SleepDatabase : RoomDatabase() {
 
     abstract fun sleepSegmentEventDao(): SleepSegmentEventDao
+    abstract fun sleepClassifyEventDao(): SleepClassifyEventDao
 
     companion object {
         // For Singleton instantiation
