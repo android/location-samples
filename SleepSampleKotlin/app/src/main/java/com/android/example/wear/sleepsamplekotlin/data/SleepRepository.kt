@@ -15,6 +15,7 @@
  */
 package com.android.example.wear.sleepsamplekotlin.data
 
+import com.android.example.wear.sleepsamplekotlin.data.datastore.SleepSubscriptionStatus
 import com.android.example.wear.sleepsamplekotlin.data.db.SleepClassifyEventDao
 import com.android.example.wear.sleepsamplekotlin.data.db.SleepClassifyEventEntity
 import com.android.example.wear.sleepsamplekotlin.data.db.SleepSegmentEventDao
@@ -22,9 +23,19 @@ import com.android.example.wear.sleepsamplekotlin.data.db.SleepSegmentEventEntit
 import kotlinx.coroutines.flow.Flow
 
 class SleepRepository(
+    private val sleepSubscriptionStatus: SleepSubscriptionStatus,
     private val sleepSegmentEventDao: SleepSegmentEventDao,
     private val sleepClassifyEventDao: SleepClassifyEventDao
 ) {
+
+    // Methods for SleepSubscriptionStatus
+    // Uses [DataStore] to save the subscription to sleep data status. This is used to check if the
+    // app is still listening to changes in sleep data when the app is brought back into
+    // the foreground.
+    val subscribedToSleepDataFlow: Flow<Boolean> = sleepSubscriptionStatus.subscribedToSleepDataFlow
+
+    suspend fun updateSubscribedToSleepData(subscribedToSleepData: Boolean) =
+        sleepSubscriptionStatus.updateSubscribedToSleepData(subscribedToSleepData)
 
     // Methods for SleepSegmentEventDao
     // Room executes all queries on a separate thread.

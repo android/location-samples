@@ -16,7 +16,10 @@
 package com.android.example.wear.sleepsamplekotlin
 
 import android.app.Application
+import androidx.datastore.preferences.createDataStore
 import com.android.example.wear.sleepsamplekotlin.data.SleepRepository
+import com.android.example.wear.sleepsamplekotlin.data.datastore.SLEEP_PREFERENCES_NAME
+import com.android.example.wear.sleepsamplekotlin.data.datastore.SleepSubscriptionStatus
 import com.android.example.wear.sleepsamplekotlin.data.db.SleepDatabase
 
 /**
@@ -31,6 +34,8 @@ class MainApplication : Application() {
 
     val repository by lazy {
         SleepRepository(
+            sleepSubscriptionStatus = SleepSubscriptionStatus(
+                applicationContext.createDataStore(name = SLEEP_PREFERENCES_NAME)),
             sleepSegmentEventDao = database.sleepSegmentEventDao(),
             sleepClassifyEventDao = database.sleepClassifyEventDao()
         )

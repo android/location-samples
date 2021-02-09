@@ -53,7 +53,8 @@ class MainActivity : AppCompatActivity() {
     private var sleepSegmentOutput: String = ""
     private var sleepClassifyOutput: String = ""
 
-    // TODO: Move to data layer (to support subscriptions without app in foreground and reboots).
+    // Status of subscription to sleep data. This is stored in [SleepSubscriptionStatus] which saves
+    // the data in a [DataStore] in case the user navigates away from the app.
     private var subscribedToSleepData = false
         set(newSubscribedToSleepData) {
             field = newSubscribedToSleepData
@@ -73,6 +74,12 @@ class MainActivity : AppCompatActivity() {
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        mainViewModel.subscribedToSleepDataLiveData.observe(this) { newSubscribedToSleepData ->
+            if (subscribedToSleepData != newSubscribedToSleepData) {
+                subscribedToSleepData = newSubscribedToSleepData
+            }
+        }
 
         // Adds observers on LiveData from [SleepRepository]. Data is saved to the database via
         // [SleepReceiver] and when that data changes, we get notified of changes.
@@ -136,7 +143,7 @@ class MainActivity : AppCompatActivity() {
         val task = ActivityRecognition.getClient(context).requestSleepSegmentUpdates(pendingIntent)
 
         task.addOnSuccessListener {
-            subscribedToSleepData = true
+            mainViewModel.updateSubscribedToSleepData(true)
             Log.d(TAG, "Successfully subscribed to sleep data.")
         }
         task.addOnFailureListener { exception ->
@@ -149,7 +156,7 @@ class MainActivity : AppCompatActivity() {
         val task = ActivityRecognition.getClient(context).removeSleepSegmentUpdates(pendingIntent)
 
         task.addOnSuccessListener {
-            subscribedToSleepData = false
+            mainViewModel.updateSubscribedToSleepData(false)
             pendingIntent.cancel()
             Log.d(TAG, "Successfully unsubscribed to sleep data.")
         }
