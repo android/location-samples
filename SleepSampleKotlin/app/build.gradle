@@ -79,7 +79,7 @@ dependencies {
     api "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.4.2"
 
     // Play services library required for activity recognition.
-    implementation 'com.google.android.gms:play-services-location:17.1.0'
+    implementation 'com.google.android.gms:play-services-location:18.0.0'
 
     testImplementation 'junit:junit:4.+'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
