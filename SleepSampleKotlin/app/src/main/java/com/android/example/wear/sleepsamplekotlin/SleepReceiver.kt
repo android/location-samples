@@ -19,22 +19,32 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.util.Log
+import com.android.example.wear.sleepsamplekotlin.data.SleepRepository
+import com.android.example.wear.sleepsamplekotlin.data.db.SleepSegmentEventEntity
 import com.google.android.gms.location.SleepClassifyEvent
 import com.google.android.gms.location.SleepSegmentEvent
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.launch
 
 /**
  * Saves Sleep Events to Database.
  */
 class SleepReceiver : BroadcastReceiver() {
+
+    // Used to launch coroutines (non-blocking way to insert data).
+    private val scope: CoroutineScope = MainScope()
+
     override fun onReceive(context: Context, intent: Intent) {
         Log.d(TAG, "onReceive(): $intent")
+
+        val repository: SleepRepository = (context.applicationContext as MainApplication).repository
 
         if (SleepSegmentEvent.hasEvents(intent)) {
             val sleepSegmentEvents: List<SleepSegmentEvent> =
                 SleepSegmentEvent.extractEvents(intent)
-
-            // TODO: Save SleepSegmentEvents to DB.
             Log.d(TAG, "SleepSegmentEvent List: $sleepSegmentEvents")
+            addSleepSegmentEventsToDatabase(repository, sleepSegmentEvents)
         } else if (SleepClassifyEvent.hasEvents(intent)) {
             val sleepClassifyEvents: List<SleepClassifyEvent> =
                 SleepClassifyEvent.extractEvents(intent)
@@ -43,6 +53,22 @@ class SleepReceiver : BroadcastReceiver() {
             Log.d(TAG, "SleepClassifyEvent List: $sleepClassifyEvents")
         }
     }
+
+    private fun addSleepSegmentEventsToDatabase(
+        repository: SleepRepository,
+        sleepSegmentEvents: List<SleepSegmentEvent>
+    ) {
+        if (sleepSegmentEvents.isNotEmpty()) {
+            scope.launch {
+                val convertedToEntityVersion: List<SleepSegmentEventEntity> =
+                    sleepSegmentEvents.map {
+                        SleepSegmentEventEntity.from(it)
+                    }
+                repository.insertSleepSegments(convertedToEntityVersion)
+            }
+        }
+    }
+
     companion object {
         const val TAG = "SleepReceiver"
     }

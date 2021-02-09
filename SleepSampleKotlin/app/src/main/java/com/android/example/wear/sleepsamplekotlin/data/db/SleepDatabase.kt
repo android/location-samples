@@ -27,23 +27,23 @@ private const val DATABASE_NAME = "sleep_segments_database"
  */
 @Database(
     entities = [SleepSegmentEventEntity::class],
-    version = 1,
+    version = 2,
     exportSchema = false
 )
-abstract class SleepSegmentDatabase : RoomDatabase() {
+abstract class SleepDatabase : RoomDatabase() {
 
     abstract fun sleepSegmentEventDao(): SleepSegmentEventDao
 
     companion object {
         // For Singleton instantiation
         @Volatile
-        private var INSTANCE: SleepSegmentDatabase? = null
+        private var INSTANCE: SleepDatabase? = null
 
-        fun getDatabase(context: Context): SleepSegmentDatabase {
+        fun getDatabase(context: Context): SleepDatabase {
             return INSTANCE ?: synchronized(this) {
                 val instance = Room.databaseBuilder(
                     context,
-                    SleepSegmentDatabase::class.java,
+                    SleepDatabase::class.java,
                     DATABASE_NAME
                 )
                     // Wipes and rebuilds instead of migrating if no Migration object.
