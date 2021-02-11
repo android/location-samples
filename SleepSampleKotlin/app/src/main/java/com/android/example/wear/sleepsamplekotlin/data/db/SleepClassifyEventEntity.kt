@@ -24,7 +24,7 @@ import com.google.android.gms.location.SleepClassifyEvent
  * Entity class (table version of the class) for [SleepClassifyEvent] which represents a sleep
  * classification event including the classification timestamp, the sleep confidence, and the
  * supporting data such as device motion and ambient light level. Classification events are
- * reported approximately every 10 minutes.
+ * reported regularly.
  */
 @Entity(tableName = "sleep_classify_events_table")
 data class SleepClassifyEventEntity(

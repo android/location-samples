@@ -27,7 +27,7 @@
     <string name="permission_approved">Permission Approved!</string>
 
     <!-- Strings combined for output to main Text in MainActivity. -->
-    <string name="main_output_header1_subscribed_sleep_data">Currently subscribed to sleep data:\nSleepClassifyEvents should occur every ~10 minutes.\n(Last update: %1$s):\n\n</string>
+    <string name="main_output_header1_subscribed_sleep_data">Currently subscribed to sleep data:\nSleepClassifyEvents should occur regularly.\n(Last update: %1$s):\n\n</string>
     <string name="main_output_header1_unsubscribed_sleep_data">Currently NOT subscribed to sleep data:\n(Information below was saved from previous sessions to the database):\n\n</string>
     <string name="main_output_header2_and_sleep_data">=== Sleep Segment Events ===\n%1$s\n\n=== Sleep Classify Events ===\n%2$s</string>
 </resources>
