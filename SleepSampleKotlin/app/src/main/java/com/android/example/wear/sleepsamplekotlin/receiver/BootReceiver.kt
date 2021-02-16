@@ -27,6 +27,7 @@ import androidx.core.content.ContextCompat
 import com.android.example.wear.sleepsamplekotlin.MainApplication
 import com.android.example.wear.sleepsamplekotlin.data.SleepRepository
 import com.google.android.gms.location.ActivityRecognition
+import com.google.android.gms.location.SleepSegmentRequest
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.flow.first
@@ -67,7 +68,11 @@ class BootReceiver : BroadcastReceiver() {
         Log.d(TAG, "subscribeToSleepSegmentUpdates()")
         if (activityRecognitionPermissionApproved(context)) {
             val task =
-                ActivityRecognition.getClient(context).requestSleepSegmentUpdates(pendingIntent)
+                ActivityRecognition.getClient(context).requestSleepSegmentUpdates(
+                    pendingIntent,
+                    // Registers for both [SleepSegmentEvent] and [SleepClassifyEvent] data.
+                    SleepSegmentRequest.getDefaultSleepSegmentRequest()
+                )
 
             task.addOnSuccessListener {
                 Log.d(TAG, "Successfully subscribed to sleep data from boot.")

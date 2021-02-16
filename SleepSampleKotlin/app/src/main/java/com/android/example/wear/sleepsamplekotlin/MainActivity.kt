@@ -34,6 +34,7 @@ import com.android.example.wear.sleepsamplekotlin.databinding.ActivityMainBindin
 import com.android.example.wear.sleepsamplekotlin.receiver.SleepReceiver
 import com.google.android.gms.location.ActivityRecognition
 import com.google.android.gms.location.SleepSegmentEvent
+import com.google.android.gms.location.SleepSegmentRequest
 import com.google.android.material.snackbar.Snackbar
 import java.util.Calendar
 
@@ -134,7 +135,11 @@ class MainActivity : AppCompatActivity() {
     @SuppressLint("MissingPermission")
     private fun subscribeToSleepSegmentUpdates(context: Context, pendingIntent: PendingIntent) {
         Log.d(TAG, "requestSleepSegmentUpdates()")
-        val task = ActivityRecognition.getClient(context).requestSleepSegmentUpdates(pendingIntent)
+        val task = ActivityRecognition.getClient(context).requestSleepSegmentUpdates(
+            pendingIntent,
+            // Registers for both [SleepSegmentEvent] and [SleepClassifyEvent] data.
+            SleepSegmentRequest.getDefaultSleepSegmentRequest()
+        )
 
         task.addOnSuccessListener {
             mainViewModel.updateSubscribedToSleepData(true)
