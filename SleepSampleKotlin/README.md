@@ -1,25 +1,24 @@
 Subscribe and Recognize to the User's Sleep Activity
 ====================================================
 
-Demonstrates use of the [ActivityRecognitionApi][1] to recognize a user's sleep activity.
+Demonstrates use of the [Sleep API][1] to recognize a user's sleep activity.
 
 Introduction
 ============
 
-Demonstrates use of the [ActivityRecognitionApi][1] to recognize a user's current sleep
-activity.
+Demonstrates use of the [Sleep API][1] to recognize a user's current sleep activity.
 
-Users can request activity updates by pressing the "Request Updates" button,
-and stop receiving updates using the "Remove Updates" button.
+Users can request activity updates by pressing the "Subscribe to Sleep Data" button,
+and stop receiving updates using the "Unsubscribe to Sleep Data" button.
 
 Note: The Sleep APIs work on 29 and above, so this sample targets the minimum API level of 29.
 
-[1]: https://developer.android.com/reference/com/google/android/gms/location/ActivityRecognitionApi.html
+[1]: https://developers.google.com/location-context/sleep
 
 Prerequisites
 --------------
 
-- Android API Level >v9
+- Android API Level >v29
 - Android Build Tools >v21
 - Google (Support) Repository
 
