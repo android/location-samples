@@ -89,12 +89,9 @@ class MainActivity : AppCompatActivity() {
             Log.d(TAG, "sleepSegmentEventEntities: $sleepSegmentEventEntities")
 
             if (sleepSegmentEventEntities.isNotEmpty()) {
-                // Converts database table version to official class ([SleepSegmentEvent]).
-                val sleepSegmentEvent: List<SleepSegmentEvent> = sleepSegmentEventEntities.map {
-                    it.toSleepSegmentEvent()
-                }
-
-                sleepSegmentOutput = sleepSegmentEvent.joinToString {
+                // Constructor isn't accessible for [SleepSegmentEvent], so we just output the
+                // database table version.
+                sleepSegmentOutput = sleepSegmentEventEntities.joinToString {
                     "\t$it\n"
                 }
                 updateOutput()

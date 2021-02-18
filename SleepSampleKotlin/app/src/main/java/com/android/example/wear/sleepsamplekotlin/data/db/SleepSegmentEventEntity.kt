@@ -35,15 +35,6 @@ data class SleepSegmentEventEntity(
     @ColumnInfo(name = "status")
     val status: Int
 ) {
-
-    fun toSleepSegmentEvent(): SleepSegmentEvent {
-        return SleepSegmentEvent(
-            startTimeMillis,
-            endTimeMillis,
-            status
-        )
-    }
-
     companion object {
         fun from(sleepSegmentEvent: SleepSegmentEvent): SleepSegmentEventEntity {
             return SleepSegmentEventEntity(
