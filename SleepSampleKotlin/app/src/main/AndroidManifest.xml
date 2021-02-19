@@ -27,7 +27,7 @@
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
     <application
-        android:name=".MainApplication"
+        android:name="com.android.example.sleepsamplekotlin.MainApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -35,7 +35,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.SleepSampleKotlin">
 
-        <activity android:name=".MainActivity">
+        <activity android:name="com.android.example.sleepsamplekotlin.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -44,12 +44,12 @@
         </activity>
 
         <receiver
-            android:name=".receiver.SleepReceiver"
+            android:name="com.android.example.sleepsamplekotlin.receiver.SleepReceiver"
             android:enabled="true"
             android:exported="true" />
 
         <receiver
-            android:name=".receiver.BootReceiver"
+            android:name="com.android.example.sleepsamplekotlin.receiver.BootReceiver"
             android:enabled="true"
             android:exported="true"
             android:permission="android.permission.RECEIVE_BOOT_COMPLETED">

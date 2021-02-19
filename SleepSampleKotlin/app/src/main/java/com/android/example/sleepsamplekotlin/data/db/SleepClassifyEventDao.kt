@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.android.example.wear.sleepsamplekotlin.data.db
+package com.android.example.sleepsamplekotlin.data.db
 
 import androidx.room.Dao
 import androidx.room.Delete
@@ -23,22 +23,22 @@ import androidx.room.Query
 import kotlinx.coroutines.flow.Flow
 
 /**
- * Defines [SleepSegmentEventEntity] database operations.
+ * Defines [SleepClassifyEventEntity] database operations.
  */
 @Dao
-interface SleepSegmentEventDao {
-    @Query("SELECT * FROM sleep_segment_events_table ORDER BY start_time_millis DESC")
-    fun getAll(): Flow<List<SleepSegmentEventEntity>>
+interface SleepClassifyEventDao {
+    @Query("SELECT * FROM sleep_classify_events_table ORDER BY time_stamp_seconds DESC")
+    fun getAll(): Flow<List<SleepClassifyEventEntity>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insert(sleepSegmentEventEntity: SleepSegmentEventEntity)
+    suspend fun insert(sleepClassifyEventEntity: SleepClassifyEventEntity)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertAll(sleepSegmentEventEntities: List<SleepSegmentEventEntity>)
+    suspend fun insertAll(sleepClassifyEventEntities: List<SleepClassifyEventEntity>)
 
     @Delete
-    suspend fun delete(sleepSegmentEventEntity: SleepSegmentEventEntity)
+    suspend fun delete(sleepClassifyEventEntity: SleepClassifyEventEntity)
 
-    @Query("DELETE FROM sleep_segment_events_table")
+    @Query("DELETE FROM sleep_classify_events_table")
     suspend fun deleteAll()
 }

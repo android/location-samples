@@ -13,14 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.android.example.wear.sleepsamplekotlin
+package com.android.example.sleepsamplekotlin
 
 import android.app.Application
 import androidx.datastore.preferences.createDataStore
-import com.android.example.wear.sleepsamplekotlin.data.SleepRepository
-import com.android.example.wear.sleepsamplekotlin.data.datastore.SLEEP_PREFERENCES_NAME
-import com.android.example.wear.sleepsamplekotlin.data.datastore.SleepSubscriptionStatus
-import com.android.example.wear.sleepsamplekotlin.data.db.SleepDatabase
+import com.android.example.sleepsamplekotlin.data.SleepRepository
+import com.android.example.sleepsamplekotlin.data.datastore.SLEEP_PREFERENCES_NAME
+import com.android.example.sleepsamplekotlin.data.datastore.SleepSubscriptionStatus
+import com.android.example.sleepsamplekotlin.data.db.SleepDatabase
 
 /**
  * Sets up repository for all sleep data.

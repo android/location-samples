@@ -13,13 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.android.example.wear.sleepsamplekotlin.data
+package com.android.example.sleepsamplekotlin.data
 
-import com.android.example.wear.sleepsamplekotlin.data.datastore.SleepSubscriptionStatus
-import com.android.example.wear.sleepsamplekotlin.data.db.SleepClassifyEventDao
-import com.android.example.wear.sleepsamplekotlin.data.db.SleepClassifyEventEntity
-import com.android.example.wear.sleepsamplekotlin.data.db.SleepSegmentEventDao
-import com.android.example.wear.sleepsamplekotlin.data.db.SleepSegmentEventEntity
+import com.android.example.sleepsamplekotlin.data.datastore.SleepSubscriptionStatus
+import com.android.example.sleepsamplekotlin.data.db.SleepClassifyEventDao
+import com.android.example.sleepsamplekotlin.data.db.SleepClassifyEventEntity
+import com.android.example.sleepsamplekotlin.data.db.SleepSegmentEventDao
+import com.android.example.sleepsamplekotlin.data.db.SleepSegmentEventEntity
 import kotlinx.coroutines.flow.Flow
 
 class SleepRepository(
