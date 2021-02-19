@@ -35,7 +35,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.SleepSampleKotlin">
 
-        <activity android:name="com.android.example.sleepsamplekotlin.MainActivity">
+        <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
