@@ -11,7 +11,7 @@ Demonstrates use of the [Sleep API][1] to recognize a user's current sleep activ
 Users can request activity updates by pressing the "Subscribe to Sleep Data" button,
 and stop receiving updates using the "Unsubscribe to Sleep Data" button.
 
-Note: The Sleep APIs work on 29 and above, so this sample targets the minimum API level of 29.
+Note: This sample targets the preferred minimum API level of 29.
 
 [1]: https://developers.google.com/location-context/sleep
 
