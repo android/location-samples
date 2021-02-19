@@ -15,7 +15,7 @@
      limitations under the License.
 -->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.android.example.wear.sleepsamplekotlin">
+    package="com.android.example.sleepsamplekotlin">
     <!--
     Usually for activity recognition, an app will need one specific permission in the manifest to
     support devices on 28 and below and another to support devices on 29 and above.

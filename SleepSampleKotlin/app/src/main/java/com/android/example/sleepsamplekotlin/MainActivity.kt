@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.android.example.wear.sleepsamplekotlin
+package com.android.example.sleepsamplekotlin
 
 import android.Manifest.permission
 import android.annotation.SuppressLint
@@ -30,10 +30,9 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
-import com.android.example.wear.sleepsamplekotlin.databinding.ActivityMainBinding
-import com.android.example.wear.sleepsamplekotlin.receiver.SleepReceiver
+import com.android.example.sleepsamplekotlin.databinding.ActivityMainBinding
+import com.android.example.sleepsamplekotlin.receiver.SleepReceiver
 import com.google.android.gms.location.ActivityRecognition
-import com.google.android.gms.location.SleepSegmentEvent
 import com.google.android.gms.location.SleepSegmentRequest
 import com.google.android.material.snackbar.Snackbar
 import java.util.Calendar

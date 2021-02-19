@@ -13,17 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.android.example.wear.sleepsamplekotlin.receiver
+package com.android.example.sleepsamplekotlin.receiver
 
 import android.app.PendingIntent
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.util.Log
-import com.android.example.wear.sleepsamplekotlin.MainApplication
-import com.android.example.wear.sleepsamplekotlin.data.SleepRepository
-import com.android.example.wear.sleepsamplekotlin.data.db.SleepClassifyEventEntity
-import com.android.example.wear.sleepsamplekotlin.data.db.SleepSegmentEventEntity
+import com.android.example.sleepsamplekotlin.MainApplication
+import com.android.example.sleepsamplekotlin.data.SleepRepository
+import com.android.example.sleepsamplekotlin.data.db.SleepClassifyEventEntity
+import com.android.example.sleepsamplekotlin.data.db.SleepSegmentEventEntity
 import com.google.android.gms.location.SleepClassifyEvent
 import com.google.android.gms.location.SleepSegmentEvent
 import kotlinx.coroutines.CoroutineScope

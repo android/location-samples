@@ -24,7 +24,7 @@ android {
     buildToolsVersion "30.0.3"
 
     defaultConfig {
-        applicationId "com.android.example.wear.sleepsamplekotlin"
+        applicationId "com.android.example.sleepsamplekotlin"
         minSdkVersion 29
         targetSdkVersion 30
         versionCode 1
