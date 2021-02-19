@@ -30,10 +30,8 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
-import com.android.example.wear.sleepsamplekotlin.R
-import com.android.example.wear.sleepsamplekotlin.databinding.ActivityMainBinding
+import com.android.example.sleepsamplekotlin.databinding.ActivityMainBinding
 import com.android.example.sleepsamplekotlin.receiver.SleepReceiver
-import com.android.example.wear.sleepsamplekotlin.BuildConfig
 import com.google.android.gms.location.ActivityRecognition
 import com.google.android.gms.location.SleepSegmentRequest
 import com.google.android.material.snackbar.Snackbar
