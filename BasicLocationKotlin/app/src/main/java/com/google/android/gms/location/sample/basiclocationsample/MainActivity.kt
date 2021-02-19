@@ -16,20 +16,24 @@
 
 package com.google.android.gms.location.sample.basiclocationsample
 
+import android.Manifest
 import android.Manifest.permission.ACCESS_COARSE_LOCATION
+import android.Manifest.permission.ACCESS_FINE_LOCATION
 import android.annotation.SuppressLint
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.content.pm.PackageManager.PERMISSION_GRANTED
+import android.location.Location
 import android.net.Uri
 import android.os.Bundle
+import android.os.Looper
 import android.provider.Settings
 import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.viewbinding.BuildConfig
-import com.google.android.gms.location.FusedLocationProviderClient
-import com.google.android.gms.location.LocationServices
+import com.google.android.gms.location.*
 import com.google.android.gms.location.sample.basiclocationsample.databinding.MainActivityBinding
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.snackbar.Snackbar.LENGTH_INDEFINITE
@@ -58,7 +62,7 @@ class MainActivity: AppCompatActivity() {
         binding = MainActivityBinding.inflate(layoutInflater)
         val view = binding.root
         setContentView(view)
-
+        
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
     }
     
@@ -75,9 +79,11 @@ class MainActivity: AppCompatActivity() {
      * Return the current state of the permissions needed.
      */
     private fun checkPermissions() = ActivityCompat.checkSelfPermission(this,
-        ACCESS_COARSE_LOCATION) == PERMISSION_GRANTED
+        ACCESS_COARSE_LOCATION) == PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+        this, ACCESS_FINE_LOCATION) == PERMISSION_GRANTED
     private fun requestPermissions() {
-        if (ActivityCompat.shouldShowRequestPermissionRationale(this, ACCESS_COARSE_LOCATION)) {
+        if (ActivityCompat.shouldShowRequestPermissionRationale(this, ACCESS_COARSE_LOCATION)
+            && ActivityCompat.shouldShowRequestPermissionRationale(this, ACCESS_FINE_LOCATION)) {
             // Provide an additional rationale to the user. This would happen if the user denied the
             // request previously, but didn't check the "Don't ask again" checkbox.
             Log.i(TAG, "Displaying permission rationale to provide additional context.")
@@ -95,8 +101,8 @@ class MainActivity: AppCompatActivity() {
         }
     }
     private fun startLocationPermissionRequest() {
-        ActivityCompat.requestPermissions(this, arrayOf(ACCESS_COARSE_LOCATION),
-            REQUEST_PERMISSIONS_REQUEST_CODE)
+        ActivityCompat.requestPermissions(this, arrayOf(ACCESS_COARSE_LOCATION,
+            ACCESS_FINE_LOCATION), REQUEST_PERMISSIONS_REQUEST_CODE)
     }
     /**
      * Callback received when a permissions request has been completed.
@@ -152,21 +158,63 @@ class MainActivity: AppCompatActivity() {
      */
     @SuppressLint("MissingPermission")
     private fun getLastLocation() {
-        fusedLocationClient.lastLocation
-                .addOnCompleteListener { taskLocation ->
-                    if (taskLocation.isSuccessful && taskLocation.result != null) {
-
-                        val location = taskLocation.result
-
-                        binding.currentLatitude.text = resources
-                                .getString(R.string.latitude_label, location?.latitude)
-                        binding.currentLongitude.text = resources
-                                .getString(R.string.longitude_label, location?.longitude)
-                    } else {
-                        Log.w(TAG, "getLastLocation:exception", taskLocation.exception)
-                        showSnackbar(R.string.no_location_detected)
-                    }
-                }
+        Log.d(TAG, "getLastLocation")
+        fusedLocationClient.lastLocation.addOnCompleteListener { taskLocation ->
+            if (taskLocation.isSuccessful && taskLocation.result != null) {
+                updateViews(taskLocation.result)
+            } else {
+                requestNewLocationData()
+                /*Log.w(TAG, "getLastLocation:exception", taskLocation.exception)
+                showSnackbar(R.string.no_location_detected)*/
+            }
+        }
+    }
+    fun updateViews(currentLocation: Location) {
+        Log.d(TAG, "updateViews")
+        binding.currentLatitude.text = resources
+            .getString(R.string.latitude_label, currentLocation.latitude)
+        binding.currentLongitude.text = resources
+            .getString(R.string.longitude_label, currentLocation.longitude)
+    }
+    fun requestNewLocationData() {
+        Log.d(TAG, "requestNewLocationData")
+        // Initializing LocationRequest
+        // object with appropriate methods
+        val locationRequest = LocationRequest().apply {
+            // For a high level accuracy use PRIORITY_HIGH_ACCURACY argument.
+            // For a low level accuracy (city), use PRIORITY_LOW_POWER
+            priority = LocationRequest.PRIORITY_HIGH_ACCURACY
+            interval = 3
+            fastestInterval = 1
+            numUpdates = 2
+        }
+        
+        // setting LocationRequest on a FusedLocationClient
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
+        
+        /*if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+            == PackageManager.PERMISSION_DENIED && ActivityCompat.checkSelfPermission(this,
+                Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_DENIED) {
+            ActivityCompat.requestPermissions(
+                requireActivity(), arrayOf(Manifest.permission_group.LOCATION), PERMISSIONS_ALLOW_USING_LOCATION_ID
+            )
+        } else {
+            locationClient?.requestLocationUpdates(locationRequest,
+                locationCallback, Looper.myLooper())
+        }*/
+    
+        if (ActivityCompat.checkSelfPermission(this, ACCESS_FINE_LOCATION)
+            == PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this,
+                ACCESS_COARSE_LOCATION) == PERMISSION_GRANTED) {
+            fusedLocationClient.requestLocationUpdates(locationRequest,
+                locationCallback, Looper.myLooper())
+        }
+    }
+    private val locationCallback: LocationCallback = object : LocationCallback() {
+        override fun onLocationResult(locationResult: LocationResult) {
+            Log.d(TAG, "onLocationResult")
+            updateViews(locationResult.lastLocation)
+        }
     }
     /**
      * Shows a [Snackbar].
