@@ -15,7 +15,7 @@
      limitations under the License.
 -->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.android.example.wear.sleepsamplekotlin">
+    package="com.android.example.sleepsamplekotlin">
     <!--
     Usually for activity recognition, an app will need one specific permission in the manifest to
     support devices on 28 and below and another to support devices on 29 and above.
@@ -27,7 +27,7 @@
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
     <application
-        android:name="com.android.example.sleepsamplekotlin.MainApplication"
+        android:name=".MainApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -44,12 +44,12 @@
         </activity>
 
         <receiver
-            android:name="com.android.example.sleepsamplekotlin.receiver.SleepReceiver"
+            android:name=".receiver.SleepReceiver"
             android:enabled="true"
             android:exported="true" />
 
         <receiver
-            android:name="com.android.example.sleepsamplekotlin.receiver.BootReceiver"
+            android:name=".receiver.BootReceiver"
             android:enabled="true"
             android:exported="true"
             android:permission="android.permission.RECEIVE_BOOT_COMPLETED">
