@@ -1,32 +1,37 @@
 Google Play Location Samples
 ============================
 
-Samples that use
-[Location APIs](http://developer.android.com/google/play-services/location.html)
-to help you make your applications location aware.
+The [location and context APIs](https://developers.google.com/location-context/) harness the sensors and signals of mobile devices to provide awareness of user actions and their environment, enabling delightful and engaging experiences that simplify user interactions, provide assistance, and help users to better understand themselves.
 
 This repo contains the following samples:
 
-1. Basic Location Sample
- ([Java](https://github.com/googlesamples/android-play-location/tree/master/BasicLocationSample/java), [Kotlin](https://github.com/googlesamples/android-play-location/tree/master/BasicLocationSample/kotlin)):
-Retrieve the last known location for a device.
-1. [Location Updates](https://github.com/googlesamples/android-play-location/tree/master/LocationUpdates):
-Get updates about a device's location.
-
-1. [Location Updates using a PendingIntent](https://github.com/googlesamples/android-play-location/tree/master/LocationUpdatesPendingIntent):
-Get updates about a device's location using a `PendingIntent`. Sample shows
-implementation using an `IntentService` as well as a `BroadcastReceiver`.
-1. [Location Updates using a Foreground Service](https://github.com/googlesamples/android-play-location/tree/master/LocationUpdatesForegroundService):
-Get updates about a device's location using a bound and started foreground
-service.
-1. Location Address
-([Java](https://github.com/googlesamples/android-play-location/tree/master/LocationAddress/java), [Kotlin](https://github.com/googlesamples/android-play-location/tree/master/LocationAddress/kotlin)):
-Use the [Geocode API](http://developer.android.com/reference/android/location/Geocoder.html) to display a device's location as an address.
-1. [Creating and Monitoring Geofences](https://github.com/googlesamples/android-play-location/tree/master/Geofencing):
-Create geofences and process enter and exit transitions.
-1. [Recognizing the User's Current Activity](https://github.com/googlesamples/android-play-location/tree/master/ActivityRecognition):
-Use the
+- [Activity Recognition](https://github.com/android/location-samples/tree/main/ActivityRecognition) (Java) - Demonstrates the
 [ActivityRecognitionApi](https://developers.google.com/android/reference/com/google/android/gms/location/ActivityRecognitionApi) to determine the user's current activity.
+
+- [AwarenessApisSampleKotlin](https://github.com/android/location-samples/tree/main/AwarenessApisSampleKotlin) (Kotlin) - Demonstrates use of the [Awareness APIs](https://developers.google.com/android/reference/com/google/android/gms/awareness/Awareness#getSnapshotClient(android.app.Activity)) to intelligently react to the current situation of the user. 
+
+- [BasicLocation](https://github.com/android/location-samples/tree/main/BasicLocation) (Java) - Demonstrates use of the Google Play services Location API to retrieve the last known location for a device.
+
+- [BasicLocation](https://github.com/android/location-samples/tree/main/BasicLocationKotlin) (Kotlin) - Same as above but in Kotlin.
+
+- [CurrentLocationKotlin](https://github.com/android/location-samples/tree/main/CurrentLocationKotlin) (Kotlin) - This app allows a user to request a current location without subscribing to location updates.
+
+- [Geofencing](https://github.com/android/location-samples/tree/main/Geofencing) (Java) - Create geofences and process enter and exit transitions.
+
+- [LocationAddress](https://github.com/android/location-samples/tree/main/LocationAddress) (Java) - Use the [Geocode API](http://developer.android.com/reference/android/location/Geocoder.html) to display a device's location as an address.
+
+- [LocationAddressKotlin](https://github.com/android/location-samples/tree/main/LocationAddress) (Kotlin) - Same as above but in Kotlin.
+
+- [LocationUpdates](https://github.com/android/location-samples/tree/main/LocationUpdates) (Java) - Get updates about a device's location.
+
+- [LocationUpdatesBackgroundKotlin](https://github.com/android/location-samples/tree/main/LocationUpdatesBa) (Kotlin) - Demonstrates the correct way to retrieve location updates in the background.
+
+- [LocationUpdatesForegroundService](https://github.com/android/location-samples/tree/main/LocationUpdatesForegroundService) (Java) - Get updates about a device's location using a bound and started foreground service.
+
+- [LocationUpdatesPendingIntent](https://github.com/android/location-samples/tree/main/LocationUpdatesPendingIntent) (Java) - Get updates about a device's location using a `PendingIntent`. Sample shows implementation using an `IntentService` as well as a `BroadcastReceiver`.
+
+- [SleepSampleKotlin](https://github.com/android/location-samples/tree/main/SleepSampleKotlin) (Kotlin) - Demonstrates use of the Sleep API to recognize a user's sleep activity.
+
 
 Prerequisites
 --------------
