@@ -20,6 +20,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.util.Log
+import com.google.android.gms.location.LocationAvailability
 import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.sample.locationupdatesbackgroundkotlin.data.LocationRepository
 import com.google.android.gms.location.sample.locationupdatesbackgroundkotlin.data.db.MyLocationEntity
@@ -47,6 +48,14 @@ class LocationUpdatesBroadcastReceiver : BroadcastReceiver() {
         Log.d(TAG, "onReceive() context:$context, intent:$intent")
 
         if (intent.action == ACTION_PROCESS_UPDATES) {
+
+            // Checks for location availability changes.
+            LocationAvailability.extractLocationAvailability(intent)?.let { locationAvailability ->
+                if (!locationAvailability.isLocationAvailable) {
+                    Log.d(TAG, "Location services are no longer available!")
+                }
+            }
+
             LocationResult.extractResult(intent)?.let { locationResult ->
                 val locations = locationResult.locations.map { location ->
                     MyLocationEntity(
