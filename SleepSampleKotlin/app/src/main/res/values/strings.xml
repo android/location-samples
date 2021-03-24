@@ -21,7 +21,7 @@
     <string name="sleep_button_unsubscribe_text">Unsubscribe to Sleep Data</string>
 
     <string name="action_settings">Settings</string>
-    <string name="permission_rational">Sample requires activity transition permissions to function.</string>
+    <string name="permission_rational">Sample requires Activity Recognition permissions to function.</string>
     <string name="no">No</string>
     <string name="yes">Yes</string>
     <string name="permission_approved">Permission Approved!</string>
