@@ -135,8 +135,14 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     protected void onStart() {
         super.onStart();
-        PreferenceManager.getDefaultSharedPreferences(this)
-                .registerOnSharedPreferenceChangeListener(this);
+        
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        SharedPreferences.OnSharedPreferenceChangeListener listener = new SharedPreferences.OnSharedPreferenceChangeListener() {
+            public void onSharedPreferenceChanged(SharedPreferences prefs, String key) {
+                // Implementation
+            }
+        };
+        prefs.registerOnSharedPreferenceChangeListener(listener);
 
         mRequestLocationUpdatesButton = (Button) findViewById(R.id.request_location_updates_button);
         mRemoveLocationUpdatesButton = (Button) findViewById(R.id.remove_location_updates_button);
