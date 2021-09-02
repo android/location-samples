@@ -32,18 +32,16 @@ import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.IBinder;
 import android.os.Looper;
-import androidx.annotation.NonNull;
+import android.util.Log;
+
 import androidx.core.app.NotificationCompat;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
-import android.util.Log;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 
 /**
  * A bound and started service that is promoted to a foreground service when location updates have
@@ -106,7 +104,7 @@ public class LocationUpdatesService extends Service {
     private NotificationManager mNotificationManager;
 
     /**
-     * Contains parameters used by {@link com.google.android.gms.location.FusedLocationProviderApi}.
+     * Contains parameters used by {@link com.google.android.gms.location.FusedLocationProviderClient}.
      */
     private LocationRequest mLocationRequest;
 
@@ -276,24 +274,32 @@ public class LocationUpdatesService extends Service {
         // The PendingIntent to launch activity.
         PendingIntent activityPendingIntent = PendingIntent.getActivity(this, 0,
                 new Intent(this, MainActivity.class), 0);
-
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(this)
-                .addAction(R.drawable.ic_launch, getString(R.string.launch_activity),
-                        activityPendingIntent)
-                .addAction(R.drawable.ic_cancel, getString(R.string.remove_location_updates),
-                        servicePendingIntent)
-                .setContentText(text)
-                .setContentTitle(Utils.getLocationTitle(this))
-                .setOngoing(true)
-                .setPriority(Notification.PRIORITY_HIGH)
-                .setSmallIcon(R.mipmap.ic_launcher)
-                .setTicker(text)
-                .setWhen(System.currentTimeMillis());
-
-        // Set the Channel ID for Android O.
+    
+        NotificationCompat.Builder builder;
+    
+        // Builder initialization for Android O.
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            builder.setChannelId(CHANNEL_ID); // Channel ID
+            builder = new NotificationCompat.Builder(
+                this, CHANNEL_ID
+            );
+        // Builder initialization for other versions of Android
+        } else {
+            builder = new NotificationCompat.Builder(
+                this, ""
+            );
         }
+        
+        builder.addAction(R.drawable.ic_launch, getString(R.string.launch_activity),
+            activityPendingIntent);
+        builder.addAction(R.drawable.ic_cancel, getString(R.string.remove_location_updates),
+            servicePendingIntent);
+        builder.setContentText(text);
+        builder.setContentTitle(Utils.getLocationTitle(this));
+        builder.setOngoing(true);
+        builder.setPriority(NotificationCompat.PRIORITY_HIGH);
+        builder.setSmallIcon(R.mipmap.ic_launcher);
+        builder.setTicker(text);
+        builder.setWhen(System.currentTimeMillis());
 
         return builder.build();
     }
@@ -301,14 +307,11 @@ public class LocationUpdatesService extends Service {
     private void getLastLocation() {
         try {
             mFusedLocationClient.getLastLocation()
-                    .addOnCompleteListener(new OnCompleteListener<Location>() {
-                        @Override
-                        public void onComplete(@NonNull Task<Location> task) {
-                            if (task.isSuccessful() && task.getResult() != null) {
-                                mLocation = task.getResult();
-                            } else {
-                                Log.w(TAG, "Failed to get location.");
-                            }
+                    .addOnCompleteListener(task -> {
+                        if (task.isSuccessful() && task.getResult() != null) {
+                            mLocation = task.getResult();
+                        } else {
+                            Log.w(TAG, "Failed to get location.");
                         }
                     });
         } catch (SecurityException unlikely) {

@@ -1,10 +1,15 @@
 buildscript {
+    ext {
+        // Android Gradle plugin
+        gradlePluginVersion = '4.1.0'
+    }
     repositories {
         google()
         jcenter()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.3.2'
+        // Android Gradle plugin
+        classpath "com.android.tools.build:gradle:$gradlePluginVersion"
     }
 }
 

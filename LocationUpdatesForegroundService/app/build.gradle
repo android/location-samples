@@ -17,16 +17,58 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    compileOptions {
+        sourceCompatibility = 1.8
+        targetCompatibility = 1.8
+    }
+    buildFeatures {
+        viewBinding true
+    }
+}
+
+ext {
+    // Jetpack
+    // AppCompat
+    appCompatVersion = "1.2.0"
+    // LocalBroadcastManager
+    localBroadcastManagerVersion = "1.0.0"
+    // Preference
+    preferenceVersion = "1.1.1"
+    // MaterialComponents
+    materialComponentsVersion = "1.2.1"
+
+    // Google
+    // Location
+    locationVersion = "17.0.0"
+
+    // Testing
+    // Junit
+    junitVersion = "4.13"
+    // Espresso
+    espressoVersion = "3.3.0"
 }
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    androidTestImplementation('androidx.test.espresso:espresso-core:3.1.1', {
+
+    // Jetpack
+    // AppCompat
+    implementation "androidx.appcompat:appcompat:$appCompatVersion"
+    // LocalBroadcastManager
+    implementation "androidx.localbroadcastmanager:localbroadcastmanager:$localBroadcastManagerVersion"
+    // Preference
+    implementation "androidx.preference:preference:$preferenceVersion"
+    // MaterialComponents
+    implementation "com.google.android.material:material:$materialComponentsVersion"
+
+    // Google
+    implementation "com.google.android.gms:play-services-location:$locationVersion"
+
+    // Testing
+    // Junit
+    testImplementation "junit:junit:$junitVersion"
+    // Espresso
+    androidTestImplementation("androidx.test.espresso:espresso-core:$espressoVersion", {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-    implementation 'androidx.appcompat:appcompat:1.1.0'
-    testImplementation 'junit:junit:4.12'
-
-    implementation 'com.google.android.gms:play-services-location:17.0.0'
-    implementation 'com.google.android.material:material:1.0.0'
 }
