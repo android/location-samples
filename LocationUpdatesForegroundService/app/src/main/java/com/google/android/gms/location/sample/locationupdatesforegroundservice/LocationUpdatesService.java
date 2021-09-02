@@ -120,8 +120,6 @@ public class LocationUpdatesService extends Service {
      */
     private LocationCallback mLocationCallback;
 
-    private Handler mServiceHandler;
-
     /**
      * The current location.
      */
@@ -145,9 +143,6 @@ public class LocationUpdatesService extends Service {
         createLocationRequest();
         getLastLocation();
 
-        HandlerThread handlerThread = new HandlerThread(TAG);
-        handlerThread.start();
-        mServiceHandler = new Handler(handlerThread.getLooper());
         mNotificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
 
         // Android O requires a Notification Channel.
@@ -218,11 +213,6 @@ public class LocationUpdatesService extends Service {
             startForeground(NOTIFICATION_ID, getNotification());
         }
         return true; // Ensures onRebind() is called when a client re-binds.
-    }
-
-    @Override
-    public void onDestroy() {
-        mServiceHandler.removeCallbacksAndMessages(null);
     }
 
     /**
