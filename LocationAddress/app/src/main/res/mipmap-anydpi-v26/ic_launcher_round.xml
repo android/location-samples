@@ -15,6 +15,7 @@
   ~ limitations under the License.
   -->
 
-<resources>
-    <string name="app_name">Location Address</string>
-</resources>
+<adaptive-icon xmlns:android="http://schemas.android.com/apk/res/android">
+    <background android:drawable="@drawable/ic_launcher_background" />
+    <foreground android:drawable="@drawable/ic_launcher_foreground" />
+</adaptive-icon>
