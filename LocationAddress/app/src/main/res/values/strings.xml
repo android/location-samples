@@ -17,4 +17,7 @@
 
 <resources>
     <string name="app_name">Location Address</string>
+
+    <string name="initializing">Initializing…</string>
+    <string name="play_services_unavailable">Google Play Services are unavailable on this device.</string>
 </resources>
