@@ -83,7 +83,12 @@ class MyLocationManager private constructor(private val context: Context) {
         val intent = Intent(context, LocationUpdatesBroadcastReceiver::class.java)
         intent.action = LocationUpdatesBroadcastReceiver.ACTION_PROCESS_UPDATES
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
+            PendingIntent.getBroadcast(
+                context,
+                0,
+                intent,
+                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_MUTABLE
+            )
         } else {
             PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
         }
