@@ -16,30 +16,61 @@
 
 package com.google.android.gms.location.sample.locationaddress
 
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.android.gms.location.sample.locationaddress.UiState.Initializing
 import com.google.android.gms.location.sample.locationaddress.UiState.PlayServicesAvailable
 import com.google.android.gms.location.sample.locationaddress.UiState.PlayServicesUnavailable
+import com.google.android.gms.location.sample.locationaddress.data.FormattedAddress
+import com.google.android.gms.location.sample.locationaddress.data.GeocodingApi
+import com.google.android.gms.location.sample.locationaddress.data.LocationApi
 import com.google.android.gms.location.sample.locationaddress.data.PlayServicesAvailabilityChecker
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class MainViewModel @Inject constructor(
-    availabilityChecker: PlayServicesAvailabilityChecker
-): ViewModel() {
+    availabilityChecker: PlayServicesAvailabilityChecker,
+    private val locationApi: LocationApi,
+    private val geocodingApi: GeocodingApi
+) : ViewModel() {
 
     val uiState = flow {
-        emit(if (availabilityChecker.isGooglePlayServicesAvailable()) {
-            PlayServicesAvailable
-        } else {
-            PlayServicesUnavailable
-        })
+        emit(
+            if (availabilityChecker.isGooglePlayServicesAvailable()) {
+                PlayServicesAvailable
+            } else {
+                PlayServicesUnavailable
+            }
+        )
     }.stateIn(viewModelScope, SharingStarted.Eagerly, Initializing)
+
+    var addressList by mutableStateOf(emptyList<FormattedAddress>())
+        private set
+
+    var showProgress by mutableStateOf(false)
+        private set
+
+    fun getCurrentAddress() {
+        viewModelScope.launch {
+            showProgress = true
+            val location = locationApi.getCurrentLocation()
+            val addresses = if (location != null) {
+                geocodingApi.getFromLocation(location)
+            } else {
+                emptyList()
+            }
+            addressList = addresses
+            showProgress = false
+        }
+    }
 }
 
 enum class UiState {

@@ -21,4 +21,8 @@
     <string name="initializing">Initializing…</string>
     <string name="play_services_unavailable">Google Play Services are unavailable on this device.</string>
     <string name="location_permissions_rationale">This sample requires access to precise location in order to retrieve an address.</string>
+
+    <string name="find_address">Find address</string>
+    <string name="fetching_address">Fetching address…</string>
+    <string name="num_results">Results: %d</string>
 </resources>

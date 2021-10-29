@@ -17,15 +17,23 @@
 package com.google.android.gms.location.sample.locationaddress
 
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.viewModels
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.Button
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Icon
@@ -45,10 +53,10 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
 import com.google.android.gms.location.sample.locationaddress.UiState.Initializing
 import com.google.android.gms.location.sample.locationaddress.UiState.PlayServicesAvailable
 import com.google.android.gms.location.sample.locationaddress.UiState.PlayServicesUnavailable
+import com.google.android.gms.location.sample.locationaddress.data.FormattedAddress
 import com.google.android.gms.location.sample.locationaddress.ui.LocationPermissionState
 import com.google.android.gms.location.sample.locationaddress.ui.theme.LocationAddressTheme
 import dagger.hilt.android.AndroidEntryPoint
@@ -56,13 +64,14 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
+    private val viewModel: MainViewModel by viewModels()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         val locationPermissionState = LocationPermissionState(this) {
             if (it.accessFineLocationGranted) {
-                // TODO: get location and use Geocoder
-                Log.d("&&&&", "Permission granted, call getCurrentLocation()")
+                viewModel.getCurrentAddress()
             }
         }
 
@@ -77,7 +86,10 @@ class MainActivity : ComponentActivity() {
                         )
                     }
                 ) {
-                    MainScreen(locationPermissionState = locationPermissionState)
+                    MainScreen(
+                        viewModel = viewModel,
+                        locationPermissionState = locationPermissionState
+                    )
                 }
             }
         }
@@ -86,25 +98,25 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun MainScreen(
-    viewModel: MainViewModel = hiltViewModel(),
+    viewModel: MainViewModel,
     locationPermissionState: LocationPermissionState
 ) {
     val uiState by viewModel.uiState.collectAsState()
     when (uiState) {
         Initializing -> InitializingScreen()
         PlayServicesUnavailable -> ServiceUnavailableScreen()
-        PlayServicesAvailable -> ServiceAvailable(locationPermissionState)
+        PlayServicesAvailable -> ServiceAvailable(viewModel, locationPermissionState)
     }
 }
 
 @Composable
 fun InitializingScreen() {
     Column(
+        verticalArrangement = Arrangement.spacedBy(16.dp, Alignment.CenterVertically),
+        horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
             .fillMaxSize()
-            .padding(16.dp),
-        verticalArrangement = Arrangement.spacedBy(16.dp, Alignment.CenterVertically),
-        horizontalAlignment = Alignment.CenterHorizontally
+            .padding(16.dp)
     ) {
         Text(
             text = stringResource(id = R.string.initializing),
@@ -117,11 +129,11 @@ fun InitializingScreen() {
 @Composable
 fun ServiceUnavailableScreen() {
     Column(
+        verticalArrangement = Arrangement.spacedBy(16.dp, Alignment.CenterVertically),
+        horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
             .fillMaxSize()
-            .padding(16.dp),
-        verticalArrangement = Arrangement.spacedBy(16.dp, Alignment.CenterVertically),
-        horizontalAlignment = Alignment.CenterHorizontally
+            .padding(16.dp)
     ) {
         Text(
             text = stringResource(id = R.string.play_services_unavailable),
@@ -138,7 +150,7 @@ fun ServiceUnavailableScreen() {
 }
 
 @Composable
-fun ServiceAvailable(locationPermissionState: LocationPermissionState) {
+fun ServiceAvailable(viewModel: MainViewModel, locationPermissionState: LocationPermissionState) {
     /*
     * On Android 12 and later, the user could choose to grant access only to approximate location.
     * The user could also deny both permissions, and the system may tell us to show a rationale for
@@ -152,7 +164,7 @@ fun ServiceAvailable(locationPermissionState: LocationPermissionState) {
         (locationPermissionState.permissionRequested &&
             !locationPermissionState.accessFineLocationGranted)
 
-    GeocoderScreen(showRationale) {
+    GeocoderScreen(showRationale, viewModel.showProgress, viewModel.addressList) {
         locationPermissionState.requestPermissions()
     }
 }
@@ -160,17 +172,45 @@ fun ServiceAvailable(locationPermissionState: LocationPermissionState) {
 @Composable
 fun GeocoderScreen(
     showRationale: Boolean,
+    showProgress: Boolean,
+    addresses: List<FormattedAddress>,
+    onButtonClick: () -> Unit = {}
+) {
+    Column(modifier = Modifier.fillMaxSize()) {
+        GeocoderControls(
+            showRationale = showRationale,
+            buttonEnabled = !showProgress,
+            onButtonClick = onButtonClick,
+            modifier = Modifier
+                .fillMaxWidth()
+                .fillMaxHeight(0.3f)
+                .padding(all = 16.dp)
+        )
+        GeocoderResults(
+            showProgress = showProgress,
+            addresses = addresses,
+            modifier = Modifier.fillMaxHeight(0.7f)
+        )
+    }
+}
+
+@Composable
+fun GeocoderControls(
+    modifier: Modifier = Modifier,
+    showRationale: Boolean,
+    buttonEnabled: Boolean,
     onButtonClick: () -> Unit
 ) {
     Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(all = 16.dp),
+        modifier = modifier,
         verticalArrangement = Arrangement.spacedBy(16.dp, Alignment.CenterVertically),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Button(onClick = onButtonClick) {
-            Text(text = "Find Address")
+        Button(
+            enabled = buttonEnabled,
+            onClick = onButtonClick
+        ) {
+            Text(text = stringResource(id = R.string.find_address))
         }
         if (showRationale) {
             Row(
@@ -188,6 +228,54 @@ fun GeocoderScreen(
                     color = Color.Red,
                     style = MaterialTheme.typography.body1
                 )
+            }
+        }
+    }
+}
+
+@Composable
+fun GeocoderResults(
+    showProgress: Boolean,
+    addresses: List<FormattedAddress>,
+    modifier: Modifier = Modifier
+) {
+    val resultText = if (showProgress) {
+        stringResource(id = R.string.fetching_address)
+    } else {
+        stringResource(id = R.string.num_results, addresses.size)
+    }
+
+    Column(modifier = modifier) {
+        Text(
+            text = resultText,
+            style = MaterialTheme.typography.h6,
+            modifier = Modifier.padding(horizontal = 16.dp)
+        )
+        Spacer(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(1.dp)
+                .background(MaterialTheme.colors.primary)
+        )
+
+        if (showProgress) {
+            CircularProgressIndicator(
+                modifier = Modifier
+                    .padding(16.dp)
+                    .align(Alignment.CenterHorizontally)
+            )
+        } else {
+            LazyColumn(
+                verticalArrangement = Arrangement.spacedBy(24.dp),
+                contentPadding = PaddingValues(all = 16.dp),
+                modifier = Modifier.fillMaxSize()
+            ) {
+                items(addresses) {
+                    Text(
+                        text = it.display,
+                        style = MaterialTheme.typography.body1
+                    )
+                }
             }
         }
     }
@@ -212,7 +300,16 @@ fun ServiceUnavailableScreenPreview() {
 @Preview(showBackground = true)
 @Composable
 fun GeocoderScreenPreview() {
+    val testData = listOf(
+        FormattedAddress("555 Main St\nAnytown, NY 98765"),
+        FormattedAddress("MetaCortex Bldg\n1337 Code Way\nThe Simulation, 0x00101010"),
+        FormattedAddress("Behind the Curtain\nEmerald City\nLand of Oz\nSomewhere over the Rainbow\nNOT Kansas")
+    )
     LocationAddressTheme {
-        GeocoderScreen(true) {}
+        GeocoderScreen(
+            showRationale = true,
+            showProgress = false,
+            addresses = testData
+        )
     }
 }

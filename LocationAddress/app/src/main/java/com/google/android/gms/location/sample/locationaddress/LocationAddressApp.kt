@@ -17,7 +17,9 @@
 package com.google.android.gms.location.sample.locationaddress
 
 import android.app.Application
+import android.location.Geocoder
 import com.google.android.gms.common.GoogleApiAvailability
+import com.google.android.gms.location.LocationServices
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -35,4 +37,13 @@ object AppModule {
     @Provides
     @Singleton
     fun provideGoogleApiAvailability() = GoogleApiAvailability.getInstance()
+
+    @Provides
+    @Singleton
+    fun provideLocationProviderClient(application: Application) =
+        LocationServices.getFusedLocationProviderClient(application)
+
+    @Provides
+    @Singleton
+    fun provideGeocoder(application: Application) = Geocoder(application)
 }
