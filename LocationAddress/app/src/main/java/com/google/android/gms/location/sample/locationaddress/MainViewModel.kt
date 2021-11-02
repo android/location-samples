@@ -58,12 +58,20 @@ class MainViewModel @Inject constructor(
     var showProgress by mutableStateOf(false)
         private set
 
+    val maxResultsRange = 1..7
+    var maxResults by mutableStateOf(1)
+        private set
+
+    fun updateMaxResults(max: Int) {
+        maxResults = max.coerceIn(maxResultsRange)
+    }
+
     fun getCurrentAddress() {
         viewModelScope.launch {
             showProgress = true
             val location = locationApi.getCurrentLocation()
             val addresses = if (location != null) {
-                geocodingApi.getFromLocation(location)
+                geocodingApi.getFromLocation(location, maxResults)
             } else {
                 emptyList()
             }

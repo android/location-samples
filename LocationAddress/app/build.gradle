@@ -85,11 +85,12 @@ dependencies {
     implementation "com.google.dagger:hilt-android:$hilt_version"
 
     // Compose
+    implementation "androidx.activity:activity-compose:1.4.0"
     implementation "androidx.compose.ui:ui:$compose_version"
     implementation "androidx.compose.material:material:$compose_version"
     implementation "androidx.compose.ui:ui-tooling-preview:$compose_version"
+    implementation "androidx.constraintlayout:constraintlayout-compose:1.0.0-rc01"
     implementation 'androidx.hilt:hilt-navigation-compose:1.0.0-alpha03'
-    implementation "androidx.activity:activity-compose:$compose_version"
 
     debugImplementation "androidx.compose.ui:ui-tooling:$compose_version"
     androidTestImplementation "androidx.compose.ui:ui-test-junit4:$compose_version"

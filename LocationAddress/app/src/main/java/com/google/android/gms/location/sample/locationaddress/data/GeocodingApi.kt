@@ -33,12 +33,15 @@ class GeocodingApi @Inject constructor(
     // Geocoder specifically says that this call can use network and that it must not be called
     // from the main thread, so move it to the IO dispatcher.
     suspend fun getFromLocation(
-        location: Location
+        location: Location,
+        maxResults: Int = 1
     ): List<FormattedAddress> = withContext(Dispatchers.IO) {
         try {
-            // TODO parameterize the max number of results.
-            val addresses = geocoder.getFromLocation(location.latitude, location.longitude, 1)
-                ?: emptyList()
+            val addresses = geocoder.getFromLocation(
+                location.latitude,
+                location.longitude,
+                maxResults
+            ) ?: emptyList()
             addresses.map { address ->
                 FormattedAddress(
                     (0..address.maxAddressLineIndex)

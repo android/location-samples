@@ -82,11 +82,13 @@ fun MainScreen(
         Initializing -> InitializingScreen()
         PlayServicesUnavailable -> ServiceUnavailableScreen()
         PlayServicesAvailable -> GeocoderScreen(
-            locationPermissionState.shouldShowRationale(),
-            viewModel.showProgress,
-            viewModel.addressList
-        ) {
-            locationPermissionState.requestPermissions()
-        }
+            showRationale = locationPermissionState.shouldShowRationale(),
+            showProgress = viewModel.showProgress,
+            addresses = viewModel.addressList,
+            maxResults = viewModel.maxResults,
+            maxResultsRange = viewModel.maxResultsRange,
+            onMaxResultsChange = viewModel::updateMaxResults,
+            onFindAddressClick = { locationPermissionState.requestPermissions() }
+        )
     }
 }

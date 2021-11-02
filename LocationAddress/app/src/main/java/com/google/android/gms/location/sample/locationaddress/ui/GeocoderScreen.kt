@@ -28,6 +28,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.Button
@@ -35,7 +36,7 @@ import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
-import androidx.compose.material.icons.Icons.Filled
+import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Warning
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -44,6 +45,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.constraintlayout.compose.ConstraintLayout
 import com.google.android.gms.location.sample.locationaddress.R
 import com.google.android.gms.location.sample.locationaddress.data.FormattedAddress
 import com.google.android.gms.location.sample.locationaddress.ui.theme.LocationAddressTheme
@@ -53,22 +55,28 @@ fun GeocoderScreen(
     showRationale: Boolean,
     showProgress: Boolean,
     addresses: List<FormattedAddress>,
-    onButtonClick: () -> Unit = {}
+    maxResults: Int,
+    maxResultsRange: IntRange,
+    onMaxResultsChange: (Int) -> Unit,
+    onFindAddressClick: () -> Unit
 ) {
     Column(modifier = Modifier.fillMaxSize()) {
         GeocoderControls(
             showRationale = showRationale,
-            buttonEnabled = !showProgress,
-            onButtonClick = onButtonClick,
+            maxResults = maxResults,
+            maxResultsRange = maxResultsRange,
+            onMaxResultsChange = onMaxResultsChange,
+            findAddressEnabled = !showProgress,
+            onFindAddressClick = onFindAddressClick,
             modifier = Modifier
                 .fillMaxWidth()
-                .fillMaxHeight(0.3f)
+                .fillMaxHeight(0.4f)
                 .padding(all = 16.dp)
         )
         GeocoderResults(
             showProgress = showProgress,
             addresses = addresses,
-            modifier = Modifier.fillMaxHeight(0.7f)
+            modifier = Modifier.fillMaxHeight(0.6f)
         )
     }
 }
@@ -77,27 +85,49 @@ fun GeocoderScreen(
 fun GeocoderControls(
     modifier: Modifier = Modifier,
     showRationale: Boolean,
-    buttonEnabled: Boolean,
-    onButtonClick: () -> Unit
+    maxResults: Int,
+    maxResultsRange: IntRange,
+    onMaxResultsChange: (Int) -> Unit,
+    findAddressEnabled: Boolean,
+    onFindAddressClick: () -> Unit
 ) {
-    Column(
-        modifier = modifier,
-        verticalArrangement = Arrangement.spacedBy(16.dp, Alignment.CenterVertically),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
+    ConstraintLayout(modifier = modifier) {
+        val (button, rationale, maxResultControls) = createRefs()
         Button(
-            enabled = buttonEnabled,
-            onClick = onButtonClick
+            enabled = findAddressEnabled,
+            onClick = onFindAddressClick,
+            modifier = Modifier.constrainAs(button) {
+                centerTo(parent)
+            }
         ) {
             Text(text = stringResource(id = R.string.find_address))
+        }
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier.constrainAs(maxResultControls) {
+                centerHorizontallyTo(parent)
+                bottom.linkTo(button.top, margin = 16.dp)
+            }
+        ) {
+            Text(text = stringResource(R.string.max_results, maxResults))
+            DiscreteSlider(
+                value = maxResults,
+                valueRange = maxResultsRange,
+                onValueChange = onMaxResultsChange,
+                modifier = Modifier.width(240.dp)
+            )
         }
         if (showRationale) {
             Row(
                 horizontalArrangement = Arrangement.spacedBy(16.dp),
-                verticalAlignment = Alignment.CenterVertically
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.constrainAs(rationale) {
+                    centerHorizontallyTo(parent)
+                    top.linkTo(button.bottom, margin = 16.dp)
+                }
             ) {
                 Icon(
-                    Filled.Warning,
+                    Icons.Filled.Warning,
                     tint = Color.Red,
                     contentDescription = null,
                     modifier = Modifier.size(32.dp)
@@ -167,7 +197,11 @@ fun GeocoderScreenPreview() {
         GeocoderScreen(
             showRationale = true,
             showProgress = false,
-            addresses = previewData
+            addresses = previewData,
+            maxResults = 5,
+            maxResultsRange = 1..5,
+            onMaxResultsChange = {},
+            onFindAddressClick = {}
         )
     }
 }
