@@ -16,6 +16,7 @@
 
 package com.google.android.gms.location.sample.locationaddress.ui
 
+import android.content.res.Configuration
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -42,6 +43,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -60,24 +62,47 @@ fun GeocoderScreen(
     onMaxResultsChange: (Int) -> Unit,
     onFindAddressClick: () -> Unit
 ) {
-    Column(modifier = Modifier.fillMaxSize()) {
-        GeocoderControls(
-            showRationale = showRationale,
-            maxResults = maxResults,
-            maxResultsRange = maxResultsRange,
-            onMaxResultsChange = onMaxResultsChange,
-            findAddressEnabled = !showProgress,
-            onFindAddressClick = onFindAddressClick,
-            modifier = Modifier
-                .fillMaxWidth()
-                .fillMaxHeight(0.4f)
-                .padding(all = 16.dp)
-        )
-        GeocoderResults(
-            showProgress = showProgress,
-            addresses = addresses,
-            modifier = Modifier.fillMaxHeight(0.6f)
-        )
+    val orientation = LocalConfiguration.current.orientation
+    if (orientation == Configuration.ORIENTATION_PORTRAIT) {
+        Column {
+            GeocoderControls(
+                showRationale = showRationale,
+                maxResults = maxResults,
+                maxResultsRange = maxResultsRange,
+                onMaxResultsChange = onMaxResultsChange,
+                findAddressEnabled = !showProgress,
+                onFindAddressClick = onFindAddressClick,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(.4f)
+                    .padding(all = 16.dp)
+            )
+            GeocoderResults(
+                showProgress = showProgress,
+                addresses = addresses,
+                modifier = Modifier.weight(.6f)
+            )
+        }
+    } else {
+        Row {
+            GeocoderControls(
+                showRationale = showRationale,
+                maxResults = maxResults,
+                maxResultsRange = maxResultsRange,
+                onMaxResultsChange = onMaxResultsChange,
+                findAddressEnabled = !showProgress,
+                onFindAddressClick = onFindAddressClick,
+                modifier = Modifier
+                    .fillMaxHeight()
+                    .weight(.5f)
+                    .padding(all = 16.dp)
+            )
+            GeocoderResults(
+                showProgress = showProgress,
+                addresses = addresses,
+                modifier = Modifier.weight(.5f)
+            )
+        }
     }
 }
 
