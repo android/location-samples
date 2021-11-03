@@ -131,4 +131,18 @@ class LocationPermissionState(
     fun requestPermissions() {
         permissionLauncher.launch(locationPermissions)
     }
+
+    fun shouldShowRationale(): Boolean {
+        /*
+         * On Android 12 and later, the user could choose to grant access only to approximate
+         * location. The user could also deny both permissions, and the system may tell us to show a
+         * rationale for either or both permissions.
+         *
+         * Since we require precise location, we'll show the rationale if the system tells us to
+         * show one for either permission, and we'll also show it if permission was requested but
+         * precise location was not granted.
+         */
+        return accessCoarseLocationNeedsRationale || accessFineLocationNeedsRationale ||
+            (permissionRequested && !accessFineLocationGranted)
+    }
 }
