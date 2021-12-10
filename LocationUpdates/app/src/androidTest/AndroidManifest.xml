@@ -1,5 +1,0 @@
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.google.android.gms.location.sample.locationupdates">
-
-    <uses-permission android:name="android.permission.ACCESS_MOCK_LOCATION"/>
-</manifest>
