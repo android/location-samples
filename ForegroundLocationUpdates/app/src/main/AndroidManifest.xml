@@ -20,7 +20,8 @@
     package="com.google.android.gms.location.sample.foregroundlocation">
 
     <application
-        android:allowBackup="true"
+        android:name=".ForegroundLocationApp"
+        android:allowBackup="false"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"

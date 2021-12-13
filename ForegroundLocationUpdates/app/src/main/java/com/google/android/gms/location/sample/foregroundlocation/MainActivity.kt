@@ -19,21 +19,43 @@ package com.google.android.gms.location.sample.foregroundlocation
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
+import androidx.activity.viewModels
+import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
+import androidx.compose.material.TopAppBar
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.res.stringResource
+import com.google.android.gms.location.sample.foregroundlocation.PlayServicesAvailableState.Initializing
+import com.google.android.gms.location.sample.foregroundlocation.PlayServicesAvailableState.PlayServicesAvailable
+import com.google.android.gms.location.sample.foregroundlocation.PlayServicesAvailableState.PlayServicesUnavailable
+import com.google.android.gms.location.sample.foregroundlocation.ui.InitializingScreen
+import com.google.android.gms.location.sample.foregroundlocation.ui.LocationUpdatesScreen
+import com.google.android.gms.location.sample.foregroundlocation.ui.ServiceUnavailableScreen
 import com.google.android.gms.location.sample.foregroundlocation.ui.theme.ForegroundLocationTheme
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+
+    private val viewModel: MainViewModel by viewModels()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         setContent {
             ForegroundLocationTheme {
-                // A surface container using the 'background' color from the theme
-                Surface(color = MaterialTheme.colors.background) {
-                    Greeting("Android")
+                Scaffold(
+                    topBar = {
+                        TopAppBar(
+                            title = {
+                                Text(stringResource(id = R.string.app_name))
+                            }
+                        )
+                    }
+                ) {
+                    MainScreen(viewModel = viewModel)
                 }
             }
         }
@@ -41,14 +63,11 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun Greeting(name: String) {
-    Text(text = "Hello $name!")
-}
-
-@Preview(showBackground = true)
-@Composable
-fun DefaultPreview() {
-    ForegroundLocationTheme {
-        Greeting("Android")
+fun MainScreen(viewModel: MainViewModel) {
+    val uiState by viewModel.playServicesAvailableState.collectAsState()
+    when (uiState) {
+        Initializing -> InitializingScreen()
+        PlayServicesUnavailable -> ServiceUnavailableScreen()
+        PlayServicesAvailable -> LocationUpdatesScreen()
     }
 }
