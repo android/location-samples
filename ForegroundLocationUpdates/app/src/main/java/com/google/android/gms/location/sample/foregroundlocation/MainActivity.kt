@@ -17,6 +17,7 @@
 package com.google.android.gms.location.sample.foregroundlocation
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
@@ -31,6 +32,7 @@ import com.google.android.gms.location.sample.foregroundlocation.PlayServicesAva
 import com.google.android.gms.location.sample.foregroundlocation.PlayServicesAvailableState.PlayServicesAvailable
 import com.google.android.gms.location.sample.foregroundlocation.PlayServicesAvailableState.PlayServicesUnavailable
 import com.google.android.gms.location.sample.foregroundlocation.ui.InitializingScreen
+import com.google.android.gms.location.sample.foregroundlocation.ui.LocationPermissionState
 import com.google.android.gms.location.sample.foregroundlocation.ui.LocationUpdatesScreen
 import com.google.android.gms.location.sample.foregroundlocation.ui.ServiceUnavailableScreen
 import com.google.android.gms.location.sample.foregroundlocation.ui.theme.ForegroundLocationTheme
@@ -44,6 +46,13 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        val locationPermissionState = LocationPermissionState(this) {
+            if (it.hasPermission()) {
+                // TODO register for location updates
+                Log.d("ForegroundLocation", "TODO register for location updates")
+            }
+        }
+
         setContent {
             ForegroundLocationTheme {
                 Scaffold(
@@ -55,7 +64,10 @@ class MainActivity : ComponentActivity() {
                         )
                     }
                 ) {
-                    MainScreen(viewModel = viewModel)
+                    MainScreen(
+                        viewModel = viewModel,
+                        locationPermissionState = locationPermissionState
+                    )
                 }
             }
         }
@@ -63,11 +75,20 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun MainScreen(viewModel: MainViewModel) {
+fun MainScreen(
+    viewModel: MainViewModel,
+    locationPermissionState: LocationPermissionState
+) {
     val uiState by viewModel.playServicesAvailableState.collectAsState()
     when (uiState) {
         Initializing -> InitializingScreen()
         PlayServicesUnavailable -> ServiceUnavailableScreen()
-        PlayServicesAvailable -> LocationUpdatesScreen()
+        PlayServicesAvailable -> {
+            LocationUpdatesScreen(
+                showDegradedExperience = locationPermissionState.showDegradedExperience,
+                needsPermissionRationale = locationPermissionState.shouldShowRationale(),
+                onButtonClick = locationPermissionState::requestPermissions
+            )
+        }
     }
 }

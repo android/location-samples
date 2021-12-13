@@ -16,21 +16,100 @@
 
 package com.google.android.gms.location.sample.foregroundlocation.ui
 
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.AlertDialog
+import androidx.compose.material.Button
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.google.android.gms.location.sample.foregroundlocation.R
 import com.google.android.gms.location.sample.foregroundlocation.ui.theme.ForegroundLocationTheme
 
 @Composable
-fun LocationUpdatesScreen() {
-    Text(
-        text = "TODO",
-        style = MaterialTheme.typography.h6,
-        modifier = Modifier.padding(16.dp)
+fun LocationUpdatesScreen(
+    showDegradedExperience: Boolean,
+    needsPermissionRationale: Boolean,
+    onButtonClick: () -> Unit
+) {
+    var showRationaleDialog by remember { mutableStateOf(false) }
+    if (showRationaleDialog) {
+        PermissionRationaleDialog(
+            onConfirm = {
+                showRationaleDialog = false
+                onButtonClick()
+            },
+            onDismiss = { showRationaleDialog = false }
+        )
+    }
+
+    fun onClick() {
+        if (needsPermissionRationale) {
+            showRationaleDialog = true
+        } else {
+            onButtonClick()
+        }
+    }
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.SpaceEvenly
+    ) {
+        val message = if (showDegradedExperience) {
+            stringResource(id = R.string.please_allow_permission)
+        } else {
+            stringResource(id = R.string.not_started)
+        }
+
+        Text(
+            text = message,
+            style = MaterialTheme.typography.h6,
+            textAlign = TextAlign.Center
+        )
+        Button(onClick = { onClick() }) {
+            Text(text = stringResource(id = R.string.start))
+        }
+    }
+}
+
+@Composable
+fun PermissionRationaleDialog(
+    onConfirm: () -> Unit,
+    onDismiss: () -> Unit
+) {
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = {
+            Text(text = stringResource(id = R.string.permission_rationale_dialog_title))
+        },
+        text = {
+            Text(text = stringResource(id = R.string.permission_rationale_dialog_message))
+        },
+        confirmButton = {
+            Button(onClick = onConfirm) {
+                Text(text = stringResource(id = android.R.string.ok))
+            }
+        },
+        dismissButton = {
+            Button(onClick = onDismiss) {
+                Text(text = stringResource(id = android.R.string.cancel))
+            }
+        }
     )
 }
 
@@ -38,6 +117,10 @@ fun LocationUpdatesScreen() {
 @Composable
 fun LocationUpdatesScreenPreview() {
     ForegroundLocationTheme {
-        LocationUpdatesScreen()
+        LocationUpdatesScreen(
+            showDegradedExperience = false,
+            needsPermissionRationale = false,
+            onButtonClick = {}
+        )
     }
 }

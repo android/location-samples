@@ -19,6 +19,14 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.google.android.gms.location.sample.foregroundlocation">
 
+    <!-- Apps targeting Android 12 and later cannot request only ACCESS_FINE_LOCATION. They must
+         also request ACCESS_COARSE_LOCATION, and the user has the option to grant approximate
+         location only.
+         See https://developer.android.com/training/location/permissions#approximate-request
+    -->
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+
     <application
         android:name=".ForegroundLocationApp"
         android:allowBackup="false"

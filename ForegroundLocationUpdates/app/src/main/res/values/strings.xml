@@ -19,4 +19,10 @@
     <string name="app_name">Foreground Location</string>
     <string name="initializing"> Initializing</string>
     <string name="play_services_unavailable">Google Play Services are unavailable on this device.</string>
+    <string name="start">Start</string>
+    <string name="stop">Stop</string>
+    <string name="not_started">Tap Start to receive location updates</string>
+    <string name="please_allow_permission">Please allow permission to access location</string>
+    <string name="permission_rationale_dialog_title">Permission needed</string>
+    <string name="permission_rationale_dialog_message">This app requires permission to access your location. Please accept.</string>
 </resources>
