@@ -22,7 +22,11 @@
     <string name="start">Start</string>
     <string name="stop">Stop</string>
     <string name="not_started">Tap Start to receive location updates</string>
+
     <string name="please_allow_permission">Please allow permission to access location</string>
     <string name="permission_rationale_dialog_title">Permission needed</string>
     <string name="permission_rationale_dialog_message">This app requires permission to access your location. Please accept.</string>
+
+    <string name="waiting_for_location">Waiting for location…</string>
+    <string name="location_lat_lng">Lat: %1$f\nLng: %2$f</string>
 </resources>

@@ -16,6 +16,7 @@
 
 package com.google.android.gms.location.sample.foregroundlocation.ui
 
+import android.location.Location
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -42,7 +43,9 @@ import com.google.android.gms.location.sample.foregroundlocation.ui.theme.Foregr
 fun LocationUpdatesScreen(
     showDegradedExperience: Boolean,
     needsPermissionRationale: Boolean,
-    onButtonClick: () -> Unit
+    onButtonClick: () -> Unit,
+    isLocationOn: Boolean,
+    location: Location?
 ) {
     var showRationaleDialog by remember { mutableStateOf(false) }
     if (showRationaleDialog) {
@@ -63,6 +66,21 @@ fun LocationUpdatesScreen(
         }
     }
 
+    val message = when {
+        isLocationOn -> if (location != null) {
+            stringResource(
+                id = R.string.location_lat_lng,
+                location.latitude,
+                location.longitude
+            )
+        } else {
+            stringResource(id = R.string.waiting_for_location)
+        }
+        showDegradedExperience -> stringResource(id = R.string.please_allow_permission)
+        else -> stringResource(id = R.string.not_started)
+    }
+    val labelResId = if (isLocationOn) R.string.stop else R.string.start
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -70,19 +88,13 @@ fun LocationUpdatesScreen(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.SpaceEvenly
     ) {
-        val message = if (showDegradedExperience) {
-            stringResource(id = R.string.please_allow_permission)
-        } else {
-            stringResource(id = R.string.not_started)
-        }
-
         Text(
             text = message,
             style = MaterialTheme.typography.h6,
             textAlign = TextAlign.Center
         )
         Button(onClick = { onClick() }) {
-            Text(text = stringResource(id = R.string.start))
+            Text(text = stringResource(id = labelResId))
         }
     }
 }
@@ -120,7 +132,9 @@ fun LocationUpdatesScreenPreview() {
         LocationUpdatesScreen(
             showDegradedExperience = false,
             needsPermissionRationale = false,
-            onButtonClick = {}
+            onButtonClick = {},
+            isLocationOn = true,
+            location = null,
         )
     }
 }

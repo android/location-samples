@@ -80,6 +80,7 @@ dependencies {
 
     // Play Services
     implementation 'com.google.android.gms:play-services-base:17.6.0'
+    implementation 'com.google.android.gms:play-services-location:18.0.0'
 
     // Hilt
     kapt "androidx.hilt:hilt-compiler:$hilt_compiler_version"

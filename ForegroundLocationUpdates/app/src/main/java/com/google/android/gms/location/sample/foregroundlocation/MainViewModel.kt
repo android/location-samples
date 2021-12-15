@@ -21,6 +21,7 @@ import androidx.lifecycle.viewModelScope
 import com.google.android.gms.location.sample.foregroundlocation.PlayServicesAvailableState.Initializing
 import com.google.android.gms.location.sample.foregroundlocation.PlayServicesAvailableState.PlayServicesAvailable
 import com.google.android.gms.location.sample.foregroundlocation.PlayServicesAvailableState.PlayServicesUnavailable
+import com.google.android.gms.location.sample.foregroundlocation.data.LocationRepository
 import com.google.android.gms.location.sample.foregroundlocation.data.PlayServicesAvailabilityChecker
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
@@ -30,7 +31,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MainViewModel @Inject constructor(
-    playServicesAvailabilityChecker: PlayServicesAvailabilityChecker
+    playServicesAvailabilityChecker: PlayServicesAvailabilityChecker,
+    private val locationRepository: LocationRepository
 ) : ViewModel() {
 
     val playServicesAvailableState = flow {
@@ -43,6 +45,16 @@ class MainViewModel @Inject constructor(
         )
     }.stateIn(viewModelScope, SharingStarted.Eagerly, Initializing)
 
+    val isReceivingLocationUpdates = locationRepository.isReceivingLocationUpdates
+    val lastLocation = locationRepository.lastLocation
+
+    fun toggleLocationUpdates() {
+        if (isReceivingLocationUpdates.value) {
+            locationRepository.stopLocationUpdates()
+        } else {
+            locationRepository.startLocationUpdates()
+        }
+    }
 }
 
 enum class PlayServicesAvailableState {

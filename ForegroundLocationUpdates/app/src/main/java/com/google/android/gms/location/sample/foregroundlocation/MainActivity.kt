@@ -17,7 +17,6 @@
 package com.google.android.gms.location.sample.foregroundlocation
 
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
@@ -48,8 +47,7 @@ class MainActivity : ComponentActivity() {
 
         val locationPermissionState = LocationPermissionState(this) {
             if (it.hasPermission()) {
-                // TODO register for location updates
-                Log.d("ForegroundLocation", "TODO register for location updates")
+                viewModel.toggleLocationUpdates()
             }
         }
 
@@ -80,6 +78,9 @@ fun MainScreen(
     locationPermissionState: LocationPermissionState
 ) {
     val uiState by viewModel.playServicesAvailableState.collectAsState()
+    val isLocationOn by viewModel.isReceivingLocationUpdates.collectAsState()
+    val lastLocation by viewModel.lastLocation.collectAsState()
+
     when (uiState) {
         Initializing -> InitializingScreen()
         PlayServicesUnavailable -> ServiceUnavailableScreen()
@@ -87,7 +88,9 @@ fun MainScreen(
             LocationUpdatesScreen(
                 showDegradedExperience = locationPermissionState.showDegradedExperience,
                 needsPermissionRationale = locationPermissionState.shouldShowRationale(),
-                onButtonClick = locationPermissionState::requestPermissions
+                onButtonClick = locationPermissionState::requestPermissions,
+                isLocationOn = isLocationOn,
+                location = lastLocation,
             )
         }
     }
