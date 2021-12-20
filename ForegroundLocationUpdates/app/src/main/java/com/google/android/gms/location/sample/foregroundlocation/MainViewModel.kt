@@ -21,18 +21,21 @@ import androidx.lifecycle.viewModelScope
 import com.google.android.gms.location.sample.foregroundlocation.PlayServicesAvailableState.Initializing
 import com.google.android.gms.location.sample.foregroundlocation.PlayServicesAvailableState.PlayServicesAvailable
 import com.google.android.gms.location.sample.foregroundlocation.PlayServicesAvailableState.PlayServicesUnavailable
+import com.google.android.gms.location.sample.foregroundlocation.data.LocationPreferences
 import com.google.android.gms.location.sample.foregroundlocation.data.LocationRepository
 import com.google.android.gms.location.sample.foregroundlocation.data.PlayServicesAvailabilityChecker
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class MainViewModel @Inject constructor(
     playServicesAvailabilityChecker: PlayServicesAvailabilityChecker,
-    private val locationRepository: LocationRepository
+    private val locationRepository: LocationRepository,
+    private val locationPreferences: LocationPreferences
 ) : ViewModel() {
 
     val playServicesAvailableState = flow {
@@ -50,9 +53,26 @@ class MainViewModel @Inject constructor(
 
     fun toggleLocationUpdates() {
         if (isReceivingLocationUpdates.value) {
-            locationRepository.stopLocationUpdates()
+            stopLocationUpdates()
+
         } else {
-            locationRepository.startLocationUpdates()
+            startLocationUpdates()
+        }
+    }
+
+    private fun startLocationUpdates() {
+        locationRepository.startLocationUpdates()
+
+        viewModelScope.launch {
+            locationPreferences.setLocationTurnedOn(true)
+        }
+    }
+
+    private fun stopLocationUpdates() {
+        locationRepository.stopLocationUpdates()
+
+        viewModelScope.launch {
+            locationPreferences.setLocationTurnedOn(false)
         }
     }
 }

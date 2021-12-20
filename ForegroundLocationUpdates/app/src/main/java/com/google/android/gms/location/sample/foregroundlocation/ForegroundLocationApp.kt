@@ -17,6 +17,10 @@
 package com.google.android.gms.location.sample.foregroundlocation
 
 import android.app.Application
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.PreferenceDataStoreFactory
+import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.preferencesDataStoreFile
 import com.google.android.gms.common.GoogleApiAvailability
 import com.google.android.gms.location.LocationServices
 import dagger.Module
@@ -42,4 +46,12 @@ object AppModule {
     fun provideFusedLocationProviderClient(
         application: Application
     ) = LocationServices.getFusedLocationProviderClient(application)
+
+    @Provides
+    @Singleton
+    fun provideDataStore(application: Application): DataStore<Preferences> {
+        return PreferenceDataStoreFactory.create {
+            application.preferencesDataStoreFile("prefs")
+        }
+    }
 }
