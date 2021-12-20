@@ -26,7 +26,9 @@ import com.google.android.gms.location.LocationResult
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import javax.inject.Inject
+import javax.inject.Singleton
 
+@Singleton
 class LocationRepository @Inject constructor(
     private val fusedLocationProviderClient: FusedLocationProviderClient
 ) {
@@ -63,7 +65,7 @@ class LocationRepository @Inject constructor(
         _lastLocation.value = null
     }
 
-    inner class Callback : LocationCallback() {
+    private inner class Callback : LocationCallback() {
         override fun onLocationResult(result: LocationResult) {
             _lastLocation.value = result.lastLocation
         }

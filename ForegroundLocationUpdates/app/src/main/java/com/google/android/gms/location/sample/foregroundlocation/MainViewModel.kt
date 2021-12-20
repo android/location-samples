@@ -16,6 +16,7 @@
 
 package com.google.android.gms.location.sample.foregroundlocation
 
+import android.content.ServiceConnection
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.android.gms.location.sample.foregroundlocation.PlayServicesAvailableState.Initializing
@@ -34,9 +35,10 @@ import javax.inject.Inject
 @HiltViewModel
 class MainViewModel @Inject constructor(
     playServicesAvailabilityChecker: PlayServicesAvailabilityChecker,
-    private val locationRepository: LocationRepository,
-    private val locationPreferences: LocationPreferences
-) : ViewModel() {
+    locationRepository: LocationRepository,
+    private val locationPreferences: LocationPreferences,
+    private val serviceConnection: ForegroundLocationServiceConnection
+) : ViewModel(), ServiceConnection by serviceConnection {
 
     val playServicesAvailableState = flow {
         emit(
@@ -54,23 +56,26 @@ class MainViewModel @Inject constructor(
     fun toggleLocationUpdates() {
         if (isReceivingLocationUpdates.value) {
             stopLocationUpdates()
-
         } else {
             startLocationUpdates()
         }
     }
 
     private fun startLocationUpdates() {
-        locationRepository.startLocationUpdates()
-
+        serviceConnection.service?.startLocationUpdates()
+        // Store that the user turned on location updates.
+        // It's possible that the service was not connected for the above call. In that case, when
+        // the service eventually starts, it will check the persisted value and react appropriately.
         viewModelScope.launch {
             locationPreferences.setLocationTurnedOn(true)
         }
     }
 
     private fun stopLocationUpdates() {
-        locationRepository.stopLocationUpdates()
-
+        serviceConnection.service?.stopLocationUpdates()
+        // Store that the user turned off location updates.
+        // It's possible that the service was not connected for the above call. In that case, when
+        // the service eventually starts, it will check the persisted value and react appropriately.
         viewModelScope.launch {
             locationPreferences.setLocationTurnedOn(false)
         }
