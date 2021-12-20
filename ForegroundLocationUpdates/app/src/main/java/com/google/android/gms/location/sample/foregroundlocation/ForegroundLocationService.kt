@@ -75,6 +75,14 @@ class ForegroundLocationService : LifecycleService() {
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         super.onStartCommand(intent, flags, startId)
 
+        // This action comes from our ongoing notification. The user requested to stop updates.
+        if (intent?.action == ACTION_STOP_UPDATES) {
+            stopLocationUpdates()
+            lifecycleScope.launch {
+                locationPreferences.setLocationTurnedOn(false)
+            }
+        }
+
         // Startup tasks only happen once.
         if (!started) {
             started = true
@@ -193,6 +201,13 @@ class ForegroundLocationService : LifecycleService() {
             packageManager.getLaunchIntentForPackage(this.packageName),
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
+        // Include an action to stop location updates without going through the app UI.
+        val stopIntent = PendingIntent.getService(
+            this,
+            0,
+            Intent(this, this::class.java).setAction(ACTION_STOP_UPDATES),
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        )
         val contentText = if (location != null) {
             getString(R.string.location_lat_lng, location.latitude, location.longitude)
         } else {
@@ -204,6 +219,7 @@ class ForegroundLocationService : LifecycleService() {
             .setContentText(contentText)
             .setContentIntent(pendingIntent)
             .setSmallIcon(R.drawable.ic_location)
+            .addAction(R.drawable.ic_stop, getString(R.string.stop), stopIntent)
             .setOngoing(true)
             .setCategory(NotificationCompat.CATEGORY_SERVICE)
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
@@ -230,6 +246,7 @@ class ForegroundLocationService : LifecycleService() {
         const val UNBIND_DELAY_MILLIS = 2000.toLong() // 2 seconds
         const val NOTIFICATION_ID = 1
         const val NOTIFICATION_CHANNEL_ID = "LocationUpdates"
+        const val ACTION_STOP_UPDATES = BuildConfig.APPLICATION_ID + ".ACTION_STOP_UPDATES"
     }
 }
 
