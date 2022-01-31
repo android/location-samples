@@ -17,6 +17,8 @@
 plugins {
     id 'com.android.application'
     id 'kotlin-android'
+    id 'kotlin-kapt'
+    id 'dagger.hilt.android.plugin'
 }
 
 android {
@@ -70,6 +72,19 @@ dependencies {
     implementation 'androidx.activity:activity-compose:1.4.0'
 
     implementation 'com.google.android.material:material:1.5.0'
+
+    // Coroutines
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutine_version"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutine_version"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-play-services:$coroutine_version"
+
+    // Play Services
+    implementation 'com.google.android.gms:play-services-base:17.6.0'
+
+    // Hilt
+    kapt "androidx.hilt:hilt-compiler:$hilt_compiler_version"
+    kapt "com.google.dagger:hilt-android-compiler:$hilt_version"
+    implementation "com.google.dagger:hilt-android:$hilt_version"
 
     // Compose
     implementation "androidx.compose.ui:ui:$compose_version"

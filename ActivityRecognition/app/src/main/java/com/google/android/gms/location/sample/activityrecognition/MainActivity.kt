@@ -19,21 +19,46 @@ package com.google.android.gms.location.sample.activityrecognition
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.viewModels
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Scaffold
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
+import androidx.compose.material.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import com.google.android.gms.location.sample.activityrecognition.PlayServicesAvailableState.Initializing
+import com.google.android.gms.location.sample.activityrecognition.PlayServicesAvailableState.PlayServicesAvailable
+import com.google.android.gms.location.sample.activityrecognition.PlayServicesAvailableState.PlayServicesUnavailable
+import com.google.android.gms.location.sample.activityrecognition.ui.ActivityRecognitionScreen
+import com.google.android.gms.location.sample.activityrecognition.ui.InitializingScreen
+import com.google.android.gms.location.sample.activityrecognition.ui.ServiceUnavailableScreen
 import com.google.android.gms.location.sample.activityrecognition.ui.theme.ActivityRecognitionTheme
+import dagger.hilt.android.AndroidEntryPoint
 
+/** The main entry point of the app. */
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+
+    private val viewModel: MainViewModel by viewModels()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             ActivityRecognitionTheme {
-                // A surface container using the 'background' color from the theme
-                Surface(color = MaterialTheme.colors.background) {
-                    Greeting("Activity Recongition")
+                Scaffold(
+                    topBar = {
+                        TopAppBar(
+                            title = {
+                                Text(stringResource(id = R.string.app_name))
+                            }
+                        )
+                    }
+                ) {
+                    MainScreen(viewModel = viewModel)
                 }
             }
         }
@@ -41,14 +66,11 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun Greeting(name: String) {
-    Text(text = "Hello $name!")
-}
-
-@Preview(showBackground = true)
-@Composable
-fun DefaultPreview() {
-    ActivityRecognitionTheme {
-        Greeting("Android")
+fun MainScreen(viewModel: MainViewModel) {
+    val uiState by viewModel.playServicesAvailableState.collectAsState()
+    when (uiState) {
+        Initializing -> InitializingScreen()
+        PlayServicesUnavailable -> ServiceUnavailableScreen()
+        PlayServicesAvailable -> ActivityRecognitionScreen()
     }
 }
