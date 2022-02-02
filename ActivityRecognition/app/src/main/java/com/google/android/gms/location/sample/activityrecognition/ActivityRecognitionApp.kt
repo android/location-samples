@@ -17,6 +17,10 @@
 package com.google.android.gms.location.sample.activityrecognition
 
 import android.app.Application
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.PreferenceDataStoreFactory
+import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.preferencesDataStoreFile
 import com.google.android.gms.common.GoogleApiAvailability
 import dagger.Module
 import dagger.Provides
@@ -37,4 +41,12 @@ object AppModule {
     @Provides
     @Singleton
     fun provideGoogleApiAvailability() = GoogleApiAvailability.getInstance()
+
+    @Provides
+    @Singleton
+    fun provideDataStore(application: Application): DataStore<Preferences> {
+        return PreferenceDataStoreFactory.create {
+            application.preferencesDataStoreFile("prefs")
+        }
+    }
 }

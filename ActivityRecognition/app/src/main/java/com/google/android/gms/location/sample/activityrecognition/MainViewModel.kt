@@ -21,11 +21,13 @@ import androidx.lifecycle.viewModelScope
 import com.google.android.gms.location.sample.activityrecognition.PlayServicesAvailableState.Initializing
 import com.google.android.gms.location.sample.activityrecognition.PlayServicesAvailableState.PlayServicesAvailable
 import com.google.android.gms.location.sample.activityrecognition.PlayServicesAvailableState.PlayServicesUnavailable
+import com.google.android.gms.location.sample.activityrecognition.data.AppPreferences
 import com.google.android.gms.location.sample.activityrecognition.data.PlayServicesAvailabilityChecker
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 /**
@@ -34,7 +36,8 @@ import javax.inject.Inject
  */
 @HiltViewModel
 class MainViewModel @Inject constructor(
-    playServicesAvailabilityChecker: PlayServicesAvailabilityChecker
+    playServicesAvailabilityChecker: PlayServicesAvailabilityChecker,
+    private val appPreferences: AppPreferences
 ) : ViewModel() {
 
     /**
@@ -52,6 +55,30 @@ class MainViewModel @Inject constructor(
         )
     }.stateIn(viewModelScope, SharingStarted.Eagerly, Initializing)
 
+    val isActivityTransitionUpdatesTurnedOn = appPreferences.isActivityTransitionUpdatesTurnedOn
+        .stateIn(viewModelScope, SharingStarted.Eagerly, false)
+
+    fun toggleActivityTransitionUpdates() {
+        if (isActivityTransitionUpdatesTurnedOn.value) {
+            stopActivityTransitionUpdates()
+        } else {
+            startActivityTransitionUpdates()
+        }
+    }
+
+    private fun startActivityTransitionUpdates() {
+        // TODO request activity transition updates
+        viewModelScope.launch {
+            appPreferences.setActivityTransitionUpdatesTurnedOn(true)
+        }
+    }
+
+    private fun stopActivityTransitionUpdates() {
+        // TODO remove activity transition updates
+        viewModelScope.launch {
+            appPreferences.setActivityTransitionUpdatesTurnedOn(false)
+        }
+    }
 }
 
 enum class PlayServicesAvailableState {

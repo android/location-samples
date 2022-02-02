@@ -41,6 +41,7 @@ import com.google.android.gms.location.sample.activityrecognition.ui.theme.Activ
 /** The main UI of the app when Google Play Services is available. */
 @Composable
 fun ActivityRecognitionScreen(
+    isActivityUpdatesTurnedOn: Boolean,
     showDegradedExperience: Boolean,
     needsPermissionRationale: Boolean,
     onButtonClick: () -> Unit
@@ -71,20 +72,29 @@ fun ActivityRecognitionScreen(
             .fillMaxSize()
             .padding(16.dp)
     ) {
+        val buttonText = if (isActivityUpdatesTurnedOn) {
+            stringResource(id = R.string.stop_activity_recognition)
+        } else {
+            stringResource(id = R.string.start_activity_recognition)
+        }
         Button(onClick = { onClick() }) {
-            Text(text = stringResource(id = R.string.start))
+            Text(text = buttonText)
         }
 
-        val message = if (showDegradedExperience) {
-            stringResource(id = R.string.please_allow_permission)
-        } else {
-            stringResource(id = R.string.not_started)
+        if (showDegradedExperience) {
+            Text(
+                text = stringResource(id = R.string.please_allow_permission),
+                style = MaterialTheme.typography.h6,
+                textAlign = TextAlign.Center
+            )
+        } else if (!isActivityUpdatesTurnedOn) {
+            Text(
+                text = stringResource(id = R.string.not_started),
+                style = MaterialTheme.typography.h6,
+                textAlign = TextAlign.Center
+            )
         }
-        Text(
-            text = message,
-            style = MaterialTheme.typography.h6,
-            textAlign = TextAlign.Center
-        )
+        // TODO else show most recent events
     }
 }
 
@@ -119,6 +129,7 @@ fun PermissionRationaleDialog(
 fun LocationUpdatesScreenPreview() {
     ActivityRecognitionTheme {
         ActivityRecognitionScreen(
+            isActivityUpdatesTurnedOn = true,
             showDegradedExperience = false,
             needsPermissionRationale = false,
             onButtonClick = {}

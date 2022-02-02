@@ -17,7 +17,6 @@
 package com.google.android.gms.location.sample.activityrecognition
 
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
@@ -49,7 +48,7 @@ class MainActivity : ComponentActivity() {
 
         val permissionState = ActivityRecognitionPermissionState(this) {
             if (it.permissionGranted) {
-                Log.d("ActivityRecognition", "TODO: start activity recognition")
+                viewModel.toggleActivityTransitionUpdates()
             }
         }
 
@@ -81,7 +80,9 @@ fun MainScreen(
         Initializing -> InitializingScreen()
         PlayServicesUnavailable -> ServiceUnavailableScreen()
         PlayServicesAvailable -> {
+            val isOn by viewModel.isActivityTransitionUpdatesTurnedOn.collectAsState()
             ActivityRecognitionScreen(
+                isActivityUpdatesTurnedOn = isOn,
                 showDegradedExperience = permissionState.showDegradedExperience,
                 needsPermissionRationale = permissionState.needsRationale,
                 onButtonClick = { permissionState.requestPermission() }
