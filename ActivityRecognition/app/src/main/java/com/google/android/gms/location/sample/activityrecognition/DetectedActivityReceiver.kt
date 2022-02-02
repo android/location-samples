@@ -19,20 +19,29 @@ package com.google.android.gms.location.sample.activityrecognition
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import android.util.Log
 import com.google.android.gms.location.ActivityTransitionResult
+import com.google.android.gms.location.sample.activityrecognition.data.db.ActivityTransitionDao
+import com.google.android.gms.location.sample.activityrecognition.data.db.asRecord
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class DetectedActivityReceiver : BroadcastReceiver() {
+
+    @Inject lateinit var dao: ActivityTransitionDao
+
+    private val coroutineScope = MainScope()
 
     override fun onReceive(context: Context, intent: Intent) {
         val result = ActivityTransitionResult.extractResult(intent) ?: return
 
         if (result.transitionEvents.isNotEmpty()) {
-            result.transitionEvents.forEach {
-                // TODO persist and show in the app UI
-                Log.d("ActivityRecognition", "Transition: ${it.activityType}, ${it.transitionType}")
+            coroutineScope.launch {
+                dao.insert(
+                    result.transitionEvents.map { it.asRecord() }
+                )
             }
         }
     }

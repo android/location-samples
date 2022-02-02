@@ -24,4 +24,5 @@
     <string name="please_allow_permission">Please allow permission for activity recognition</string>
     <string name="permission_rationale_dialog_title">Permission needed</string>
     <string name="permission_rationale_dialog_message">This app requires permission to access activity recognition. Please accept.</string>
+    <string name="waiting_for_events">Waiting for events...</string>
 </resources>

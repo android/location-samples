@@ -14,19 +14,22 @@
  * limitations under the License.
  */
 
-package com.google.android.gms.location.sample.activityrecognition.data
+package com.google.android.gms.location.sample.activityrecognition.data.db
 
-import com.google.android.gms.location.DetectedActivity
+import androidx.room.TypeConverter
+import java.time.Instant
 
 /**
- * Enumerated form of Play Services [DetectedActivity] types. Note: some types are not supported by
- * activity transitions API, only supported types are enumerated here.
+ * [TypeConverter] functions so that Room can process [Instant]s.
  */
-enum class DetectedActivityType(val type: Int) {
-    IN_VEHICLE(DetectedActivity.IN_VEHICLE),
-    ON_BICYCLE(DetectedActivity.ON_BICYCLE),
-    ON_FOOT(DetectedActivity.ON_FOOT),
-    RUNNING(DetectedActivity.RUNNING),
-    STILL(DetectedActivity.STILL),
-    WALKING(DetectedActivity.WALKING)
+class TimestampConverter {
+    @TypeConverter
+    fun fromTimestamp(value: Long?): Instant? {
+        return value?.let { Instant.ofEpochMilli(it) }
+    }
+
+    @TypeConverter
+    fun toTimestamp(date: Instant?): Long? {
+        return date?.toEpochMilli()
+    }
 }

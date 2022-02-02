@@ -21,8 +21,10 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.PreferenceDataStoreFactory
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.preferencesDataStoreFile
+import androidx.room.Room
 import com.google.android.gms.common.GoogleApiAvailability
 import com.google.android.gms.location.ActivityRecognition
+import com.google.android.gms.location.sample.activityrecognition.data.db.AppDatabase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -55,4 +57,20 @@ object AppModule {
     @Singleton
     fun provideActivityRecognitionClient(application: Application) =
         ActivityRecognition.getClient(application)
+
+    @Provides
+    @Singleton
+    fun provideDatabase(application: Application): AppDatabase {
+        return Room.databaseBuilder(
+            application,
+            AppDatabase::class.java,
+            "activity_recognition_db"
+        )
+            .fallbackToDestructiveMigration()
+            .build()
+    }
+
+    @Provides
+    @Singleton
+    fun provideActivityTransitionDao(db: AppDatabase) = db.getActivityTransitionRecordDao()
 }

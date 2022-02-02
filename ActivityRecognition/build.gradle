@@ -5,6 +5,7 @@ buildscript {
         coroutine_version = '1.6.0'
         hilt_compiler_version = '1.0.0'
         hilt_version = '2.38.1'
+        room_version = "2.4.1"
     }
     repositories {
         google()

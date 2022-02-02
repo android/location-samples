@@ -81,11 +81,13 @@ fun MainScreen(
         PlayServicesUnavailable -> ServiceUnavailableScreen()
         PlayServicesAvailable -> {
             val isOn by viewModel.isActivityTransitionUpdatesTurnedOn.collectAsState()
+            val transitionEvents by viewModel.transitionEvents.collectAsState()
             ActivityRecognitionScreen(
                 isActivityUpdatesTurnedOn = isOn,
                 showDegradedExperience = permissionState.showDegradedExperience,
                 needsPermissionRationale = permissionState.needsRationale,
-                onButtonClick = { permissionState.requestPermission() }
+                onButtonClick = { permissionState.requestPermission() },
+                transitionEvents = transitionEvents
             )
         }
     }

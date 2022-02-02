@@ -23,6 +23,7 @@ import com.google.android.gms.location.ActivityRecognitionClient
 import com.google.android.gms.location.ActivityTransition
 import com.google.android.gms.location.ActivityTransitionRequest
 import com.google.android.gms.location.sample.activityrecognition.DetectedActivityReceiver
+import com.google.android.gms.location.sample.activityrecognition.data.db.DetectedActivityType
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject

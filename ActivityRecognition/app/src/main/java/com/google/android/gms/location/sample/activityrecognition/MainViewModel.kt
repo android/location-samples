@@ -24,6 +24,7 @@ import com.google.android.gms.location.sample.activityrecognition.PlayServicesAv
 import com.google.android.gms.location.sample.activityrecognition.data.ActivityTransitionManager
 import com.google.android.gms.location.sample.activityrecognition.data.AppPreferences
 import com.google.android.gms.location.sample.activityrecognition.data.PlayServicesAvailabilityChecker
+import com.google.android.gms.location.sample.activityrecognition.data.db.ActivityTransitionDao
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.flow
@@ -39,7 +40,8 @@ import javax.inject.Inject
 class MainViewModel @Inject constructor(
     playServicesAvailabilityChecker: PlayServicesAvailabilityChecker,
     private val appPreferences: AppPreferences,
-    private val activityTransitionManager: ActivityTransitionManager
+    private val activityTransitionManager: ActivityTransitionManager,
+    private val activityTransitionDao: ActivityTransitionDao
 ) : ViewModel() {
 
     /**
@@ -60,6 +62,9 @@ class MainViewModel @Inject constructor(
     val isActivityTransitionUpdatesTurnedOn = appPreferences.isActivityTransitionUpdatesTurnedOn
         .stateIn(viewModelScope, SharingStarted.Eagerly, false)
 
+    val transitionEvents = activityTransitionDao.getMostRecent()
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
+
     fun toggleActivityTransitionUpdates() {
         if (isActivityTransitionUpdatesTurnedOn.value) {
             stopActivityTransitionUpdates()
@@ -79,6 +84,7 @@ class MainViewModel @Inject constructor(
         viewModelScope.launch {
             activityTransitionManager.removeActivityTransitionUpdates()
             appPreferences.setActivityTransitionUpdatesTurnedOn(false)
+            activityTransitionDao.deleteAll()
         }
     }
 }
