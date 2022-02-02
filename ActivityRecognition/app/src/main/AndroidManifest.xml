@@ -20,6 +20,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.google.android.gms.location.sample.activityrecognition">
 
+    <!-- Note: only one of these permissions will be checked at runtime based on API level. -->
+    <!-- Starting in Android 10 (API 29) activity recognition requires this permission. -->
+    <uses-permission android:name="android.permission.ACTIVITY_RECOGNITION" />
+    <!-- Before Android 10, activity recognition requires this permission. -->
+    <uses-permission android:name="com.google.android.gms.permission.ACTIVITY_RECOGNITION" android:maxSdkVersion="28" />
+
     <application
         android:name=".ActivityRecognitionApp"
         android:allowBackup="false"

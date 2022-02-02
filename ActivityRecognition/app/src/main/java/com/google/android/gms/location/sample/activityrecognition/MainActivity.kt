@@ -17,22 +17,21 @@
 package com.google.android.gms.location.sample.activityrecognition
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
-import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
-import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import com.google.android.gms.location.sample.activityrecognition.PlayServicesAvailableState.Initializing
 import com.google.android.gms.location.sample.activityrecognition.PlayServicesAvailableState.PlayServicesAvailable
 import com.google.android.gms.location.sample.activityrecognition.PlayServicesAvailableState.PlayServicesUnavailable
+import com.google.android.gms.location.sample.activityrecognition.ui.ActivityRecognitionPermissionState
 import com.google.android.gms.location.sample.activityrecognition.ui.ActivityRecognitionScreen
 import com.google.android.gms.location.sample.activityrecognition.ui.InitializingScreen
 import com.google.android.gms.location.sample.activityrecognition.ui.ServiceUnavailableScreen
@@ -47,6 +46,13 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        val permissionState = ActivityRecognitionPermissionState(this) {
+            if (it.permissionGranted) {
+                Log.d("ActivityRecognition", "TODO: start activity recognition")
+            }
+        }
+
         setContent {
             ActivityRecognitionTheme {
                 Scaffold(
@@ -58,7 +64,7 @@ class MainActivity : ComponentActivity() {
                         )
                     }
                 ) {
-                    MainScreen(viewModel = viewModel)
+                    MainScreen(viewModel = viewModel, permissionState = permissionState)
                 }
             }
         }
@@ -66,11 +72,20 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun MainScreen(viewModel: MainViewModel) {
+fun MainScreen(
+    viewModel: MainViewModel,
+    permissionState: ActivityRecognitionPermissionState
+) {
     val uiState by viewModel.playServicesAvailableState.collectAsState()
     when (uiState) {
         Initializing -> InitializingScreen()
         PlayServicesUnavailable -> ServiceUnavailableScreen()
-        PlayServicesAvailable -> ActivityRecognitionScreen()
+        PlayServicesAvailable -> {
+            ActivityRecognitionScreen(
+                showDegradedExperience = permissionState.showDegradedExperience,
+                needsPermissionRationale = permissionState.needsRationale,
+                onButtonClick = { permissionState.requestPermission() }
+            )
+        }
     }
 }
