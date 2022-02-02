@@ -21,6 +21,7 @@ import androidx.lifecycle.viewModelScope
 import com.google.android.gms.location.sample.activityrecognition.PlayServicesAvailableState.Initializing
 import com.google.android.gms.location.sample.activityrecognition.PlayServicesAvailableState.PlayServicesAvailable
 import com.google.android.gms.location.sample.activityrecognition.PlayServicesAvailableState.PlayServicesUnavailable
+import com.google.android.gms.location.sample.activityrecognition.data.ActivityTransitionManager
 import com.google.android.gms.location.sample.activityrecognition.data.AppPreferences
 import com.google.android.gms.location.sample.activityrecognition.data.PlayServicesAvailabilityChecker
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -37,7 +38,8 @@ import javax.inject.Inject
 @HiltViewModel
 class MainViewModel @Inject constructor(
     playServicesAvailabilityChecker: PlayServicesAvailabilityChecker,
-    private val appPreferences: AppPreferences
+    private val appPreferences: AppPreferences,
+    private val activityTransitionManager: ActivityTransitionManager
 ) : ViewModel() {
 
     /**
@@ -67,15 +69,15 @@ class MainViewModel @Inject constructor(
     }
 
     private fun startActivityTransitionUpdates() {
-        // TODO request activity transition updates
         viewModelScope.launch {
+            activityTransitionManager.requestActivityTransitionUpdates()
             appPreferences.setActivityTransitionUpdatesTurnedOn(true)
         }
     }
 
     private fun stopActivityTransitionUpdates() {
-        // TODO remove activity transition updates
         viewModelScope.launch {
+            activityTransitionManager.removeActivityTransitionUpdates()
             appPreferences.setActivityTransitionUpdatesTurnedOn(false)
         }
     }
