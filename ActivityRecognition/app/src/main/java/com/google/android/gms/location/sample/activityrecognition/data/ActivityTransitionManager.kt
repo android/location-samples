@@ -48,7 +48,10 @@ class ActivityTransitionManager @Inject constructor(
         )
     }
 
-    suspend fun requestActivityTransitionUpdates() {
+    /**
+     * Register for activity transition updates and return whether the call succeeded.
+     */
+    suspend fun requestActivityTransitionUpdates(): Boolean {
         // Real apps will want transitions that make sense for a particular feature. For example,
         // an app that changes its behavior while the user is driving a vehicle will want two
         // transitions:
@@ -70,7 +73,10 @@ class ActivityTransitionManager @Inject constructor(
         // can either
         // - use Tasks.await(task) to block until the task completes
         // - use addOnCompleteListener() to be notified asynchronously when the task completes
-        activityRecognitionClient.requestActivityTransitionUpdates(request, pendingIntent).await()
+        val task =
+            activityRecognitionClient.requestActivityTransitionUpdates(request, pendingIntent)
+        task.await()
+        return task.isSuccessful
     }
 
     suspend fun removeActivityTransitionUpdates() {

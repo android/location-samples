@@ -16,6 +16,10 @@
 
 package com.google.android.gms.location.sample.activityrecognition
 
+import androidx.annotation.StringRes
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.android.gms.location.sample.activityrecognition.PlayServicesAvailableState.Initializing
@@ -30,6 +34,7 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import java.time.Instant
 import javax.inject.Inject
 
 /**
@@ -65,6 +70,9 @@ class MainViewModel @Inject constructor(
     val transitionEvents = activityTransitionDao.getMostRecent()
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
+    var errorMessages by mutableStateOf(emptyList<ErrorMessage>())
+        private set
+
     fun toggleActivityTransitionUpdates() {
         if (isActivityTransitionUpdatesTurnedOn.value) {
             stopActivityTransitionUpdates()
@@ -75,8 +83,11 @@ class MainViewModel @Inject constructor(
 
     private fun startActivityTransitionUpdates() {
         viewModelScope.launch {
-            activityTransitionManager.requestActivityTransitionUpdates()
-            appPreferences.setActivityTransitionUpdatesTurnedOn(true)
+            if (activityTransitionManager.requestActivityTransitionUpdates()) {
+                appPreferences.setActivityTransitionUpdatesTurnedOn(true)
+            } else {
+                errorMessages = errorMessages + ErrorMessage(R.string.error_requesting_updates)
+            }
         }
     }
 
@@ -87,8 +98,14 @@ class MainViewModel @Inject constructor(
             activityTransitionDao.deleteAll()
         }
     }
+
+    fun removeMessage(errorMessage: ErrorMessage) {
+        errorMessages = errorMessages.filterNot { it == errorMessage }
+    }
 }
 
 enum class PlayServicesAvailableState {
     Initializing, PlayServicesUnavailable, PlayServicesAvailable
 }
+
+data class ErrorMessage(@StringRes val resId: Int, val time: Instant = Instant.now())

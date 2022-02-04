@@ -23,7 +23,9 @@ import androidx.activity.viewModels
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
+import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.res.stringResource
@@ -54,7 +56,21 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             ActivityRecognitionTheme {
+                val scaffoldState = rememberScaffoldState()
+
+                // Show a snackbar when there's an error requesting activity transition updates.
+                viewModel.errorMessages.firstOrNull()?.let {
+                    val snackbarMessage = stringResource(id = it.resId)
+                    LaunchedEffect(it) {
+                        scaffoldState.snackbarHostState.showSnackbar(snackbarMessage)
+                        // showSnackbar suspends until the Snackbar vanishes. Inform the viewModel
+                        // that it's been handled.
+                        viewModel.removeMessage(it)
+                    }
+                }
+
                 Scaffold(
+                    scaffoldState = scaffoldState,
                     topBar = {
                         TopAppBar(
                             title = {

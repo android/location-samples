@@ -24,7 +24,11 @@
     <!-- Starting in Android 10 (API 29) activity recognition requires this permission. -->
     <uses-permission android:name="android.permission.ACTIVITY_RECOGNITION" />
     <!-- Before Android 10, activity recognition requires this permission. -->
-    <uses-permission android:name="com.google.android.gms.permission.ACTIVITY_RECOGNITION" android:maxSdkVersion="28" />
+    <uses-permission
+        android:name="com.google.android.gms.permission.ACTIVITY_RECOGNITION"
+        android:maxSdkVersion="28" />
+
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
     <application
         android:name=".ActivityRecognitionApp"
@@ -52,6 +56,24 @@
             android:enabled="true"
             android:exported="true"
             tools:ignore="ExportedReceiver" />
+
+        <!-- Component that tries to restore activity transition updates after boot. -->
+        <receiver
+            android:name=".BootReceiver"
+            android:enabled="true"
+            android:exported="true"
+            tools:ignore="ExportedReceiver">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.intent.action.QUICKBOOT_POWERON" />
+                <!-- For HTC devices -->
+                <action android:name="com.htc.intent.action.QUICKBOOT_POWERON" />
+                <!-- When a new version of the app is installed over the existing one. -->
+                <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </receiver>
 
     </application>
 

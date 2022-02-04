@@ -16,33 +16,15 @@
 
 package com.google.android.gms.location.sample.activityrecognition.ui
 
-import android.app.Activity
-import android.content.Context
-import android.content.pm.PackageManager
-import android.os.Build
 import androidx.activity.ComponentActivity
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
-
-internal fun Context.hasPermission(permission: String): Boolean =
-    ContextCompat.checkSelfPermission(this, permission) == PackageManager.PERMISSION_GRANTED
-
-internal fun Activity.shouldShowRationaleFor(permission: String): Boolean =
-    ActivityCompat.shouldShowRequestPermissionRationale(this, permission)
-
-/**
- * Activity recognition requires a different permission starting from Android 10 (API level 29).
- */
-val ActivityRecognitionPermission = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-    android.Manifest.permission.ACTIVITY_RECOGNITION
-} else {
-    "com.google.android.gms.permission.ACTIVITY_RECOGNITION"
-}
+import com.google.android.gms.location.sample.activityrecognition.ActivityRecognitionPermission
+import com.google.android.gms.location.sample.activityrecognition.hasPermission
+import com.google.android.gms.location.sample.activityrecognition.shouldShowRationaleFor
 
 /**
  * State holder for activity recognition permission. Properties are implemented as State objects so

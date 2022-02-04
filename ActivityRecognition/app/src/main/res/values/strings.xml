@@ -25,4 +25,5 @@
     <string name="permission_rationale_dialog_title">Permission needed</string>
     <string name="permission_rationale_dialog_message">This app requires permission to access activity recognition. Please accept.</string>
     <string name="waiting_for_events">Waiting for events...</string>
+    <string name="error_requesting_updates">Error while requesting activity transition updates.</string>
 </resources>
