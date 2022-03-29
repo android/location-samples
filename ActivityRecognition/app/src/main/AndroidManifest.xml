@@ -45,6 +45,14 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <!-- Component that receives activity transition updates. -->
+        <receiver
+            android:name=".DetectedActivityReceiver"
+            android:enabled="true"
+            android:exported="true"
+            tools:ignore="ExportedReceiver" />
+
     </application>
 
 </manifest>

@@ -22,6 +22,7 @@ import androidx.datastore.preferences.core.PreferenceDataStoreFactory
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.preferencesDataStoreFile
 import com.google.android.gms.common.GoogleApiAvailability
+import com.google.android.gms.location.ActivityRecognition
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -49,4 +50,9 @@ object AppModule {
             application.preferencesDataStoreFile("prefs")
         }
     }
+
+    @Provides
+    @Singleton
+    fun provideActivityRecognitionClient(application: Application) =
+        ActivityRecognition.getClient(application)
 }
