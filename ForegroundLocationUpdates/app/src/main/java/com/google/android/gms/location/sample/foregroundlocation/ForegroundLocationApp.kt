@@ -18,6 +18,7 @@ package com.google.android.gms.location.sample.foregroundlocation
 
 import android.app.Application
 import com.google.android.gms.common.GoogleApiAvailability
+import com.google.android.gms.location.LocationServices
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -35,4 +36,10 @@ object AppModule {
     @Provides
     @Singleton
     fun provideGoogleApiAvailability() = GoogleApiAvailability.getInstance()
+
+    @Provides
+    @Singleton
+    fun provideFusedLocationProviderClient(
+        application: Application
+    ) = LocationServices.getFusedLocationProviderClient(application)
 }
