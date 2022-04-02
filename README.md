@@ -20,7 +20,7 @@ This repo contains the following samples:
 
 - [LocationAddress](https://github.com/android/location-samples/tree/main/LocationAddress) (Java) - Use the [Geocode API](http://developer.android.com/reference/android/location/Geocoder.html) to display a device's location as an address.
 
-- [LocationAddressKotlin](https://github.com/android/location-samples/tree/main/LocationAddress) (Kotlin) - Same as above but in Kotlin.
+- [LocationAddressKotlin](https://github.com/android/location-samples/tree/main/LocationAddressKotlin) (Kotlin) - Same as above but in Kotlin.
 
 - [LocationUpdates](https://github.com/android/location-samples/tree/main/LocationUpdates) (Java) - Get updates about a device's location.
 
