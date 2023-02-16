@@ -26,7 +26,7 @@ private const val DATABASE_NAME = "my-location-database"
 /**
  * Database for storing all location data.
  */
-@Database(entities = [MyLocationEntity::class], version = 1)
+@Database(entities = [MyLocationEntity::class], version = 1, exportSchema = false)
 @TypeConverters(MyLocationTypeConverters::class)
 abstract class MyLocationDatabase : RoomDatabase() {
     abstract fun locationDao(): MyLocationDao
