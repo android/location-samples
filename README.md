@@ -44,3 +44,9 @@ https://github.com/android/location-samples/issues
 
 Patches are encouraged, and may be submitted according to the instructions in
 CONTRIBUTING.md.
+
+License
+-------
+
+These samples are distributed under the terms of the Apache License (Version 2.0).
+See the [license](LICENSE) for more information.
