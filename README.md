@@ -43,4 +43,4 @@ If you've found an error in these samples, please file an issue:
 https://github.com/android/location-samples/issues
 
 Patches are encouraged, and may be submitted according to the instructions in
-CONTRIBUTING.md.
+[CONTRIBUTING.md](CONTRIBUTING.md).
