@@ -22,7 +22,7 @@ This repo contains the following samples:
 
 
 Prerequisites
--------------
+------------
 
 - Android API Level >v9
 - Android Build Tools >v21
