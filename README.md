@@ -1,5 +1,5 @@
 Google Play Location & Context Samples
-======================================
+========================================
 
 The [location and context APIs](https://developers.google.com/location-context/) harness the sensors and signals of mobile devices to provide awareness of user actions and their environment, enabling delightful and engaging experiences that simplify user interactions, provide assistance, and help users to better understand themselves.
 
