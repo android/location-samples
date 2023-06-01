@@ -94,7 +94,7 @@ class SleepReceiver : BroadcastReceiver() {
                 context,
                 0,
                 sleepIntent,
-                PendingIntent.FLAG_CANCEL_CURRENT
+                PendingIntent.FLAG_CANCEL_CURRENT or PendingIntent.FLAG_MUTABLE
             )
         }
     }
