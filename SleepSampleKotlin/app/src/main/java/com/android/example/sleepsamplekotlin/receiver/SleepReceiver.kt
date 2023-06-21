@@ -94,8 +94,11 @@ class SleepReceiver : BroadcastReceiver() {
                 context,
                 0,
                 sleepIntent,
-                PendingIntent.FLAG_CANCEL_CURRENT
+                getPendingIntentFlag()
             )
         }
+        fun getPendingIntentFlag() = PendingIntent.FLAG_CANCEL_CURRENT or
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) PendingIntent.FLAG_MUTABLE
+                else 0
     }
 }
