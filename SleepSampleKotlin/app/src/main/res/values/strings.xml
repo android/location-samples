@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+     Copyright (C) 2021 The Android Open Source Project
+
+     Licensed under the Apache License, Version 2.0 (the "License");
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+
+          http://www.apache.org/licenses/LICENSE-2.0
+
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License.
+-->
+<resources>
+    <string name="app_name">SleepSampleKotlin</string>
+    <string name="default_greeting_message">Click on the button below to subscribe to Sleep Transitions!</string>
+    <string name="sleep_button_subscribe_text">Subscribe to Sleep Data</string>
+    <string name="sleep_button_unsubscribe_text">Unsubscribe to Sleep Data</string>
+
+    <string name="action_settings">Settings</string>
+    <string name="permission_rational">Sample requires Activity Recognition permissions to function.</string>
+    <string name="no">No</string>
+    <string name="yes">Yes</string>
+    <string name="permission_approved">Permission Approved!</string>
+
+    <!-- Strings combined for output to main Text in MainActivity. -->
+    <string name="main_output_header1_subscribed_sleep_data">Currently subscribed to sleep data:\nSleepClassifyEvents should occur regularly.\n(Last update: %1$s):\n\n</string>
+    <string name="main_output_header1_unsubscribed_sleep_data">Currently NOT subscribed to sleep data:\n(Information below was saved from previous sessions to the database):\n\n</string>
+    <string name="main_output_header2_and_sleep_data">=== Sleep Segment Events ===\n%1$s\n\n=== Sleep Classify Events ===\n%2$s</string>
+</resources>

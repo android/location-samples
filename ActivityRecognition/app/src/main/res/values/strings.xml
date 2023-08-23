@@ -1,43 +1,29 @@
-<?xml version="1.0" encoding="utf-8"?>
 <!--
-  Copyright 2014 Google, Inc
+  ~ Copyright 2022 Google, Inc
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     https://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
 
-  Licensed under the Apache License, Version 2.0 (the "License");
-  you may not use this file except in compliance with the License.
-  You may obtain a copy of the License at
-
-      http://www.apache.org/licenses/LICENSE-2.0
-
-  Unless required by applicable law or agreed to in writing, software
-  distributed under the License is distributed on an "AS IS" BASIS,
-  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-  See the License for the specific language governing permissions and
-  limitations under the License.
--->
 <resources>
-
     <string name="app_name">Activity Recognition</string>
-
-    <!-- Activity detection strings -->
-    <string name="in_vehicle">In a vehicle</string>
-    <string name="on_bicycle">On a bicycle</string>
-    <string name="on_foot">On foot</string>
-    <string name="running">Running</string>
-    <string name="still">Still</string>
-    <string name="tilting">Tilting</string>
-    <string name="unknown">Unknown activity</string>
-    <string name="walking">Walking</string>
-    <string name="unidentifiable_activity">Unidentifiable activity: %1$d</string>
-
-    <string name="detected_activities_title">Detected Activities</string>
-
-    <string name="request_activity_updates">Request updates</string>
-    <string name="remove_activity_updates">Remove updates</string>
-    <string name="activity_updates_added">Activity updates added</string>
-    <string name="activity_updates_removed">Activity updates removed</string>
-
-    <string name="not_connected">GoogleApiClient not yet connected. Try again.</string>
-
-    <string name="percent">%1$d%%</string>
-
+    <string name="initializing"> Initializing</string>
+    <string name="play_services_unavailable">Google Play Services are unavailable on this device.</string>
+    <string name="start_activity_recognition">Start activity recognition</string>
+    <string name="stop_activity_recognition">Stop activity recognition</string>
+    <string name="not_started">Tap Start to begin activity recognition</string>
+    <string name="please_allow_permission">Please allow permission for activity recognition</string>
+    <string name="permission_rationale_dialog_title">Permission needed</string>
+    <string name="permission_rationale_dialog_message">This app requires permission to access activity recognition. Please accept.</string>
+    <string name="waiting_for_events">Waiting for events...</string>
+    <string name="error_requesting_updates">Error while requesting activity transition updates.</string>
 </resources>
