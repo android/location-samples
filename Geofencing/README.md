@@ -1,3 +1,9 @@
+> **Warning**
+> This sample has been deprecated and is no longer being maintained.
+> 
+> Find the new location samples in the new [platform-samples repo](https://github.com/android/platform-samples/tree/main/samples/location).
+
+
 Creating and Monitoring Geofences
 =================================
 
