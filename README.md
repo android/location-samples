@@ -27,18 +27,12 @@ This repo contains the following samples:
 - [SleepSampleKotlin](https://github.com/android/location-samples/tree/main/SleepSampleKotlin) (Kotlin) - Demonstrates use of the Sleep API to recognize a user's sleep activity.
 
 
-Prerequisites
---------------
-
-- Android API Level >v9
-- Android Build Tools >v21
-- Google Support Repository
-
 Getting Started
 ---------------
 
 These samples use the Gradle build system. To build a sample, use the
 "gradlew build" command or use "Import Project" in Android Studio.
+
 
 Support
 -------
