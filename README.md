@@ -22,7 +22,7 @@ This repo contains the following samples:
 
 - [LocationAddress](https://github.com/android/location-samples/tree/main/LocationAddress) (Kotlin) - Use the [Geocode API](http://developer.android.com/reference/android/location/Geocoder.html) to display a device's location as an address.
 
-- [LocationUpdatesBackgroundKotlin](https://github.com/android/location-samples/tree/main/LocationUpdatesBackgroundKotlin) (Kotlin) - Demonstrates the correct way to retrieve location updates in the background.
+- [LocationUpdatesBackgroundKotlin](https://github.com/android/location-samples/tree/main/LocationUpdatesBa) (Kotlin) - Demonstrates the correct way to retrieve location updates in the background.
 
 - [SleepSampleKotlin](https://github.com/android/location-samples/tree/main/SleepSampleKotlin) (Kotlin) - Demonstrates use of the Sleep API to recognize a user's sleep activity.
 
