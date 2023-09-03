@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context="com.google.android.gms.location.sample.locationupdatespendingintent.MainActivity">
+
+    <TextView
+        android:id="@+id/using_batched_location_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/batched_location_updates"
+        android:layout_marginBottom="@dimen/default_margin"
+        android:textSize="@dimen/text_large" />
+
+    <Button
+        android:id="@+id/request_updates_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:onClick="requestLocationUpdates"
+        android:text="@string/request_updates" />
+
+    <Button
+        android:id="@+id/remove_updates_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:onClick="removeLocationUpdates"
+        android:layout_marginBottom="@dimen/default_margin"
+        android:text="@string/remove_updates" />
+
+    <TextView
+        android:id="@+id/location_updates_result"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+</LinearLayout>
